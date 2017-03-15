@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Twitter Web Interface</title>
+    <link href="../bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../js/main.js"></script>
+</head>
+<body onload="initialise();">
+<h1>Twitter Web Interface</h1>
+<form class="form-group">
+  <input type="text" class="form-control" name="querystring" id="querystring" placeholder="e.g. Manchester United">
+  <div class="form-check">
+    <label for="queryteam" class="form-check-label">Team</label>
+    <input type="checkbox" class="form-check-input" name="queryteam" id="queryteam" value="true">
+  </div>
+  <div class="form-check">
+    <label for="queryplayer" class="form-check-label">Player</label>
+    <input type="checkbox" class="form-check-input" name="queryplayer" id="queryplayer" value="true">
+  </div>
+  <div class="form-check">
+    <label for="queryauthor" class="form-check-label">Author</label>
+    <input type="checkbox" class="form-check-input" name="queryauthor" id="queryauthor" value="true">
+  </div>
+</form>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Author</th>
+      <th>Text</th>
+      <th>Time</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+  </tbody>
+</body>
+</html>
