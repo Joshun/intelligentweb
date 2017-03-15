@@ -1,0 +1,30 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "uk.ac.shef.dcs.aca14mb"
+        },
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "uk.ac.shef.dcs.aca14mb"
+        },
+        "cordova-plugin-device-motion": {
+            "PACKAGE_NAME": "uk.ac.shef.dcs.aca14mb"
+        },
+        "cordova-plugin-geolocation": {
+            "PACKAGE_NAME": "uk.ac.shef.dcs.aca14mb"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "uk.ac.shef.dcs.aca14mb"
+        },
+        "cordova-sqlite-storage": {
+            "PACKAGE_NAME": "uk.ac.shef.dcs.aca14mb"
+        }
+    },
+    "dependent_plugins": {}
+}
