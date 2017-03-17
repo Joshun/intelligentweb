@@ -23,13 +23,15 @@ var T = new Twit({
   timeout_ms:          30000
 });
 
+// specifies which port the server should be hosted on
 server.listen(port, function() {
   console.log('Server listening on port %d', port);
 })
 
-// Routing
+// allows paths to be defined relative to the public folder
 app.use(express['static'](__dirname + '/public'));
 
+// retrieves the most recent tweet on a specified user's timeline, and outputs it on the console
 app.get('/test', function(req, res) {
   T.get('statuses/user_timeline', {screen_name: 'EndoMatrix', count: 1}, function(errors, tweets, response) {
     if(errors) throw errors;
@@ -38,6 +40,7 @@ app.get('/test', function(req, res) {
   })
 });
 
+// retrieves the relevant file to render, or returns a 404 error if none exists
 app.all('*', function(req, res) {
   fs.exists(req.path, function(exists) {
     if (exists) {
