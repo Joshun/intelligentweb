@@ -1,3 +1,19 @@
+body {
+  background-color: rgb(32, 157, 255);
+  /*background-image: url("https://www.toptal.com/designers/subtlepatterns/patterns/circles-and-roundabouts.png");*/
+  height: 100%;
+}
+
+#wrap {
+    width: 75%;
+    margin: 5vh auto 5vh auto;
+    background-color: white;
+    /*background-image: url("/images/circles-and-roundabouts.jpg");*/
+    padding: 5px 10px 5px 10px;
+    height: 90vh;
+    border-radius: 5px;
+}
+
 /** {
     margin: 1;
     padding: 1;
@@ -7,6 +23,7 @@
 body {
     font: 16px Helvetica, Arial;
 }
+
 
 form {
     border: 3;
