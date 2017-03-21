@@ -13,17 +13,14 @@ var config = require('./config.json');
 
 var port = process.env.PORT || 3000;
 
-var twitter = require('./twitter.js')
-
 // creates a connection to the Twitter API, such that data may be queried
 var Twit = require('twit');
-var T = new Twit({
-  consumer_key:        config.twitter.consumer_key,
-  consumer_secret:     config.twitter.consumer_secret,
-  access_token:        config.twitter.access_token,
-  access_token_secret: config.twitter.access_token_secret,
-  timeout_ms:          30000
-});
+
+var Twitter = require('./twitter.js');
+var twitterObj = new Twitter();
+var T = twitterObj.getTwitInstance();
+
+console.log(T);
 
 // specifies which port the server should be hosted on
 server.listen(port, function() {
