@@ -11,6 +11,8 @@ function Twitter() {
   });
 }
 
-Twitter.prototype.getTwitInstance() = function() {
+Twitter.prototype.getTwitInstance = function() {
   return this.T;
 }
+
+module.exports = Twitter
