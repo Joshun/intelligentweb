@@ -1,5 +1,5 @@
 body {
-  background-color: rgb(32, 157, 255);
+  background-color: #209DFF;
   /*background-image: url("https://www.toptal.com/designers/subtlepatterns/patterns/circles-and-roundabouts.png");*/
   height: 100%;
 }
@@ -12,6 +12,22 @@ body {
     padding: 5px 10px 5px 10px;
     height: 90vh;
     border-radius: 5px;
+}
+
+.hidden {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+}
+
+input[type=checkbox]         + label, input[type=checkbox]:hover         + label {
+  color: #FFFFFF;
+  background-color: #CCCCCC;
+}
+
+input[type=checkbox]:checked + label, input[type=checkbox]:checked:hover + label {
+  color: #999999;
+  background-color: #FFFFFF;
 }
 
 /** {

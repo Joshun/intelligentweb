@@ -12,12 +12,34 @@
   <div id="wrap">
   <h1>Twitter Web Interface</h1>
   <form class="form-group">
+
+    <label for="player_query">Enter a Player Name:</label>
     <div class="input-group">
-      <input type="text" class="form-control" name="querystring" id="querystring" placeholder="e.g. Manchester United">
-      <span class="input-group-btn" id="basic-addon2">
-        <input type="submit" class="btn btn-default">
+      <input type="text" class="form-control" name="player_query" id="player_query" placeholder="e.g. Wayne Rooney">
+      <span class="input-group-btn">
+        <input type="checkbox" class="hidden" id="handles_player" name="handles_player" checked>
+        <label for="handles_player" class="btn btn-default">@</label>
+        <input type="checkbox" class="hidden" id="hashtag_player" name="hashtag_player" checked>
+        <label for="hashtag_player" class="btn btn-default">#</label>
+        <input type="checkbox" class="hidden" id="keyword_player" name="keyword_player" checked>
+        <label for="keyword_player" class="btn btn-default">?</label>
       </span>
     </div>
+
+    <label for="team_query">Enter a Team Name:</label>
+    <div class="input-group col-10">
+      <input type="text" class="form-control" name="team_query" id="team_query" placeholder="e.g. Manchester United">
+      <span class="input-group-btn">
+        <input type="checkbox" class="hidden" id="handles_team" name="handles_team" checked>
+        <label for="handles_team" class="btn btn-default">@</label>
+        <input type="checkbox" class="hidden" id="hashtag_team" name="hashtag_team" checked>
+        <label for="hashtag_team" class="btn btn-default">#</label>
+        <input type="checkbox" class="hidden" id="keyword_team" name="keyword_team" checked>
+        <label for="keyword_team" class="btn btn-default">?</label>
+      </span>
+    </div>
+
+    <input type="submit" class="btn btn-default">
     <!-- <div class="form-check">
       <label for="queryteam" class="form-check-label">Team</label>
       <input type="checkbox" class="form-check-input" name="queryteam" id="queryteam" value="true">
