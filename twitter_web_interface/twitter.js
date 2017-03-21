@@ -9,9 +9,15 @@ var Twitter = function() {
     access_token_secret: this.config.twitter.access_token_secret,
     timeout_ms:          30000
   });
+  this.TWEET_LIMIT = 10;
 };
+
 Twitter.prototype.getTwitInstance = function() {
   return this.T;
 };
+
+Twitter.prototype.getTweets = function(keywords) {
+  return this.T.get('search/tweets', {q: keywords, count: this.TWEET_LIMIT});
+}
 
 module.exports = Twitter;

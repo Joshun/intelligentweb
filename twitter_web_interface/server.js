@@ -14,8 +14,17 @@ var client = require('./client.js').T;
 
 // creates a connection to the Twitter API, such that data may be queried
 
-// var Twitter = require('./twitter.js');
-// var T = new Twitter().getTwitInstance();
+// <<<<<<< 936988e0811bb0e33c42ad7f4c5583e2737a6b54
+// // var Twitter = require('./twitter.js');
+// // var T = new Twitter().getTwitInstance();
+// =======
+// // console.log(T);
+// // console.log(twitterObj.getTweets("test"));
+// twitterObj.getTweets("test").then(function(onFulfilled, onRejected){
+//   console.log("done");
+// });
+
+// >>>>>>> Basic twitter search functionality
 
 var port = process.env.PORT || 3000;
 
