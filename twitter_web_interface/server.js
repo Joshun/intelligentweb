@@ -24,7 +24,7 @@ var client = require('./client.js').T;
 //   console.log("done");
 // });
 
-// >>>>>>> Basic twitter search functionality
+
 
 var port = process.env.PORT || 3000;
 
