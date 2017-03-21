@@ -26,13 +26,22 @@ server.listen(port, function() {
 app.use(express['static'](__dirname + '/public'));
 
 // retrieves the most recent tweet on a specified user's timeline, and outputs it on the console
-app.get('/test', function(req, res) {
+app.get('/test', test);
+
+ io.of('/').on('connection', function(socket) {
+  socket.on('query', function(data) {
+    console.log("Query Processed");
+    socket.emit('results', data); // TODO return results based on query
+  })
+ });
+
+function test(req, res) {
   client.T.get('statuses/user_timeline', {screen_name: 'EndoMatrix', count: 1}, function(errors, tweets, response) {
     if(errors) throw errors;
     console.log(tweets);
-      res.redirect('/');
+    res.redirect('/');
   })
-});
+}
 
 // retrieves the relevant file to render, or returns a 404 error if none exists
 app.all('*', function(req, res) {
