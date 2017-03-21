@@ -28,6 +28,11 @@ var client = require('./client.js').T;
 
 var port = process.env.PORT || 3000;
 
+// specifies which port the server should be hosted on
+server.listen(port, function() {
+  console.log('Server listening on port %d', port);
+});
+
 // allows paths to be defined relative to the public folder
 app.use(express['static'](__dirname + '/public'));
 
@@ -58,7 +63,9 @@ function test(req, res) {
 // specifies which port the server should be hosted on
 server.listen(port, function() {
   console.log('Server listening on port %d', port);
+      res.redirect('/');
 });
+
 
 
 // retrieves the relevant file to render, or returns a 404 error if none exists
@@ -73,4 +80,3 @@ app.all('*', function(req, res) {
     }
   });
 });
-

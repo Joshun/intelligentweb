@@ -18,6 +18,6 @@ Twitter.prototype.getTwitInstance = function() {
 
 Twitter.prototype.getTweets = function(keywords) {
   return this.T.get('search/tweets', {q: keywords, count: this.TWEET_LIMIT});
-}
+};
 
 module.exports = Twitter;
