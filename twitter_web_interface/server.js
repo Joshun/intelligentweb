@@ -13,6 +13,8 @@ var config = require('./config.json');
 
 var port = process.env.PORT || 3000;
 
+var twitter = require('twitter')
+
 // creates a connection to the Twitter API, such that data may be queried
 var Twit = require('twit');
 var T = new Twit({
