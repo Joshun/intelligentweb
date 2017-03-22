@@ -8,7 +8,9 @@
     "socket.io": "^1.7.3",
     "twit": "^2.2.5"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^3.18.0"
+  },
   "scripts": {
     "test": "node server.js",
     "start": "node server.js"
