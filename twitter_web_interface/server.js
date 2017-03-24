@@ -23,8 +23,12 @@ app.get('/test', test);
 
 io.of('/').on('connection', function(socket) {
   socket.on('query', function(data) {
-    console.log("Query Processed");
-    socket.emit('results', data); // TODO return results based on query
+  	client.get('search/tweets', { q: data.player_query, count: 100}, function(err, req, res) {
+  		if(err) throw err;
+  		
+	    console.log("Query Processed: " + (new Date())); // (new Date().getTime() / 1000 | 0));
+	    socket.emit('results', req); // TODO return results based on query
+  	});
   });
 });
 
