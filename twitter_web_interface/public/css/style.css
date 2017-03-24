@@ -21,13 +21,13 @@ body {
 }
 
 input[type=checkbox]         + label, input[type=checkbox]:hover         + label {
-  color: #FFFFFF;
-  background-color: #CCCCCC;
+  color: #993333;
+  background-color: #FF9999;
 }
 
 input[type=checkbox]:checked + label, input[type=checkbox]:checked:hover + label {
-  color: #999999;
-  background-color: #FFFFFF;
+  color: #339933;
+  background-color: #99FF99;
 }
 
 /** {
