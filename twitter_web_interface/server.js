@@ -24,6 +24,16 @@ var client = require('./client.js').T;
 //   console.log("done");
 // });
 
+new Twitter().getFrequencyPastWeek("Henderson's Relish")
+  .then(function (result) {
+      console.log("success:");
+      console.log(result);
+  })
+  .catch(function(err) {
+    console.log("error:");
+    console.log(err);
+  });
+
 
 
 var port = process.env.PORT || 3000;
