@@ -1,0 +1,33 @@
+{
+  "name": "twitter_web_interface",
+  "version": "1.0.0",
+  "description": "football twitter web interface for intelligent web",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.15.2",
+    "socket.io": "^1.7.3",
+    "twit": "^2.2.5"
+  },
+  "devDependencies": {
+    "eslint": "^3.18.0"
+  },
+  "scripts": {
+    "test": "node server.js",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Joshun/intelligentweb.git"
+  },
+  "keywords": [
+    "intelligentweb",
+    "football",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Joshun/intelligentweb/issues"
+  },
+  "homepage": "https://github.com/Joshun/intelligentweb#readme"
+}

@@ -12,6 +12,10 @@ var fs = require('fs');
 var config = require('./config.json');
 var client = require('./client.js').T;
 
+// creates a connection to the Twitter API, such that data may be queried
+
+// var Twitter = require('./twitter.js');
+// var T = new Twitter().getTwitInstance();
 
 var port = process.env.PORT || 3000;
 
@@ -22,6 +26,7 @@ app.use(express['static'](__dirname + '/public'));
 app.get('/test', test);
 
 io.of('/').on('connection', function(socket) {
+  console.log("Connection Created");
   socket.on('query', function(data) {
   	client.get('search/tweets', { q: data.player_query, count: 100}, function(err, req, res) {
   		if(err) throw err;
@@ -54,6 +59,6 @@ app.all('*', function(req, res) {
 });
 
 // specifies which port the server should be hosted on
-server.listen(port, function() {
+app.listen(port, function() {
   console.log('Server listening on port %d', port);
 });
