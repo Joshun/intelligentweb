@@ -12,6 +12,7 @@ var fs      = require('fs');
 var config  = require('./config.json');
 var client  = require('./client.js').T;
 var db      = require('./storage.js');
+var helper  = require('./helper.js');
 
 // creates a connection to the Twitter API, such that data may be queried
 Twitter = require("./twitter.js");
@@ -40,7 +41,7 @@ app.use(express['static'](__dirname + '/public'));
 app.get('/test', test);
 
 io.of('/').on('connection', function(socket) {
-  console.log("Connection Created");
+  helper.info("Connection Created");
   var query;
   var secondquery;
   var params = {}
@@ -55,8 +56,7 @@ io.of('/').on('connection', function(socket) {
  // client.get('search/tweets', { q: [data.player_query,        data.team_query], count: 100}, function(err, req, res) {
     client.get('search/tweets', { q:  data.player_query + " " + data.team_query,  count: 100})
       .then(function(tweets) {
-  	    console.log("QUERY PROCESSED:");
-        console.log("\>\> TIME STAMP: " + (new Date()) + " : " +  (new Date().getTime() / 1000 | 0));
+  	    helper.info("QUERY PROCESSED");
 
   	    socket.emit('results', tweets.data); // TODO return results based on query
       })
