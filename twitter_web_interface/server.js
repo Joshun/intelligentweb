@@ -12,18 +12,6 @@ var fs = require('fs');
 var config = require('./config.json');
 var client = require('./client.js').T;
 
-// creates a connection to the Twitter API, such that data may be queried
-
-// <<<<<<< 936988e0811bb0e33c42ad7f4c5583e2737a6b54
-// // var Twitter = require('./twitter.js');
-// // var T = new Twitter().getTwitInstance();
-// =======
-// // console.log(T);
-// // console.log(twitterObj.getTweets("test"));
-// twitterObj.getTweets("test").then(function(onFulfilled, onRejected){
-//   console.log("done");
-// });
-
 Twitter = require("./twitter.js");
 
 new Twitter().getFrequencyPastWeek("Henderson's Relish")
@@ -54,8 +42,6 @@ app.get('/test', test);
 io.of('/').on('connection', function(socket) {
   console.log("Connection Created");
   var query;
-  var secondquery;
-  var params = {}
   socket.on('query', function(data) {
     if (data.player_query.length == 0) {
       query = data.team_query;
