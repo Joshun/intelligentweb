@@ -63,7 +63,7 @@ io.of('/').on('connection', function(socket) {
       sampleDate = new Date();
       sampleResults = {
         tweets: [
-          { 
+          {
             author: "Dave",
             text: "I am the biggest Manu Fan evaaa",
             time: sampleDate.getHours() + ":" + sampleDate.getMinutes(),
@@ -72,8 +72,8 @@ io.of('/').on('connection', function(socket) {
         ]
       };
 
-	    // socket.emit('results', req); // TODO return results based on query
-	    socket.emit('results', sampleResults); // TODO return results based on query
+	    socket.emit('results', req); // TODO return results based on query
+	    //socket.emit('results', sampleResults); // TODO return results based on query
   	});
   });
 });
