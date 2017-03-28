@@ -56,10 +56,24 @@ io.of('/').on('connection', function(socket) {
   socket.on('query', function(data) {
   	client.get('search/tweets', { q: data.player_query, count: 100}, function(err, req, res) {
   		if(err) throw err;
-      console.log("Query Received:")
+      console.log("Query Received:");
   		console.log(data);
 	    console.log("Query Processed: " + (new Date())); // (new Date().getTime() / 1000 | 0));
-	    socket.emit('results', req); // TODO return results based on query
+
+      sampleDate = new Date();
+      sampleResults = {
+        tweets: [
+          { 
+            author: "Dave",
+            text: "I am the biggest Manu Fan evaaa",
+            time: sampleDate.getHours() + ":" + sampleDate.getMinutes(),
+            date: sampleDate.getDate() + "." + sampleDate.getMonth() + "." + sampleDate.getFullYear()
+          }
+        ]
+      };
+
+	    // socket.emit('results', req); // TODO return results based on query
+	    socket.emit('results', sampleResults); // TODO return results based on query
   	});
   });
 });
