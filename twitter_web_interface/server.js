@@ -53,7 +53,7 @@ io.of('/').on('connection', function(socket) {
     }
     // TODO: OR is list query, AND is concatenating terms
  // client.get('search/tweets', { q: [data.player_query,        data.team_query], count: 100}, function(err, req, res) {
-    client.get('search/tweets', { q:  data.player_query + " " + data.team_query + " :)",  count: 100})
+    client.get('search/tweets', { q:  data.player_query + " " + data.team_query,  count: 100})
       .then(function(tweets) {
   	    console.log("QUERY PROCESSED:");
         console.log("\>\> TIME STAMP: " + (new Date()) + " : " +  (new Date().getTime() / 1000 | 0));
