@@ -39,7 +39,6 @@ function initialise() {
 
 	table = $('#resultsTable');
 	for (var i=0; i<results.statuses.length; i++) {
-		//console.log(results[i]);
 		//console.log(resultToRow(results.statuses[i]));
 		table.append(resultToRow(results.statuses[i]));
 	}
