@@ -24,6 +24,8 @@ var client = require('./client.js').T;
 //   console.log("done");
 // });
 
+Twitter = require("./twitter.js");
+
 new Twitter().getFrequencyPastWeek("Henderson's Relish")
   .then(function (result) {
       console.log("success:");
@@ -73,7 +75,6 @@ function test(req, res) {
 // specifies which port the server should be hosted on
 server.listen(port, function() {
   console.log('Server listening on port %d', port);
-      res.redirect('/');
 });
 
 
