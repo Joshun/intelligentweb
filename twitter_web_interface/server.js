@@ -53,8 +53,15 @@ app.get('/test', test);
 
 io.of('/').on('connection', function(socket) {
   console.log("Connection Created");
+  var query;
   socket.on('query', function(data) {
-  	client.get('search/tweets', { q: data.player_query, count: 100}, function(err, req, res) {
+    if (!!data.player_query) {
+      var query = data.player_query;
+    } else {
+      var query = data.team_query;
+    }
+
+  	client.get('search/tweets', { q: query, count: 100}, function(err, req, res) {
   		if(err) throw err;
       console.log("Query Received:");
   		console.log(data);
