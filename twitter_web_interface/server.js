@@ -52,29 +52,17 @@ io.of('/').on('connection', function(socket) {
       query = data.player_query;
     }
     // TODO: OR is list query, AND is concatenating terms
-  	// client.get('search/tweets', { q: [data.player_query, data.team_query], count: 100}, function(err, req, res) {
-    client.get('search/tweets', { q: data.player_query + " " + data.team_query, count: 100}, function(err, req, res) {
+ // client.get('search/tweets', { q: [data.player_query,        data.team_query], count: 100}, function(err, req, res) {
+    client.get('search/tweets', { q:  data.player_query + " " + data.team_query + " :)",  count: 100})
+      .then(function(tweets) {
+  	    console.log("QUERY PROCESSED:");
+        console.log("\>\> TIME STAMP: " + (new Date()) + " : " +  (new Date().getTime() / 1000 | 0));
 
-  		if(err) throw err;
-      console.log("Query Received:");
-  		console.log(data);
-	    console.log("Query Processed: " + (new Date())); // (new Date().getTime() / 1000 | 0));
-
-      sampleDate = new Date();
-      sampleResults = {
-        tweets: [
-          {
-            author: "Dave",
-            text: "I am the biggest Manu Fan evaaa",
-            time: sampleDate.getHours() + ":" + sampleDate.getMinutes(),
-            date: sampleDate.getDate() + "." + sampleDate.getMonth() + "." + sampleDate.getFullYear()
-          }
-        ]
-      };
-
-	    socket.emit('results', req); // TODO return results based on query
-	    //socket.emit('results', sampleResults); // TODO return results based on query
-  	});
+  	    socket.emit('results', tweets.data); // TODO return results based on query
+      })
+      .catch(function(errors) {
+        throw errors;
+      });
   });
 });
 
