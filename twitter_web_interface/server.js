@@ -14,11 +14,24 @@ var client  = require('./client.js').T;
 var db      = require('./storage.js');
 
 // creates a connection to the Twitter API, such that data may be queried
+Twitter = require("./twitter.js");
 
-// var Twitter = require('./twitter.js');
-// var T = new Twitter().getTwitInstance();
+new Twitter().getFrequencyPastWeek("Henderson's Relish")
+  .then(function (result) {
+      console.log("success:");
+      console.log(result);
+  })
+  .catch(function(err) {
+    console.log("error:");
+    console.log(err);
+  });
 
 var port = process.env.PORT || 3000;
+
+// specifies which port the server should be hosted on
+server.listen(port, function() {
+  console.log('Server listening on port %d', port);
+});
 
 // allows paths to be defined relative to the public folder
 app.use(express['static'](__dirname + '/public'));
@@ -29,12 +42,26 @@ app.get('/test', test);
 io.of('/').on('connection', function(socket) {
   console.log("Connection Created");
   socket.on('query', function(data) {
-  	client.get('search/tweets', { q: data.player_query, count: 100}, function(err, req, res) {
+  	client.get('search/tweets', { q: data.player_query, count: 100}), function(err, req, res) {
   		if(err) throw err;
-      console.log("Query Received:")
+      console.log("Query Received:");
   		console.log(data);
 	    console.log("Query Processed: " + (new Date())); // (new Date().getTime() / 1000 | 0));
-	    socket.emit('results', req); // TODO return results based on query
+
+      sampleDate = new Date();
+      sampleResults = {
+        tweets: [
+          { 
+            author: "Dave",
+            text: "I am the biggest Manu Fan evaaa",
+            time: sampleDate.getHours() + ":" + sampleDate.getMinutes(),
+            date: sampleDate.getDate() + "." + sampleDate.getMonth() + "." + sampleDate.getFullYear()
+          }
+        ]
+      };
+
+	    // socket.emit('results', req); // TODO return results based on query
+	    socket.emit('results', sampleResults); // TODO return results based on query
   	});
   });
 });
@@ -64,4 +91,3 @@ app.all('*', function(req, res) {
     }
   });
 });
-

@@ -1,6 +1,17 @@
 /**
  * main.js
  */
+
+function resultToRow(tweet) {
+	row = "<tr>"
+		+ "<td>" + tweet["author"] + "</td>"
+		+ "<td>" + tweet["text"] + "</td>"
+		+ "<td>" + tweet["time"] + "</td>"
+		+ "<td>" + tweet["date"] + "</td>"
+		+ "<tr>";
+	return row;
+}
+
 function initialise() {
   var socket = io(); // auto-detects port
 
@@ -21,6 +32,13 @@ function initialise() {
 
   socket.on('results', function(results) {
   	// write results into table
-  	console.log(results);
+	console.log(results);
+	table = $('#resultsTable');
+	for (var i=0; i<results["tweets"].length; i++) {
+		console.log(results["tweets"][i]);
+		console.log(resultToRow(results["tweets"][i]));
+		table.append(resultToRow(results["tweets"][i]));
+	}
+
   });
 }
