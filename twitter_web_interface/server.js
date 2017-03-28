@@ -60,9 +60,11 @@ io.of('/').on('connection', function(socket) {
     if (data.player_query.length == 0) {
       query = data.team_query;
     } else {
-      query = data.player_query
+      query = data.player_query;
     }
-  	client.get('search/tweets', { q: query, count: 100}, function(err, req, res) {
+    // TODO: OR is list query, AND is concatenating terms
+  	// client.get('search/tweets', { q: [data.player_query, data.team_query], count: 100}, function(err, req, res) {
+    client.get('search/tweets', { q: data.player_query + " " + data.team_query, count: 100}, function(err, req, res) {
   		if(err) throw err;
       console.log("Query Received:");
   		console.log(data);
