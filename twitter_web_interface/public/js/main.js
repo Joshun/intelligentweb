@@ -9,7 +9,7 @@ function resultToRow(tweet) {
 	+ "<td>" + tweet["text"] + "</td>"
 	+ "<td>" + tweet["created_at"].substring(11,19) + "</td>"
 	+ "<td>" + tweet["created_at"].substring(0,10) + "</td>"
-	// + "<td> <a href=" + "https://twitter.com/" + tweet["user"].screen_name + "/status/"+ tweet.id + "> Tweet Link </a>  </td>"
+	+ "<td> <a href=" + "https://twitter.com/statuses/" + tweet.id_str + "> Tweet Link </a>  </td>"
 	+ "<tr>";
 	return row;
 }
