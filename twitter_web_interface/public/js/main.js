@@ -6,8 +6,8 @@ function resultToRow(tweet) {
 	row = "<tr>"
 		+ "<td>" + tweet["user"].screen_name + "</td>"
 		+ "<td>" + tweet["text"] + "</td>"
-		+ "<td>" + tweet["created_at"].substring(0,10) + "</td>"
 		+ "<td>" + tweet["created_at"].substring(11,19) + "</td>"
+		+ "<td>" + tweet["created_at"].substring(0,10) + "</td>"
 		+ "<tr>";
 	return row;
 }
@@ -17,7 +17,7 @@ function initialise() {
 
   // emits query data from the input form to the server
   $('#query_form').submit(function() {
-		$("#resultsTable tr").remove();
+		$("#resultsTable td").remove();
   	socket.emit('query', {
   		player_query: $('#player_query').val(), // input for player name (string)
   		handles_player: $('#handles_player').is(':checked'), // checkbox for player handles (boolean)

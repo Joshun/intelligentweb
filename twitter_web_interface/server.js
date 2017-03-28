@@ -55,7 +55,6 @@ io.of('/').on('connection', function(socket) {
   console.log("Connection Created");
   var query;
   var secondquery;
-  var params = {}
   socket.on('query', function(data) {
     if (data.player_query.length == 0) {
       query = data.team_query;
