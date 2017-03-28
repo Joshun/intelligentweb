@@ -3,14 +3,15 @@
  */
 
 var express = require('express');
-var app = express();
+var app     = express();
 
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-var fs = require('fs');
+var server  = require('http').Server(app);
+var io      = require('socket.io')(server);
+var fs      = require('fs');
 
-var config = require('./config.json');
-var client = require('./client.js').T;
+var config  = require('./config.json');
+var client  = require('./client.js').T;
+var db      = require('./storage.js');
 
 // creates a connection to the Twitter API, such that data may be queried
 
@@ -50,7 +51,6 @@ function test(req, res) {
 server.listen(port, function() {
   console.log('Server listening on port %d', port);
 });
-
 
 // retrieves the relevant file to render, or returns a 404 error if none exists
 app.all('*', function(req, res) {

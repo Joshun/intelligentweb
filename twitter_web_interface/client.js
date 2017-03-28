@@ -11,5 +11,5 @@ var T = new Twit({
 
 module.exports = {
 	Twit: Twit,
-	T: T
+	T: T,
 }

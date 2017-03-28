@@ -10,6 +10,7 @@ var Twitter = function() {
     timeout_ms:          30000
   });
 };
+
 Twitter.prototype.getTwitInstance = function() {
   return this.T;
 };
