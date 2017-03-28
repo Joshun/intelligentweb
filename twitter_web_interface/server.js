@@ -54,13 +54,14 @@ app.get('/test', test);
 io.of('/').on('connection', function(socket) {
   console.log("Connection Created");
   var query;
+  var secondquery;
+  var params = {}
   socket.on('query', function(data) {
-    if (!!data.player_query) {
-      var query = data.player_query;
+    if (data.player_query.length == 0) {
+      query = data.team_query;
     } else {
-      var query = data.team_query;
+      query = data.player_query
     }
-
   	client.get('search/tweets', { q: query, count: 100}, function(err, req, res) {
   		if(err) throw err;
       console.log("Query Received:");
