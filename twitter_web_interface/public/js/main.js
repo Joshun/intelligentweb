@@ -4,11 +4,13 @@
 
 function resultToRow(tweet) {
 	row = "<tr>"
-		+ "<td>" + tweet["user"].screen_name + "</td>"
-		+ "<td>" + tweet["text"] + "</td>"
-		+ "<td>" + tweet["created_at"].substring(11,19) + "</td>"
-		+ "<td>" + tweet["created_at"].substring(0,10) + "</td>"
-		+ "<tr>";
+	+ "<td>" + tweet["user"].screen_name + "</td>"
+	+ "<td>" + "https://twitter.com/intent/user?user_id=" + tweet["user"].id + "</td>"
+	+ "<td>" + tweet["text"] + "</td>"
+	+ "<td>" + tweet["created_at"].substring(11,19) + "</td>"
+	+ "<td>" + tweet["created_at"].substring(0,10) + "</td>"
+	+ "<td>" + "https://twitter.com/statuses/" + tweet.id + "</td>"
+	+ "<tr>";
 	return row;
 }
 
