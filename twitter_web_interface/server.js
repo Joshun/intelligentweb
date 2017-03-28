@@ -41,8 +41,20 @@ app.get('/test', test);
 
 io.of('/').on('connection', function(socket) {
   console.log("Connection Created");
+  var query;
+  var secondquery;
+  var params = {}
   socket.on('query', function(data) {
-  	client.get('search/tweets', { q: data.player_query, count: 100}), function(err, req, res) {
+
+    if (data.player_query.length == 0) {
+      query = data.team_query;
+    } else {
+      query = data.player_query;
+    }
+    // TODO: OR is list query, AND is concatenating terms
+  	// client.get('search/tweets', { q: [data.player_query, data.team_query], count: 100}, function(err, req, res) {
+    client.get('search/tweets', { q: data.player_query + " " + data.team_query, count: 100}, function(err, req, res) {
+
   		if(err) throw err;
       console.log("Query Received:");
   		console.log(data);
@@ -51,7 +63,7 @@ io.of('/').on('connection', function(socket) {
       sampleDate = new Date();
       sampleResults = {
         tweets: [
-          { 
+          {
             author: "Dave",
             text: "I am the biggest Manu Fan evaaa",
             time: sampleDate.getHours() + ":" + sampleDate.getMinutes(),
@@ -60,8 +72,8 @@ io.of('/').on('connection', function(socket) {
         ]
       };
 
-	    // socket.emit('results', req); // TODO return results based on query
-	    socket.emit('results', sampleResults); // TODO return results based on query
+	    socket.emit('results', req); // TODO return results based on query
+	    //socket.emit('results', sampleResults); // TODO return results based on query
   	});
   });
 });

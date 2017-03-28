@@ -12,6 +12,7 @@ body {
     padding: 5px 10px 5px 10px;
     height: 90vh;
     border-radius: 5px;
+    overflow: auto;
 }
 
 .hidden {

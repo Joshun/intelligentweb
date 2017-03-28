@@ -4,10 +4,10 @@
 
 function resultToRow(tweet) {
 	row = "<tr>"
-		+ "<td>" + tweet["author"] + "</td>"
+		+ "<td>" + tweet["user"].screen_name + "</td>"
 		+ "<td>" + tweet["text"] + "</td>"
-		+ "<td>" + tweet["time"] + "</td>"
-		+ "<td>" + tweet["date"] + "</td>"
+		+ "<td>" + tweet["created_at"].substring(0,10) + "</td>"
+		+ "<td>" + tweet["created_at"].substring(11,19) + "</td>"
 		+ "<tr>";
 	return row;
 }
@@ -17,6 +17,7 @@ function initialise() {
 
   // emits query data from the input form to the server
   $('#query_form').submit(function() {
+		$("#resultsTable tr").remove();
   	socket.emit('query', {
   		player_query: $('#player_query').val(), // input for player name (string)
   		handles_player: $('#handles_player').is(':checked'), // checkbox for player handles (boolean)
@@ -33,11 +34,12 @@ function initialise() {
   socket.on('results', function(results) {
   	// write results into table
 	console.log(results);
+
 	table = $('#resultsTable');
-	for (var i=0; i<results["tweets"].length; i++) {
-		console.log(results["tweets"][i]);
-		console.log(resultToRow(results["tweets"][i]));
-		table.append(resultToRow(results["tweets"][i]));
+	for (var i=0; i<results.statuses.length; i++) {
+		//console.log(results[i]);
+		//console.log(resultToRow(results.statuses[i]));
+		table.append(resultToRow(results.statuses[i]));
 	}
 
   });
