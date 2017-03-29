@@ -19,4 +19,3 @@ Db.prototype.getAuthors = function(query) {
 module.exports = {
     db: new Db()
 };
-

@@ -1,3 +1,5 @@
+var fs = require('fs');
+
 var config = require('./config.json');
 var helper = require('./helper.js');
 
@@ -7,19 +9,43 @@ var db  = require('mysql').createPool({
 	password:        config.storage.password,
 	database:        config.storage.database,
 	connectionLimit: 100,
-	debug:           false
+	debug:           false,
+	multipleStatements: true
 });
 
 helper.info('DATABASE CONNECTED');
 
-// db.query('SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME LIKE \'%create%\'', function(err, row, res) {
-// 	if(err) throw err;
-// 	console.log(row);
-// });
+function createTable() {
+	fs.readFile(config.storage.schema, 'utf8', function(err, data){
+		console.log("SQL: " + data);
+		db.getConnection(function(err, connection) {
+			connection.query(data, function(error, results, fields) {
+				console.log("QUERY EXECUTED");
+				console.log(results);
+			});
+		});
+	});
 
-module.exports = {
-	db: db
+	console.log("DATABASE CREATION SUCCESS");
 }
+
+function getTeams(name) {
+	db.query("SELECT * FROM teams WHERE name = ?", [name]);
+}
+
+function getPlayers(name) {
+	db.query("SELECT * FROM players WHERE name = ?", [name]);
+}
+
+
+// init
+createTable();
+
+// exports
+module.exports = {
+	db: db,
+	getTeams: getTeams
+};
 
 // SELECT player_handles.data, player_hashtag.data, player_keyword.data
 // 	FROM player_entries

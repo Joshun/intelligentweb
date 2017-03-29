@@ -17,15 +17,6 @@ var helper  = require('./helper.js');
 // creates a connection to the Twitter API, such that data may be queried
 Twitter = require("./twitter.js");
 
-new Twitter().getFrequencyPastWeek("Henderson's Relish")
-  .then(function (result) {
-      console.log("success:");
-      console.log(result);
-  })
-  .catch(function(err) {
-    console.log("error:");
-    console.log(err);
-  });
 
 var port = process.env.PORT || 3000;
 

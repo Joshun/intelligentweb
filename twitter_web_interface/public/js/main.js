@@ -4,11 +4,13 @@
 
 function resultToRow(tweet) {
 	row = "<tr>"
-		+ "<td>" + tweet["user"].screen_name + "</td>"
-		+ "<td>" + tweet["text"] + "</td>"
-		+ "<td>" + tweet["created_at"].substring(11,19) + "</td>"
-		+ "<td>" + tweet["created_at"].substring(0,10) + "</td>"
-		+ "<tr>";
+	+ "<td>" + tweet["user"].screen_name + "</td>"
+	+ "<td> <a href=" + "https://twitter.com/" + tweet["user"].screen_name + "> Author Link </a>  </td>"
+	+ "<td>" + tweet["text"] + "</td>"
+	+ "<td>" + tweet["created_at"].substring(11,19) + "</td>"
+	+ "<td>" + tweet["created_at"].substring(0,10) + "</td>"
+	+ "<td> <a href=" + "https://twitter.com/statuses/" + tweet.id_str + "> Tweet Link </a>  </td>"
+	+ "<tr>";
 	return row;
 }
 
@@ -37,7 +39,6 @@ function initialise() {
 
 	table = $('#resultsTable');
 	for (var i=0; i<results.statuses.length; i++) {
-		//console.log(results[i]);
 		//console.log(resultToRow(results.statuses[i]));
 		table.append(resultToRow(results.statuses[i]));
 	}
