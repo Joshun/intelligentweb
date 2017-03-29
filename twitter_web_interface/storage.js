@@ -19,14 +19,61 @@ function createTable() {
 	fs.readFile(config.storage.schema, 'utf8', function(err, data){
 		helper.debug("SQL: " + data);
 		db.getConnection(function(err, connection) {
+			if (err) throw err;
 			connection.query(data, function(error, results, fields) {
+<<<<<<< f33c8f297fe80d68d0a7848d90e297629b2f45b5
 				helper.debug("QUERY EXECUTED");
 				helper.debug(results);
+=======
+				if (error) throw err;
+				console.log("CREATE QUERY EXECUTED");
+				console.log(results);
+>>>>>>> Implement logSearch; Refine db schema with autoincrement
 			});
 		});
 	});
 
 	helper.debug("DATABASE CREATION SUCCESS");
+}
+
+function logSearch(query) {
+	console.log("BEGIN LOG QUERY");
+	console.log(query);
+	// id INT PRIMARY KEY,
+    // playerQuery VARCHAR(255),
+    // teamQuery VARCHAR(255),
+    // playerAtChecked BOOLEAN,
+    // playerHashChecked BOOLEAN,
+    // playerKeywordChecked BOOLEAN,
+    // teamAtChecked BOOLEAN,
+    // teamHashChecked BOOLEAN,
+    // teamKeywordChecked BOOLEAN,
+    // queryTimestamp TIMESTAMP
+
+	var playerQuery = query.player_query;
+	var teamQuery = query.team_query;
+
+	var playerAtChecked = query.handles_player;
+	var playerHashChecked = query.hashtag_player;
+	var playerKeywordChecked = query.keyword_player;
+
+	var teamAtChecked = query.handles_team;
+	var teamHashChecked = query.hashtag_team;
+	var teamKeywordChecked = query.keyword_team;
+
+	db.getConnection(function(err, connection) {
+		if (err) throw err;
+		connection.query(
+			"INSERT INTO previousSearches(playerQuery, teamQuery, playerAtChecked, playerHashChecked, playerKeywordChecked, teamAtChecked, teamHashChecked, teamKeywordChecked, queryTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())",
+			[playerQuery, teamQuery, 
+				playerAtChecked, playerHashChecked, playerKeywordChecked,
+				teamAtChecked, teamHashChecked, teamKeywordChecked],
+			function(error, results, fields) {
+				if (error) throw error;
+				console.log("LOG QUERY EXECUTED");
+				console.log(results);
+			});
+	});
 }
 
 function getTeams(name) {
@@ -44,6 +91,7 @@ createTable();
 // exports
 module.exports = {
 	db: db,
+	logSearch: logSearch,
 	getTeams: getTeams
 };
 
