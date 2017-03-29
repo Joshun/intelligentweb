@@ -10,13 +10,11 @@ var io      = require('socket.io')(server);
 var fs      = require('fs');
 
 var config  = require('./config.json');
-var client  = require('./client.js').T;
+var client  = require('./client.js');
 var db      = require('./storage.js');
 var helper  = require('./helper.js');
 
 // creates a connection to the Twitter API, such that data may be queried
-Twitter = require("./twitter.js");
-
 
 var port = process.env.PORT || 3000;
 
@@ -33,17 +31,10 @@ app.get('/test', test);
 
 io.of('/').on('connection', function(socket) {
   helper.info("Connection Created");
-  var query;
   socket.on('query', function(data) {
-
-    if (data.player_query.length == 0) {
-      query = data.team_query;
-    } else {
-      query = data.player_query;
-    }
     // TODO: OR is list query, AND is concatenating terms
- // client.get('search/tweets', { q: [data.player_query,        data.team_query], count: 100}, function(err, req, res) {
-    client.get('search/tweets', { q:  data.player_query + " " + data.team_query,  count: 100})
+ // client.get_tweets([data.player_query,        data.team_query])
+    client.get_tweets( data.player_query + " " + data.team_query )
       .then(function(tweets) {
   	    helper.info("QUERY PROCESSED");
 
@@ -56,7 +47,7 @@ io.of('/').on('connection', function(socket) {
 });
 
 function test(req, res) {
-  client.get('statuses/user_timeline', {screen_name: 'EndoMatrix', count: 1}, function(errors, tweets, response) {
+  client.T.get('statuses/user_timeline', {screen_name: 'EndoMatrix', count: 1}, function(errors, tweets, response) {
     if(errors) throw errors;
     console.log(tweets);
     res.redirect('/');
