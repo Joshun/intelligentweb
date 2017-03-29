@@ -38,6 +38,11 @@ io.of('/').on('connection', function(socket) {
     client.get_tweets([data.player_query + ' ' + data.team_query])
       .then(function(tweets) {
   	    helper.info("QUERY PROCESSED");
+        db.getPreviousSearches(data)
+          .then(function(data){
+            console.log("RECEIVED:");
+            console.log(data);
+          });
         db.logSearch(data);
   	    socket.emit('results', tweets.data); // TODO return results based on query
       })

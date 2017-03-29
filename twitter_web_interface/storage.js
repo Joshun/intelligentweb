@@ -37,42 +37,77 @@ function createTable() {
 }
 
 function logSearch(query) {
-	console.log("BEGIN LOG QUERY");
-	console.log(query);
-	// id INT PRIMARY KEY,
-    // playerQuery VARCHAR(255),
-    // teamQuery VARCHAR(255),
-    // playerAtChecked BOOLEAN,
-    // playerHashChecked BOOLEAN,
-    // playerKeywordChecked BOOLEAN,
-    // teamAtChecked BOOLEAN,
-    // teamHashChecked BOOLEAN,
-    // teamKeywordChecked BOOLEAN,
-    // queryTimestamp TIMESTAMP
+	return new Promise(function(resolve, reject){
+		console.log("BEGIN LOG QUERY");
+		console.log(query);
+		// id INT PRIMARY KEY,
+		// playerQuery VARCHAR(255),
+		// teamQuery VARCHAR(255),
+		// playerAtChecked BOOLEAN,
+		// playerHashChecked BOOLEAN,
+		// playerKeywordChecked BOOLEAN,
+		// teamAtChecked BOOLEAN,
+		// teamHashChecked BOOLEAN,
+		// teamKeywordChecked BOOLEAN,
+		// queryTimestamp TIMESTAMP
 
-	var playerQuery = query.player_query;
-	var teamQuery = query.team_query;
+		var playerQuery = query.player_query;
+		var teamQuery = query.team_query;
 
-	var playerAtChecked = query.handles_player;
-	var playerHashChecked = query.hashtag_player;
-	var playerKeywordChecked = query.keyword_player;
+		var playerAtChecked = query.handles_player;
+		var playerHashChecked = query.hashtag_player;
+		var playerKeywordChecked = query.keyword_player;
 
-	var teamAtChecked = query.handles_team;
-	var teamHashChecked = query.hashtag_team;
-	var teamKeywordChecked = query.keyword_team;
+		var teamAtChecked = query.handles_team;
+		var teamHashChecked = query.hashtag_team;
+		var teamKeywordChecked = query.keyword_team;
 
-	db.getConnection(function(err, connection) {
-		if (err) throw err;
-		connection.query(
-			"INSERT INTO previousSearches(playerQuery, teamQuery, playerAtChecked, playerHashChecked, playerKeywordChecked, teamAtChecked, teamHashChecked, teamKeywordChecked, queryTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())",
-			[playerQuery, teamQuery, 
-				playerAtChecked, playerHashChecked, playerKeywordChecked,
-				teamAtChecked, teamHashChecked, teamKeywordChecked],
-			function(error, results, fields) {
-				if (error) throw error;
-				console.log("LOG QUERY EXECUTED");
-				console.log(results);
-			});
+		db.getConnection(function(err, connection) {
+			if (err) throw err;
+			connection.query(
+				"INSERT INTO previousSearches(playerQuery, teamQuery, playerAtChecked, playerHashChecked, playerKeywordChecked, teamAtChecked, teamHashChecked, teamKeywordChecked, queryTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())",
+				[playerQuery, teamQuery, 
+					playerAtChecked, playerHashChecked, playerKeywordChecked,
+					teamAtChecked, teamHashChecked, teamKeywordChecked],
+				function(error, results, fields) {
+					if (error) reject(error);
+					console.log("LOG QUERY EXECUTED");
+					resolve(results);
+				});
+		});
+	});
+}
+
+function getPreviousSearches(query) {
+	return new Promise(function(resolve, reject) {
+
+		var playerQuery = query.player_query;
+		var teamQuery = query.team_query;
+
+		var playerAtChecked = query.handles_player;
+		var playerHashChecked = query.hashtag_player;
+		var playerKeywordChecked = query.keyword_player;
+
+		var teamAtChecked = query.handles_team;
+		var teamHashChecked = query.hashtag_team;
+		var teamKeywordChecked = query.keyword_team;
+
+		db.getConnection(function(err, connection) {
+			if (err) throw err;
+			connection.query(
+				// Query gets all previousSearches that match the parameters of the previous query and are recent enough
+				// DATE_SUB subtracts interval from current date
+				// BETWEEN gets queries between the time parameters
+				"SELECT(id) FROM previousSearches WHERE playerQuery=? AND teamQuery=? AND playerAtChecked=? AND playerHashChecked=? AND playerKeywordChecked=? AND teamAtChecked=? AND teamHashChecked=? AND teamKeywordChecked=? and queryTimestamp BETWEEN DATE_SUB(NOW(), INTERVAL 1 DAY) AND NOW() ",
+				[playerQuery, teamQuery, 
+					playerAtChecked, playerHashChecked, playerKeywordChecked,
+					teamAtChecked, teamHashChecked, teamKeywordChecked],
+				function(error, results, fields) {
+					if (error) reject(error);
+					console.log("HAS SEARCH BEEN MADE? " + ((results.length > 0) ? "yes" : "no"));
+					resolve(results);
+				});
+		});
 	});
 }
 
@@ -92,6 +127,7 @@ createTable();
 module.exports = {
 	db: db,
 	logSearch: logSearch,
+	getPreviousSearches: getPreviousSearches,
 	getTeams: getTeams
 };
 
