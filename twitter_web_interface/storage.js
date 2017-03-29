@@ -17,16 +17,16 @@ helper.info('DATABASE CONNECTED');
 
 function createTable() {
 	fs.readFile(config.storage.schema, 'utf8', function(err, data){
-		console.log("SQL: " + data);
+		helper.debug("SQL: " + data);
 		db.getConnection(function(err, connection) {
 			connection.query(data, function(error, results, fields) {
-				console.log("QUERY EXECUTED");
-				console.log(results);
+				helper.debug("QUERY EXECUTED");
+				helper.debug(results);
 			});
 		});
 	});
 
-	console.log("DATABASE CREATION SUCCESS");
+	helper.debug("DATABASE CREATION SUCCESS");
 }
 
 function getTeams(name) {

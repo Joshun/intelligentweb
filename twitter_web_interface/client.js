@@ -9,7 +9,7 @@ var T = new Twit({
   timeout_ms:           30000
 });
 
-var tweet_limit = 100;
+var tweet_limit = 300;
 
 function get_tweets(query) {
   return T.get('search/tweets', { q: query, count: tweet_limit });
@@ -20,7 +20,7 @@ function get_frequency_weekly(query) {
   var prev_date = new Date(curr_date)
       prev_date.setDate(curr_date.getDate() - 7);
 
-  console.log(curr_date, prev_date);
+  helper.info(curr_date, prev_date);
 
   return get_frequency(query, prev_date, curr_date);
 }
@@ -32,7 +32,7 @@ function get_frequency(query, prev, curr) {
 
   return get_tweets(query_string)
     .then(function(tweets) {
-      console.log(tweets.data.statuses)
+      helper.info(tweets.data.statuses)
       return tweets.data.statuses.length;
     })
     .catch(function(error) {
@@ -54,7 +54,6 @@ function get_data_padded(data, size) {
 }
 
 module.exports = {
-  Twit:                     Twit,
   T:                        T,
 
   get_tweets:               get_tweets,

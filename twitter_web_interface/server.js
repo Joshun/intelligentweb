@@ -20,7 +20,7 @@ var port = process.env.PORT || 3000;
 
 // specifies which port the server should be hosted on
 server.listen(port, function() {
-  console.log('Server listening on port %d', port);
+  helper.info('Server listening on port %d', port);
 });
 
 // allows paths to be defined relative to the public folder
@@ -34,7 +34,7 @@ io.of('/').on('connection', function(socket) {
   socket.on('query', function(data) {
     // TODO: OR is list query, AND is concatenating terms
  // client.get_tweets([data.player_query,        data.team_query])
-    client.get_tweets( data.player_query + " " + data.team_query )
+    client.get_tweets([data.player_query + ' ' + data.team_query])
       .then(function(tweets) {
   	    helper.info("QUERY PROCESSED");
 
@@ -49,15 +49,10 @@ io.of('/').on('connection', function(socket) {
 function test(req, res) {
   client.T.get('statuses/user_timeline', {screen_name: 'EndoMatrix', count: 1}, function(errors, tweets, response) {
     if(errors) throw errors;
-    console.log(tweets);
+    helper.info(tweets);
     res.redirect('/');
   });
 }
-
-// specifies which port the server should be hosted on
-server.listen(port, function() {
-  console.log('Server listening on port %d', port);
-});
 
 // retrieves the relevant file to render, or returns a 404 error if none exists
 app.all('*', function(req, res) {
