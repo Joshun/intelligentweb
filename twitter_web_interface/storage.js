@@ -21,14 +21,9 @@ function createTable() {
 		db.getConnection(function(err, connection) {
 			if (err) throw err;
 			connection.query(data, function(error, results, fields) {
-<<<<<<< f33c8f297fe80d68d0a7848d90e297629b2f45b5
-				helper.debug("QUERY EXECUTED");
-				helper.debug(results);
-=======
 				if (error) throw err;
-				console.log("CREATE QUERY EXECUTED");
-				console.log(results);
->>>>>>> Implement logSearch; Refine db schema with autoincrement
+				helper.debug("CREATE QUERY EXECUTED");
+				helper.debug(results);
 			});
 		});
 	});
@@ -75,6 +70,33 @@ function logSearch(query) {
 					resolve(results);
 				});
 		});
+	});
+}
+
+function storeTweetData(data, logPrimaryKey) {
+	return new Promise(function(resolve, reject){
+		console.log("START TWEET STORE:");
+		var resultsList = [];
+		var statuses = data.statuses;
+		console.log("length " + statuses.length);
+		for (var index=0; index<statuses.length; index++) {
+			(function(status,pos,len) {
+				db.getConnection(function(err, connection) {
+					if (err) reject(error);
+					connection.query(
+						"INSERT INTO tweets(tweetText, tweetTimestamp, previousSearchId) VALUES (?, ?, ?)",
+						[status.text, status.created_at, logPrimaryKey],
+						function(error, results, fields) {
+							if (error) reject(error);
+							console.log("TWEET SAVE QUERY EXECUTED");
+							resultsList.push(results);
+							if (pos == len-1) {
+								resolve(resultsList);
+							}
+						});
+				});
+			})(statuses[index],index,statuses.length);
+		}
 	});
 }
 
@@ -127,6 +149,7 @@ createTable();
 module.exports = {
 	db: db,
 	logSearch: logSearch,
+	storeTweetData: storeTweetData,
 	getPreviousSearches: getPreviousSearches,
 	getTeams: getTeams
 };

@@ -34,16 +34,28 @@ io.of('/').on('connection', function(socket) {
   helper.info("Connection Created");
   socket.on('query', function(data) {
     // TODO: OR is list query, AND is concatenating terms
- // client.get_tweets([data.player_query,        data.team_query])
-    client.get_tweets([data.player_query + ' ' + data.team_query])
-      .then(function(tweets) {
-  	    helper.info("QUERY PROCESSED");
-        db.getPreviousSearches(data)
+    db.getPreviousSearches(data)
           .then(function(data){
             console.log("RECEIVED:");
             console.log(data);
           });
-        db.logSearch(data);
+ // client.get_tweets([data.player_query,        data.team_query])          
+    client.get_tweets([data.player_query + ' ' + data.team_query])
+      .then(function(tweets) {
+  	    helper.info("QUERY PROCESSED");
+        db.logSearch(data)
+          .then(function(data){
+            console.log("LOG DONE");
+            console.log(data);
+            var primaryKey = data.insertId;
+            db.storeTweetData(tweets.data, primaryKey)
+              .catch(function(error) {
+                console.log(error);
+              })
+              .then(function(data) {
+                console.log(data);
+              });
+          });
   	    socket.emit('results', tweets.data); // TODO return results based on query
       })
       .catch(function(errors) {
