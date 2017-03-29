@@ -1,3 +1,5 @@
+var fs = require('fs');
+
 var config = require('./config.json');
 var helper = require('./helper.js');
 
@@ -7,7 +9,8 @@ var db  = require('mysql').createPool({
 	password:        config.storage.password,
 	database:        config.storage.database,
 	connectionLimit: 100,
-	debug:           false
+	debug:           false,
+	multipleStatements: true
 });
 
 helper.info('DATABASE CONNECTED');
@@ -18,72 +21,23 @@ helper.info('DATABASE CONNECTED');
 // });
 
 function createTable() {
-	var numConnect = 0;
-	var totalConnect = 4;
-
-	function checkCount(connection, total) {
-		numConnect++;
-		console.log(numConnect);
-		if (numConnect == total) {
-			console.log("DONE!");
-			connection.release();
-		}
-		else {
-			console.log("NOT YET.");
-		}
-	}
-
-	db.getConnection(function(err, connection) {
-		connection.query(
-			"CREATE TABLE IF NOT EXISTS players ("
-			+ " id INT PRIMARY KEY,"
-			+ " firstName VARCHAR(20),"
-			+ " lastName VARCHAR(20),"
-			+ " age TINYINT"
-			+ " )",
-		function(error, results, fields) {
-			if (err) throw err;
-			checkCount(connection, totalConnect);
-		});
-
-		connection.query(
-			"CREATE TABLE IF NOT EXISTS teams ("
-			+ " id INT PRIMARY KEY,"
-			+ " name VARCHAR(20),"
-			+ " league VARCHAR(20),"
-			+ " location VARCHAR(20)"
-			+ " )",
-		function(error, results, fields) {
-			if (err) throw err;
-			checkCount(connection, totalConnect);
-		});
-
-		connection.query(
-			"CREATE TABLE IF NOT EXISTS teamHandles ("
-			+ " id INT PRIMARY KEY,"
-			+ " handleType VARCHAR(5)," // @ or # tag
-			+ " handleText VARCHAR(20),"
-			+ " teamId INT,"
-			+ " FOREIGN KEY (teamId) REFERENCES teams(id)"
-			+ " )",
-		function(error, results, fields) {
-			if (err) throw err;
-			checkCount(connection, totalConnect);
-		});
-
-		connection.query(
-			"CREATE TABLE IF NOT EXISTS playerHandles ("
-			+ " id INT PRIMARY KEY,"
-			+ " handleType VARCHAR(5)," // @ or # tag
-			+ " handleText VARCHAR(20),"
-			+ " playerId INT,"
-			+ " FOREIGN KEY (playerId) REFERENCES players(id)"
-			+ " )",
-		function(error, results, fields) {
-			if (err) throw err;
-			checkCount(connection, totalConnect);
+	fs.readFile(config.storage.schema, 'utf8', function(err, data){
+		console.log("SQL: " + data);
+		db.getConnection(function(err, connection) {
+			connection.query(data, function(error, results, fields) {
+				console.log("QUERY EXECUTED");
+				console.log(results);
+			});
 		});
 	});
+
+	// db.getConnection(function(err, connection) {
+	// 	connection.query(
+	// 	function(error, results, fields) {
+	// 		if (err) throw err;
+	// 		checkCount(connection, totalConnect);
+	// 	});
+
 	console.log("DATABASE CREATION SUCCESS");
 }
 
