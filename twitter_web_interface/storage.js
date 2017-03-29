@@ -20,3 +20,10 @@ helper.info('DATABASE CONNECTED');
 module.exports = {
 	db: db
 }
+
+// SELECT player_handles.data, player_hashtag.data, player_keyword.data
+// 	FROM player_entries
+// 		INNER JOIN player_handles ON (player_entries.player_id = player_handles.player_id)
+// 		INNER JOIN player_hashtag ON (player_entries.player_id = player_hashtag.player_id)
+// 		INNER JOIN player_keyword ON (player_entries.player_id = player_keyword.player_id)
+// 	WHERE player_entries.firstname = "WAYNE" AND player_entries.surname = "ROONEY";
