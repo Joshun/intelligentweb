@@ -15,11 +15,6 @@ var db  = require('mysql').createPool({
 
 helper.info('DATABASE CONNECTED');
 
-// db.query('SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME LIKE \'%create%\'', function(err, row, res) {
-// 	if(err) throw err;
-// 	console.log(row);
-// });
-
 function createTable() {
 	fs.readFile(config.storage.schema, 'utf8', function(err, data){
 		console.log("SQL: " + data);
@@ -30,13 +25,6 @@ function createTable() {
 			});
 		});
 	});
-
-	// db.getConnection(function(err, connection) {
-	// 	connection.query(
-	// 	function(error, results, fields) {
-	// 		if (err) throw err;
-	// 		checkCount(connection, totalConnect);
-	// 	});
 
 	console.log("DATABASE CREATION SUCCESS");
 }
