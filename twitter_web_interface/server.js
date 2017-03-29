@@ -20,7 +20,7 @@ var port = process.env.PORT || 3000;
 
 // specifies which port the server should be hosted on
 server.listen(port, function() {
-  helper.info('Server listening on port %d', port);
+  helper.info('Server Listening on Port %d', port);
 });
 
 // allows paths to be defined relative to the public folder
@@ -36,11 +36,13 @@ io.of('/').on('connection', function(socket) {
  // client.get_tweets([data.player_query,        data.team_query])
     client.get_tweets([data.player_query + ' ' + data.team_query])
       .then(function(tweets) {
-  	    helper.info("QUERY PROCESSED");
+  	    helper.info("Query Received, Processing...");
+        helper.info("Query Processed");
 
   	    socket.emit('results', tweets.data); // TODO return results based on query
       })
       .catch(function(errors) {
+        helper.error("Invalid Query");
         throw errors;
       });
   });

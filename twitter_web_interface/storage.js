@@ -13,7 +13,7 @@ var db  = require('mysql').createPool({
 	multipleStatements: true
 });
 
-helper.info('DATABASE CONNECTED');
+helper.info('Database Connection Established');
 
 function createTable() {
 	fs.readFile(config.storage.schema, 'utf8', function(err, data){

@@ -28,7 +28,7 @@ function debug() {
 
 function info() {
   if(arguments) {
-    process.stdout.write('[INFO] ');
+    process.stdout.write('[INFO]  ');
     console.info.apply(console, arguments);
   }
   else {
@@ -38,7 +38,7 @@ function info() {
 
 function warn() {
   if(arguments) {
-    process.stdout.write('[WARN] ');
+    process.stdout.write('[WARN]  ');
     console.warn.apply(console, arguments);
   }
   else {
