@@ -68,10 +68,11 @@ io.of('/').on('connection', function(socket) {
   socket.on('query', function(query) {
     var query;
     if (query.or_Operator == true) {
-      query = query.player_query.concat(' OR ', query.team_query)}
-      else {
-        query = [query.player_query + ' ' + query.team_query]
-      }
+      query = query.player_query.concat(' OR ', query.team_query);
+    }
+    else {
+      query = [query.player_query + ' ' + query.team_query];
+    }
     tweets = client.get_tweets(query);
 
     tweets.then(function(reply) {
@@ -84,14 +85,14 @@ io.of('/').on('connection', function(socket) {
   });
 
   socket.on('error', function(error) {
-    helper.error('Socket Error: ', error)
+    helper.error('Socket Error: ', error);
     socket.destroy();
-  })
+  });
 
   socket.on('close', function(query) {
-    helper.info('Socket Closed')
+    helper.info('Socket Closed');
     if (stream) stream.stop();
-  })
+  });
 });
 
 // retrieves the relevant file to render, or returns a 404 error if none exists
