@@ -2,6 +2,7 @@
  * server.js
  */
 
+
 var express = require('express');
 var app     = express();
 
@@ -40,13 +41,39 @@ io.of('/').on('connection', function(socket) {
 
   socket.on('query', function(query) {
     // TODO: OR is list query, AND is concatenating terms
- // client.get_tweets([query.player_query,        query.team_query])
+
+    //////////////////////////////////
+    // db.getPreviousSearches(data) //
+    //   .then(function(data){
+    //     console.log("RECEIVED:");
+    //     console.log(data);
+    //   });
+    ////////////////////////////////
+
+ // tweets = client.get_tweets([query.player_query,        query.team_query])
     tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
 
     tweets.then(function(tweets) {
 	    helper.info("Tweets Update Received, Processing...");
-
       if (tweets.data.errors) throw tweets.data.errors;
+
+      ///////////////////////////////////////////////////
+      // db.logSearch(data)
+      //   .then(function(data){
+      //   console.log("LOG DONE");
+      //   console.log(data);
+      //       var primaryKey = data.insertId;
+      //       db.storeTweetData(tweets.data, primaryKey)
+      //         .catch(function(error) {
+      //           console.log(error);
+      //         })
+      //         .then(function(data) {
+      //           console.log(data);
+      //           console.log("STORED.");
+      //         });
+      //     });
+      ///////////////////////////////////////////////////
+
 	    socket.emit('reply_tweets', tweets.data); // TODO return results based on query
       helper.info("Tweets Update Complete");
 
