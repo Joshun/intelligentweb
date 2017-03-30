@@ -41,16 +41,16 @@ io.of('/').on('connection', function(socket) {
   socket.on('query', function(query) {
     // TODO: OR is list query, AND is concatenating terms
  // client.get_tweets([query.player_query,        query.team_query])
-    tweets = client.get_tweets([query.player_query + ' ' + query.team_query])
+    tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
 
     tweets.then(function(tweets) {
 	    helper.info("Tweets Update Received, Processing...");
 
-      if (tweets.errors) throw tweets.errors;
+      if (tweets.data.errors) throw tweets.data.errors;
 	    socket.emit('reply_tweets', tweets.data); // TODO return results based on query
       helper.info("Tweets Update Complete");
 
-      stream = client.get_stream([query.player_query + ' ' + query.team_query])
+      stream = client.get_stream([query.player_query + ' ' + query.team_query]);
 
       stream.on('tweet', function(stream) {
         helper.info("Stream Update Received, Processing...");
