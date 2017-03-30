@@ -54,6 +54,7 @@ io.of('/').on('connection', function(socket) {
               })
               .then(function(data) {
                 console.log(data);
+                console.log("STORED.");
               });
           });
   	    socket.emit('results', tweets.data); // TODO return results based on query

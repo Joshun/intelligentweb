@@ -33,8 +33,7 @@ function createTable() {
 
 function logSearch(query) {
 	return new Promise(function(resolve, reject){
-		console.log("BEGIN LOG QUERY");
-		console.log(query);
+		helper.debug("BEGIN LOG QUERY");
 		// id INT PRIMARY KEY,
 		// playerQuery VARCHAR(255),
 		// teamQuery VARCHAR(255),
@@ -66,7 +65,7 @@ function logSearch(query) {
 					teamAtChecked, teamHashChecked, teamKeywordChecked],
 				function(error, results, fields) {
 					if (error) reject(error);
-					console.log("LOG QUERY EXECUTED");
+					helper.debug("LOG QUERY EXECUTED");
 					resolve(results);
 				});
 		});
@@ -74,29 +73,38 @@ function logSearch(query) {
 }
 
 function storeTweetData(data, logPrimaryKey) {
+	
 	return new Promise(function(resolve, reject){
-		console.log("START TWEET STORE:");
-		var resultsList = [];
-		var statuses = data.statuses;
-		console.log("length " + statuses.length);
-		for (var index=0; index<statuses.length; index++) {
-			(function(status,pos,len) {
-				db.getConnection(function(err, connection) {
-					if (err) reject(error);
+		helper.debug("START TWEET STORE:");
+	
+		db.getConnection(function(err, connection) {
+			var statuses = data.statuses;
+			var promiseList = [];
+			for (var i=0; i<statuses.length; i++) {
+				var status = statuses[i];
+				// Convert RFC2822 to millisecond epoch, and then to second epoch
+				var timestamp = new Date(status.created_at).getTime() / 1000.0;
+				promiseList.push(new Promise(function(resolve, reject) {
 					connection.query(
-						"INSERT INTO tweets(tweetText, tweetTimestamp, previousSearchId) VALUES (?, ?, ?)",
-						[status.text, status.created_at, logPrimaryKey],
+						"INSERT INTO tweets(tweetText, tweetTimestamp, previousSearchId) VALUES (?, FROM_UNIXTIME(?), ?)",
+						[status.text, timestamp, logPrimaryKey],
 						function(error, results, fields) {
 							if (error) reject(error);
-							console.log("TWEET SAVE QUERY EXECUTED");
-							resultsList.push(results);
-							if (pos == len-1) {
-								resolve(resultsList);
+							else {
+								resolve(results);
 							}
-						});
-				});
-			})(statuses[index],index,statuses.length);
-		}
+					});
+				}));
+			}
+			Promise.all(promiseList)
+			.catch(function(error) {
+				reject(error);
+			})
+			.then(function(data) {
+				resolve(data);
+			});
+
+		});
 	});
 }
 
@@ -126,7 +134,7 @@ function getPreviousSearches(query) {
 					teamAtChecked, teamHashChecked, teamKeywordChecked],
 				function(error, results, fields) {
 					if (error) reject(error);
-					console.log("HAS SEARCH BEEN MADE? " + ((results.length > 0) ? "yes" : "no"));
+					helper.debug("HAS SEARCH BEEN MADE? " + ((results.length > 0) ? "yes" : "no"));
 					resolve(results);
 				});
 		});

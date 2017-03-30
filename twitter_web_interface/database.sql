@@ -61,4 +61,4 @@ CREATE TABLE IF NOT EXISTS tweets (
     previousSearchId INT,
     FOREIGN KEY(previousSearchId) REFERENCES previousSearches(id),
     PRIMARY KEY(id)
-);
+) CHARACTER SET='utf8mb4';
