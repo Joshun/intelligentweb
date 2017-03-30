@@ -2,6 +2,7 @@
  * server.js
  */
 
+
 var express = require('express');
 var app     = express();
 
@@ -10,28 +11,17 @@ var io      = require('socket.io')(server);
 var fs      = require('fs');
 
 var config  = require('./config.json');
-var client  = require('./client.js').T;
+var client  = require('./client.js');
 var db      = require('./storage.js');
 var helper  = require('./helper.js');
 
 // creates a connection to the Twitter API, such that data may be queried
-Twitter = require("./twitter.js");
-
-new Twitter().getFrequencyPastWeek("Henderson's Relish")
-  .then(function (result) {
-      console.log("success:");
-      console.log(result);
-  })
-  .catch(function(err) {
-    console.log("error:");
-    console.log(err);
-  });
 
 var port = process.env.PORT || 3000;
 
 // specifies which port the server should be hosted on
 server.listen(port, function() {
-  console.log('Server listening on port %d', port);
+  helper.info('Server listening on port %d', port);
 });
 
 // allows paths to be defined relative to the public folder
@@ -42,20 +32,31 @@ app.get('/test', test);
 
 io.of('/').on('connection', function(socket) {
   helper.info("Connection Created");
-  var query;
   socket.on('query', function(data) {
-
-    if (data.player_query.length == 0) {
-      query = data.team_query;
-    } else {
-      query = data.player_query;
-    }
     // TODO: OR is list query, AND is concatenating terms
- // client.get('search/tweets', { q: [data.player_query,        data.team_query], count: 100}, function(err, req, res) {
-    client.get('search/tweets', { q:  data.player_query + " " + data.team_query,  count: 100})
+    db.getPreviousSearches(data)
+          .then(function(data){
+            console.log("RECEIVED:");
+            console.log(data);
+          });
+ // client.get_tweets([data.player_query,        data.team_query])          
+    client.get_tweets([data.player_query + ' ' + data.team_query])
       .then(function(tweets) {
   	    helper.info("QUERY PROCESSED");
-
+        db.logSearch(data)
+          .then(function(data){
+            console.log("LOG DONE");
+            console.log(data);
+            var primaryKey = data.insertId;
+            db.storeTweetData(tweets.data, primaryKey)
+              .catch(function(error) {
+                console.log(error);
+              })
+              .then(function(data) {
+                console.log(data);
+                console.log("STORED.");
+              });
+          });
   	    socket.emit('results', tweets.data); // TODO return results based on query
       })
       .catch(function(errors) {
@@ -65,17 +66,12 @@ io.of('/').on('connection', function(socket) {
 });
 
 function test(req, res) {
-  client.get('statuses/user_timeline', {screen_name: 'EndoMatrix', count: 1}, function(errors, tweets, response) {
+  client.T.get('statuses/user_timeline', {screen_name: 'EndoMatrix', count: 1}, function(errors, tweets, response) {
     if(errors) throw errors;
-    console.log(tweets);
+    helper.info(tweets);
     res.redirect('/');
   });
 }
-
-// specifies which port the server should be hosted on
-server.listen(port, function() {
-  console.log('Server listening on port %d', port);
-});
 
 // retrieves the relevant file to render, or returns a 404 error if none exists
 app.all('*', function(req, res) {
