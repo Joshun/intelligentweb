@@ -20,7 +20,9 @@ function initialise() {
 
   // emits query data from the input form to the server
   $('#query_form').submit(function() {
-		$("#form_table td").remove();
+		$("#form_table tbody tr").remove();
+    socket.emit('close', "Form Data!");
+
   	socket.emit('query', {
   		player_query:   $('#player_query').val(), // input for player name (string)
   		handles_player: $('#handles_player').is(':checked'), // checkbox for player handles (boolean)

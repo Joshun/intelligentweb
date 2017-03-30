@@ -14,9 +14,14 @@ var client  = require('./client.js');
 var db      = require('./storage.js');
 var helper  = require('./helper.js');
 
-// creates a connection to the Twitter API, such that data may be queried
+var port    = process.env.PORT || 3000;
 
-var port = process.env.PORT || 3000;
+process.stdin.resume();
+
+process.on('SIGINT', function() {
+  helper.info("Program Terminated");
+  process.exit();
+});
 
 // specifies which port the server should be hosted on
 server.listen(port, function() {
@@ -41,6 +46,7 @@ io.of('/').on('connection', function(socket) {
     tweets.then(function(tweets) {
 	    helper.info("Tweets Update Received, Processing...");
 
+      if (tweets.errors) throw tweets.errors;
 	    socket.emit('reply_tweets', tweets.data); // TODO return results based on query
       helper.info("Tweets Update Complete");
 
@@ -71,7 +77,7 @@ io.of('/').on('connection', function(socket) {
   
   socket.on('close', function(query) {
     helper.info('Socket Closed')
-    stream.close();
+    if (stream) stream.stop();
   })
 });
 
