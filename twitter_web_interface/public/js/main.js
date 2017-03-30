@@ -48,9 +48,13 @@ function initialise() {
 
   socket.on('reply_stream', function(stream) {
     // write results into table
-    console.log(stream);
+    // console.log(stream);
 
     table = $('#form_table');
     table.prepend(resultToRow(stream));
+
+    while($("#form_table tr").length > 300) {
+      $("#form_table tr:last").remove();
+    }
   });
 }
