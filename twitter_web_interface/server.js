@@ -71,8 +71,6 @@ io.of('/').on('connection', function(socket) {
       throw error;
   };
 
-  helper.info("Connection Created");
-
   // callback function, stored here to preserve scope
   socket.on('query', function(query) {
     tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
@@ -88,6 +86,11 @@ io.of('/').on('connection', function(socket) {
       tweet_error(error);
     });
   });
+  
+  // terminates socket.io session if an error is encountered
+  socket.on('connect', function() {
+    helper.info("Connection Created");
+  })
   
   // terminates socket.io session if an error is encountered
   socket.on('error', function(error) {
