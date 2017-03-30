@@ -4,8 +4,8 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Twitter Web Interface</title>
-    <link href="../bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/style.css" rel="stylesheet">
+    <link  href="../bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link  href="../css/style.css" rel="stylesheet">
     <script src="../jquery-3.2.0-min/js/jquery-3.2.0.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="../js/main.js"></script>
@@ -14,65 +14,66 @@
 <body onload="initialise();">
   <div id="page_container">
     <div id="form_container">
-    <h1>Twitter Web Interface</h1>
-    <form id="query_form" class="form-group" action = "">
+      <h1>Twitter Web Interface</h1>
+      <form id="query_form" class="form-group" action = "">
 
-      <label for="player_query">Enter a Player Name:</label>
-      <div class="input-group">
-        <input type="text" class="form-control" name="player_query" id="player_query" placeholder="e.g. Wayne Rooney">
-        <span class="input-group-btn">
-          <input type="checkbox" class="hidden" id="handles_player" name="handles_player" checked>
-          <label for="handles_player" class="btn btn-default">@</label>
-          <input type="checkbox" class="hidden" id="hashtag_player" name="hashtag_player" checked>
-          <label for="hashtag_player" class="btn btn-default">#</label>
-          <input type="checkbox" class="hidden" id="keyword_player" name="keyword_player" checked>
-          <label for="keyword_player" class="btn btn-default">?</label>
-        </span>
+        <label for="player_query">Enter a Player Name:</label>
+        <div class="input-group">
+          <input type="text" class="form-control" name="player_query" id="player_query" placeholder="e.g. Wayne Rooney">
+          <span class="input-group-btn">
+            <input type="checkbox" class="hidden" id="handles_player" name="handles_player" checked>
+            <label for="handles_player" class="btn btn-default">@</label>
+            <input type="checkbox" class="hidden" id="hashtag_player" name="hashtag_player" checked>
+            <label for="hashtag_player" class="btn btn-default">#</label>
+            <input type="checkbox" class="hidden" id="keyword_player" name="keyword_player" checked>
+            <label for="keyword_player" class="btn btn-default">?</label>
+          </span>
+        </div>
+
+        <label for="team_query">Enter a Team Name:</label>
+        <div class="input-group col-10">
+          <input type="text" class="form-control" name="team_query" id="team_query" placeholder="e.g. Manchester United">
+          <span class="input-group-btn">
+            <input type="checkbox" class="hidden" id="handles_team" name="handles_team" checked>
+            <label for="handles_team" class="btn btn-default">@</label>
+            <input type="checkbox" class="hidden" id="hashtag_team" name="hashtag_team" checked>
+            <label for="hashtag_team" class="btn btn-default">#</label>
+            <input type="checkbox" class="hidden" id="keyword_team" name="keyword_team" checked>
+            <label for="keyword_team" class="btn btn-default">?</label>
+          </span>
+        </div>
+
+        <input type="submit" class="btn btn-default">
+        <!-- <div class="form-check">
+          <label for="queryteam" class="form-check-label">Team</label>
+          <input type="checkbox" class="form-check-input" name="queryteam" id="queryteam" value="true">
+        </div>
+        <div class="form-check">
+          <label for="queryplayer" class="form-check-label">Player</label>
+          <input type="checkbox" class="form-check-input" name="queryplayer" id="queryplayer" value="true">
+        </div>
+        <div class="form-check">
+          <label for="queryauthor" class="form-check-label">Author</label>
+          <input type="checkbox" class="form-check-input" name="queryauthor" id="queryauthor" value="true">
+        </div> -->
+      </form>
+
+      <div id="form_div">
+        <table id="form_table" class="table table-striped">
+          <thead>
+            <tr>
+              <th>Author</th>
+              <th>Author Twitter</th>
+              <th>Text</th>
+              <th>Time</th>
+              <th>Date</th>
+              <th>Tweet Link</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
       </div>
-
-      <label for="team_query">Enter a Team Name:</label>
-      <div class="input-group col-10">
-        <input type="text" class="form-control" name="team_query" id="team_query" placeholder="e.g. Manchester United">
-        <span class="input-group-btn">
-          <input type="checkbox" class="hidden" id="handles_team" name="handles_team" checked>
-          <label for="handles_team" class="btn btn-default">@</label>
-          <input type="checkbox" class="hidden" id="hashtag_team" name="hashtag_team" checked>
-          <label for="hashtag_team" class="btn btn-default">#</label>
-          <input type="checkbox" class="hidden" id="keyword_team" name="keyword_team" checked>
-          <label for="keyword_team" class="btn btn-default">?</label>
-        </span>
-      </div>
-
-      <input type="submit" class="btn btn-default">
-      <!-- <div class="form-check">
-        <label for="queryteam" class="form-check-label">Team</label>
-        <input type="checkbox" class="form-check-input" name="queryteam" id="queryteam" value="true">
-      </div>
-      <div class="form-check">
-        <label for="queryplayer" class="form-check-label">Player</label>
-        <input type="checkbox" class="form-check-input" name="queryplayer" id="queryplayer" value="true">
-      </div>
-      <div class="form-check">
-        <label for="queryauthor" class="form-check-label">Author</label>
-        <input type="checkbox" class="form-check-input" name="queryauthor" id="queryauthor" value="true">
-      </div> -->
-    </form>
-
-    <table id="resultsTable" class="table table-striped">
-      <thead>
-        <tr>
-          <th>Author</th>
-          <th>Author Twitter</th>
-          <th>Text</th>
-          <th>Time</th>
-          <th>Date</th>
-          <th>Tweet Link</th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-
     </div>
 
     <div id="live_container">

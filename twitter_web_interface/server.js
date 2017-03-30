@@ -27,28 +27,55 @@ server.listen(port, function() {
 app.use(express['static'](__dirname + '/public'));
 
 // retrieves the most recent tweet on a specified user's timeline, and outputs it on the console
-app.get('/test', test);
-
 io.of('/').on('connection', function(socket) {
-  helper.info("Connection Created");
-  socket.on('query', function(data) {
-    // TODO: OR is list query, AND is concatenating terms
- // client.get_tweets([data.player_query,        data.team_query])
-    client.get_tweets([data.player_query + ' ' + data.team_query])
-      .then(function(tweets) {
-  	    helper.info("Query Received, Processing...");
-        helper.info("Query Processed");
+  var tweets;
+  var stream;
 
-  	    socket.emit('results', tweets.data); // TODO return results based on query
-      })
-      .catch(function(errors) {
+  helper.info("Connection Created");
+
+  socket.on('query', function(query) {
+    // TODO: OR is list query, AND is concatenating terms
+ // client.get_tweets([query.player_query,        query.team_query])
+    tweets = client.get_tweets([query.player_query + ' ' + query.team_query])
+
+    tweets.then(function(tweets) {
+	    helper.info("Tweets Update Received, Processing...");
+
+	    socket.emit('reply_tweets', tweets.data); // TODO return results based on query
+      helper.info("Tweets Update Complete");
+
+      stream = client.get_stream([query.player_query + ' ' + query.team_query])
+
+      stream.on('tweet', function(stream) {
+        helper.info("Stream Update Received, Processing...");
+        socket.emit('reply_stream', stream); // TODO return results based on query
+        helper.info("Stream Update Complete");
+      });
+
+      stream.catch(function(errors) {
         helper.error("Invalid Query");
         throw errors;
       });
+    });
+
+    tweets.catch(function(errors) {
+      helper.error("Invalid Query");
+      throw errors;
+    });
   });
+  
+  socket.on('error', function(error) {
+    helper.error('Socket Error: ', error)
+    socket.destroy();
+  })
+  
+  socket.on('close', function(query) {
+    helper.info('Socket Closed')
+    stream.close();
+  })
 });
 
-function test(req, res) {
+function stream(req, res) {
   client.T.get('statuses/user_timeline', {screen_name: 'EndoMatrix', count: 1}, function(errors, tweets, response) {
     if(errors) throw errors;
     helper.info(tweets);
