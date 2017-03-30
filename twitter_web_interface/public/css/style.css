@@ -66,9 +66,7 @@ body {
     bottom: 0px;
     left: 0px;
     right: 0px;
-}
 
-#form_div table tbody {
     overflow-y: scroll;
 }
 
