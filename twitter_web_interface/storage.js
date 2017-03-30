@@ -128,7 +128,7 @@ function getPreviousSearches(query) {
 				// Query gets all previousSearches that match the parameters of the previous query and are recent enough
 				// DATE_SUB subtracts interval from current date
 				// BETWEEN gets queries between the time parameters
-				"SELECT(id) FROM previousSearches WHERE playerQuery=? AND teamQuery=? AND playerAtChecked=? AND playerHashChecked=? AND playerKeywordChecked=? AND teamAtChecked=? AND teamHashChecked=? AND teamKeywordChecked=? and queryTimestamp BETWEEN DATE_SUB(NOW(), INTERVAL 1 DAY) AND NOW() ",
+				"SELECT(id) FROM previousSearches WHERE playerQuery=? AND teamQuery=? AND playerAtChecked=? AND playerHashChecked=? AND playerKeywordChecked=? AND teamAtChecked=? AND teamHashChecked=? AND teamKeywordChecked=?",
 				[playerQuery, teamQuery, 
 					playerAtChecked, playerHashChecked, playerKeywordChecked,
 					teamAtChecked, teamHashChecked, teamKeywordChecked],
