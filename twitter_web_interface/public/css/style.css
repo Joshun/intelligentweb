@@ -1,18 +1,105 @@
+@-webkit-keyframes fadein {
+    from {
+        background-color: #CCFFCC;
+    }
+    to {
+        background-color: #F9F9F9;
+    }
+}
+
+@-moz-keyframes fadein {
+    from {
+        background-color: #CCFFCC;
+    }
+    to {
+        background-color: #F9F9F9;
+    }
+}
+
+@-ms-keyframes fadein {
+    from {
+        background-color: #CCFFCC;
+    }
+    to {
+        background-color: #F9F9F9;
+    }
+}
+
+@-o-keyframes fadein {
+    from {
+        background-color: #CCFFCC;
+    }
+    to {
+        background-color: #F9F9F9;
+    }
+}
+
+@keyframes fadein {
+    from {
+        background-color: #CCFFCC;
+    }
+    to {
+        background-color: #F9F9F9;
+    }
+}
+
+table tr td {  
+  -webkit-animation: fadein 2s linear 0s;
+     -moz-animation: fadein 2s linear 0s;
+      -ms-animation: fadein 2s linear 0s;
+       -o-animation: fadein 2s linear 0s;
+          animation: fadein 2s linear 0s;
+
+  max-width: 15%;
+}
+
 body {
   background-color: #209DFF;
   background-image: url("/media/congruent_pentagon.png");
   height: 100%;
 }
 
-#wrap {
-    width: 75%;
+#form_div {
+    position: absolute;
+
+    top: 240px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+
+    overflow-y: scroll;
+}
+
+#page_container {
     margin: 5vh auto 5vh auto;
-    background-color: white;
-    /*background-image: url("/images/circles-and-roundabouts.jpg");*/
     padding: 5px 10px 5px 10px;
+
+    width: 75%;
     height: 90vh;
+}
+
+#form_container {
+    position: relative;
+    width: 75%;
+    height: 100%;
+
+    margin: 0px 5px 0px 0px;
+
+    float: left;
+}
+
+#live_container {
+    height: 100%;
+    margin: 0px 0px 0px 5px;
+}
+
+#form_container, #live_container {
+    padding: 5px 10px 5px 10px;
+
+    background-color: white;
     border-radius: 5px;
-    overflow: auto;
+
+    overflow: hidden;
 }
 
 .hidden {

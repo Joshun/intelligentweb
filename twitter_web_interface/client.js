@@ -15,6 +15,10 @@ function get_tweets(query) {
   return T.get('search/tweets', { q: query, count: tweet_limit });
 }
 
+function get_stream(query) {
+  return T.stream('statuses/filter', { track: query });
+}
+
 function get_frequency_weekly(query) {
   var curr_date = new Date();
   var prev_date = new Date(curr_date)
@@ -57,6 +61,7 @@ module.exports = {
   T:                        T,
 
   get_tweets:               get_tweets,
+  get_stream:               get_stream,
   get_frequency_weekly:     get_frequency_weekly,
   get_frequency:            get_frequency
 }

@@ -15,63 +15,79 @@ var client  = require('./client.js');
 var db      = require('./storage.js');
 var helper  = require('./helper.js');
 
-// creates a connection to the Twitter API, such that data may be queried
+var port    = process.env.PORT || 3000;
 
-var port = process.env.PORT || 3000;
+process.stdin.resume();
+
+process.on('SIGINT', function() {
+  helper.info("Program Terminated");
+  process.exit();
+});
 
 // specifies which port the server should be hosted on
 server.listen(port, function() {
-  helper.info('Server listening on port %d', port);
+  helper.info('Server Listening on Port %d', port);
 });
 
 // allows paths to be defined relative to the public folder
 app.use(express['static'](__dirname + '/public'));
 
 // retrieves the most recent tweet on a specified user's timeline, and outputs it on the console
-app.get('/test', test);
-
 io.of('/').on('connection', function(socket) {
-  helper.info("Connection Created");
-  socket.on('query', function(data) {
-    // TODO: OR is list query, AND is concatenating terms
-    db.getPreviousSearches(data)
-          .then(function(data){
-            console.log("RECEIVED:");
-            console.log(data);
-          });
- // client.get_tweets([data.player_query,        data.team_query])          
-    client.get_tweets([data.player_query + ' ' + data.team_query])
-      .then(function(tweets) {
-  	    helper.info("QUERY PROCESSED");
-        db.logSearch(data)
-          .then(function(data){
-            console.log("LOG DONE");
-            console.log(data);
-            var primaryKey = data.insertId;
-            db.storeTweetData(tweets.data, primaryKey)
-              .catch(function(error) {
-                console.log(error);
-              })
-              .then(function(data) {
-                console.log(data);
-                console.log("STORED.");
-              });
-          });
-  	    socket.emit('results', tweets.data); // TODO return results based on query
-      })
-      .catch(function(errors) {
-        throw errors;
-      });
-  });
-});
+  var tweets;
+  var stream;
 
-function test(req, res) {
-  client.T.get('statuses/user_timeline', {screen_name: 'EndoMatrix', count: 1}, function(errors, tweets, response) {
-    if(errors) throw errors;
-    helper.info(tweets);
-    res.redirect('/');
+  var tweet_reply = function(reply, query) {
+    helper.info("Tweets Update Received, Processing...");
+    if (reply.data.errors) throw reply.data.errors;
+
+    socket.emit('reply_tweets', reply.data); // TODO return results based on query
+    helper.info("Tweets Update Complete");
+
+    stream = client.get_stream([query.player_query + ' ' + query.team_query]);
+
+    stream.on('tweet', function(reply) {
+      helper.info("Stream Update Received, Processing...");
+      socket.emit('reply_stream', reply); // TODO return results based on query
+      helper.info("Stream Update Complete");
+    });
+
+    stream.catch(function(error) {
+      helper.error("Invalid Query");
+      throw error;
+    });
+  };
+
+  var tweet_error = function(error) {
+      helper.error("Invalid Query");
+      throw error;
+  };
+
+  helper.info("Connection Created");
+
+  socket.on('query', function(query) {
+ // tweets = client.get_tweets([query.player_query,        query.team_query])
+    tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
+
+    tweets.then(function(reply) {
+      tweet_reply(reply, query);
+    });
+
+    tweets.catch(function(error) {
+      tweet_error(error);
+    });
   });
-}
+  
+  socket.on('error', function(error) {
+    helper.error('Socket Error: ', error)
+    socket.destroy();
+  })
+  
+  socket.on('close', function(query) {
+    helper.info('Socket Closed')
+    if (stream) stream.stop();
+  })
+});
 
 // retrieves the relevant file to render, or returns a 404 error if none exists
 app.all('*', function(req, res) {
