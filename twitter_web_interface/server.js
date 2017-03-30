@@ -37,63 +37,44 @@ io.of('/').on('connection', function(socket) {
   var tweets;
   var stream;
 
+  var tweet_reply = function(reply, query) {
+    helper.info("Tweets Update Received, Processing...");
+    if (reply.data.errors) throw reply.data.errors;
+
+    socket.emit('reply_tweets', reply.data); // TODO return results based on query
+    helper.info("Tweets Update Complete");
+
+    stream = client.get_stream([query.player_query + ' ' + query.team_query]);
+
+    stream.on('tweet', function(reply) {
+      helper.info("Stream Update Received, Processing...");
+      socket.emit('reply_stream', reply); // TODO return results based on query
+      helper.info("Stream Update Complete");
+    });
+
+    stream.catch(function(error) {
+      helper.error("Invalid Query");
+      throw error;
+    });
+  };
+
+  var tweet_error = function(error) {
+      helper.error("Invalid Query");
+      throw error;
+  };
+
   helper.info("Connection Created");
 
   socket.on('query', function(query) {
-    // TODO: OR is list query, AND is concatenating terms
-
-    //////////////////////////////////
-    // db.getPreviousSearches(data) //
-    //   .then(function(data){
-    //     console.log("RECEIVED:");
-    //     console.log(data);
-    //   });
-    ////////////////////////////////
-
  // tweets = client.get_tweets([query.player_query,        query.team_query])
     tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
 
-    tweets.then(function(tweets) {
-	    helper.info("Tweets Update Received, Processing...");
-      if (tweets.data.errors) throw tweets.data.errors;
-
-      ///////////////////////////////////////////////////
-      // db.logSearch(data)
-      //   .then(function(data){
-      //   console.log("LOG DONE");
-      //   console.log(data);
-      //       var primaryKey = data.insertId;
-      //       db.storeTweetData(tweets.data, primaryKey)
-      //         .catch(function(error) {
-      //           console.log(error);
-      //         })
-      //         .then(function(data) {
-      //           console.log(data);
-      //           console.log("STORED.");
-      //         });
-      //     });
-      ///////////////////////////////////////////////////
-
-	    socket.emit('reply_tweets', tweets.data); // TODO return results based on query
-      helper.info("Tweets Update Complete");
-
-      stream = client.get_stream([query.player_query + ' ' + query.team_query]);
-
-      stream.on('tweet', function(stream) {
-        helper.info("Stream Update Received, Processing...");
-        socket.emit('reply_stream', stream); // TODO return results based on query
-        helper.info("Stream Update Complete");
-      });
-
-      stream.catch(function(errors) {
-        helper.error("Invalid Query");
-        throw errors;
-      });
+    tweets.then(function(reply) {
+      tweet_reply(reply, query);
     });
 
-    tweets.catch(function(errors) {
-      helper.error("Invalid Query");
-      throw errors;
+    tweets.catch(function(error) {
+      tweet_error(error);
     });
   });
   
@@ -107,14 +88,6 @@ io.of('/').on('connection', function(socket) {
     if (stream) stream.stop();
   })
 });
-
-function stream(req, res) {
-  client.T.get('statuses/user_timeline', {screen_name: 'EndoMatrix', count: 1}, function(errors, tweets, response) {
-    if(errors) throw errors;
-    helper.info(tweets);
-    res.redirect('/');
-  });
-}
 
 // retrieves the relevant file to render, or returns a 404 error if none exists
 app.all('*', function(req, res) {

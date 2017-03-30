@@ -4,12 +4,11 @@
 
 function resultToRow(tweet) {
 	row = "<tr>"
-    	+   "<td>" + tweet["user"].screen_name + "</td>"
-    	+   "<td> <a href=" + "https://twitter.com/" + tweet["user"].screen_name + "> Author Link </a>  </td>"
+    	+   "<td><a href=" + "https://twitter.com/" + tweet["user"].screen_name + ">@" + tweet["user"].screen_name + "</a></td>"
     	+   "<td>" + tweet["text"] + "</td>"
     	+   "<td>" + tweet["created_at"].substring(11,19) + "</td>"
     	+   "<td>" + tweet["created_at"].substring(0,10) + "</td>"
-    	+   "<td> <a href=" + "https://twitter.com/statuses/" + tweet.id_str + "> Tweet Link </a>  </td>"
+    	+   "<td> <a href=" + "https://twitter.com/statuses/" + tweet.id_str + ">link</a></td>"
     	+ "</tr>";
 
 	return row;
