@@ -154,36 +154,6 @@ io.of('/').on('connection', function(socket) {
           tweet_reply(reply, query);
         });
 
-// <<<<<<< 77d2ac36de06d3726d891feef9498de850d37862
-//           })
-//           .then(function(data) {
-//             helper.debug("LOG: ");
-//             console.log(data);
-//             // helper.debug("REPLY: ");
-//             // console.log(reply);
-//             db.storeTweetData(reply.data, data.insertId);
-//           });
-//         tweet_reply(reply, query);
-//       });
-// <<<<<<< aa2af0857fb1edd8827427e72dc30fa42d19926b
-//       // TODO: send saved tweets back to client
-
-//     tweets = client.get_tweets(db.generate_query(query) + ' -filter:retweets');
-//  // tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
-//  // tweets = client.get_tweets([query.player_query,        query.team_query]);
-
-//  	// generates socket.io emission to webpage with tweets
-//     tweets.then(function(reply) {
-//       tweet_reply(reply, query);
-//     });
-
-//     // generates an error if the query is valid
-//     tweets.catch(function(error) {
-//       tweet_error(error);
-//     });
-//   });
-
-// =======
         // generates an error if the query is valid
         tweets.catch(function(error) {
           tweet_error(error);
