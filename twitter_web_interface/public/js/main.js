@@ -2,15 +2,15 @@
  * main.js
  */
 
+// passes results into table
 function resultToRow(tweet) {
 	row = "<tr>"
-    	+   "<td><a href=" + "https://twitter.com/" + tweet["user"].screen_name + ">@" + tweet["user"].screen_name + "</a></td>"
+    	+   "<td><a href=" + "https://twitter.com/" + tweet["user"].screen_name + ">@" + tweet["user"].screen_name + "</a></td>" // adds link for user
     	+   "<td>" + tweet["text"] + "</td>"
     	+   "<td>" + tweet["created_at"].substring(11,19) + "</td>"
     	+   "<td>" + tweet["created_at"].substring(0,10) + "</td>"
-    	+   "<td> <a href=" + "https://twitter.com/statuses/" + tweet.id_str + ">link</a></td>"
+    	+   "<td> <a href=" + "https://twitter.com/statuses/" + tweet.id_str + ">link</a></td>" // adds link for original tweet
     	+ "</tr>";
-
 	return row;
 }
 
@@ -42,18 +42,16 @@ function initialise() {
 
   	table = $('#form_table');
   	for (var i = 0; i < tweets.statuses.length; i++) {
-  		//console.log(resultToRow(results.statuses[i]));
   		table.append(resultToRow(tweets.statuses[i]));
     }
   });
 
   socket.on('reply_stream', function(stream) {
     // write results into table
-    // console.log(stream);
-
     table = $('#form_table');
     table.prepend(resultToRow(stream));
 
+		//limits table size
     while($("#form_table tr").length > 300) {
       $("#form_table tr:last").remove();
     }
