@@ -153,10 +153,10 @@ function generate_query(query) {
     var tweet_query;
 
     if (query.or_operator) {
-      tweet_query = [query.player_query + ' OR ' + query.team_query];
+      tweet_query = query.player_query + ' OR ' + query.team_query;
   	}
     else {
-      tweet_query = [query.player_query + ' '    + query.team_query];
+      tweet_query = query.player_query + ' '    + query.team_query;
     }
 
     return tweet_query;

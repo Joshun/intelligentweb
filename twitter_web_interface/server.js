@@ -49,7 +49,8 @@ io.of('/').on('connection', function(socket) {
     helper.info("Tweets Update Complete");
 
     // generates connection to twitter stream, and listens for tweets
-    stream = client.get_stream([query.player_query + ' ' + query.team_query]);
+    console.log(db.generate_query(query));
+    stream = client.get_stream(db.generate_query(query).replace(' OR ', ','));
 
     // generates socket.io emission to webpage with live tweets
     stream.on('tweet', function(reply) {
