@@ -24,6 +24,8 @@ function createTable() {
 				if (error) throw err;
 				helper.debug("CREATE QUERY EXECUTED");
 				helper.debug(results);
+
+				connection.release();
 			});
 		});
 	});
@@ -60,23 +62,25 @@ function logSearch(query) {
 			if (err) throw err;
 			connection.query(
 				"INSERT INTO previousSearches(playerQuery, teamQuery, playerAtChecked, playerHashChecked, playerKeywordChecked, teamAtChecked, teamHashChecked, teamKeywordChecked, queryTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())",
-				[playerQuery, teamQuery, 
+				[playerQuery, teamQuery,
 					playerAtChecked, playerHashChecked, playerKeywordChecked,
 					teamAtChecked, teamHashChecked, teamKeywordChecked],
 				function(error, results, fields) {
 					if (error) reject(error);
 					helper.debug("LOG QUERY EXECUTED");
 					resolve(results);
+
+					connection.release();
 				});
 		});
 	});
 }
 
 function storeTweetData(data, logPrimaryKey) {
-	
+
 	return new Promise(function(resolve, reject){
 		helper.debug("START TWEET STORE:");
-	
+
 		db.getConnection(function(err, connection) {
 			var statuses = data.statuses;
 			var promiseList = [];
@@ -92,6 +96,8 @@ function storeTweetData(data, logPrimaryKey) {
 							if (error) reject(error);
 							else {
 								resolve(results);
+
+								connection.release();
 							}
 					});
 				}));
@@ -128,14 +134,15 @@ function getPreviousSearches(query) {
 				// Query gets all previousSearches that match the parameters of the previous query and are recent enough
 				// DATE_SUB subtracts interval from current date
 				// BETWEEN gets queries between the time parameters
-				"SELECT(id) FROM previousSearches WHERE playerQuery=? AND teamQuery=? AND playerAtChecked=? AND playerHashChecked=? AND playerKeywordChecked=? AND teamAtChecked=? AND teamHashChecked=? AND teamKeywordChecked=? and queryTimestamp BETWEEN DATE_SUB(NOW(), INTERVAL 1 DAY) AND NOW() ",
-				[playerQuery, teamQuery, 
+				"SELECT * FROM previousSearches WHERE playerQuery=? AND teamQuery=? AND playerAtChecked=? AND playerHashChecked=? AND playerKeywordChecked=? AND teamAtChecked=? AND teamHashChecked=? AND teamKeywordChecked=?",
+				[playerQuery, teamQuery,
 					playerAtChecked, playerHashChecked, playerKeywordChecked,
 					teamAtChecked, teamHashChecked, teamKeywordChecked],
 				function(error, results, fields) {
 					if (error) reject(error);
-					helper.debug("HAS SEARCH BEEN MADE? " + ((results.length > 0) ? "yes" : "no"));
 					resolve(results);
+
+					connection.release();
 				});
 		});
 	});
@@ -162,6 +169,14 @@ function generate_query(query) {
     return tweet_query;
 }
 
+function savedTweetToWeb(tweet) {
+	var tweet = {
+		text: tweet.tweetText,
+		created_at: tweet.tweetTimestamp,
+		user: { screen_name: "testScreenName"},
+		id_str: "http://www.twitter.com"
+	};
+}
 
 // init
 createTable();
@@ -174,7 +189,8 @@ module.exports = {
 	getPreviousSearches: getPreviousSearches,
 	getTeams: getTeams,
 
-	generate_query: generate_query
+	generate_query: generate_query,
+	savedTweetToWeb: savedTweetToWeb
 };
 
 // SELECT player_handles.data, player_hashtag.data, player_keyword.data

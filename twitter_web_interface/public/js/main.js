@@ -2,6 +2,7 @@
  * main.js
  */
 
+// passes results into table
 function resultToRow(tweet) {
 	row = "<tr>"
     	+   "<td width=\"10%\"><a href=" + "https://twitter.com/" + tweet["user"].screen_name + ">@" + tweet["user"].screen_name + "</a></td>"
@@ -10,7 +11,6 @@ function resultToRow(tweet) {
     	+   "<td width=\"15%\">" + tweet["created_at"].substring(0,10) + "</td>"
     	+   "<td width=\"10%\"> <a href=" + "https://twitter.com/statuses/" + tweet.id_str + ">link</a></td>"
     	+ "</tr>";
-
 	return row;
 }
 
@@ -27,7 +27,7 @@ function initialise() {
   		handles_player: $('#handles_player').is(':checked'), // checkbox for player handles (boolean)
   		hashtag_player: $('#hashtag_player').is(':checked'), // checkbox for player hashtag (boolean)
   		keyword_player: $('#keyword_player').is(':checked'), // checkbox for player keyword (boolean)
-			or_operator:    $('#or_operator').is(':checked'), // checkbox for searching player OR team
+			// or_operator:    $('#or_operator').is(':checked'), // checkbox for searching player OR team
   		team_query:     $('#team_query').val(), // input for team name (string)
   		handles_team:   $('#handles_team').is(':checked'), // checkbox for team handles (boolean)
   		hashtag_team:   $('#hashtag_team').is(':checked'), // checkbox for team hashtag (boolean)
@@ -42,18 +42,16 @@ function initialise() {
 
   	table = $('#form_table');
   	for (var i = 0; i < tweets.statuses.length; i++) {
-  		//console.log(resultToRow(results.statuses[i]));
   		table.append(resultToRow(tweets.statuses[i]));
     }
   });
 
   socket.on('reply_stream', function(stream) {
     // write results into table
-    // console.log(stream);
-
     table = $('#form_table');
     table.prepend(resultToRow(stream));
 
+		//limits table size
     while($("#form_table tr").length > 300) {
       $("#form_table tr:last").remove();
     }
