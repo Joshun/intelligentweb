@@ -1,0 +1,4 @@
+# Look, Sir! Droids!
+
+User-Agent: *
+Allow: /
