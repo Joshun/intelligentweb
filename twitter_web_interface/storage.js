@@ -96,17 +96,17 @@ function storeTweetData(data, logPrimaryKey) {
 							if (error) reject(error);
 							else {
 								resolve(results);
-
-								connection.release();
 							}
 					});
 				}));
 			}
 			Promise.all(promiseList)
 			.catch(function(error) {
+				connection.release();
 				reject(error);
 			})
 			.then(function(data) {
+				connection.release();
 				resolve(data);
 			});
 

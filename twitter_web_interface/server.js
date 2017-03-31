@@ -82,8 +82,9 @@ io.of('/').on('connection', function(socket) {
       if (data.length > 0) {
         // for now, just use the first previous search if present
         previousSearch = data[0];
-        helper.info("USING PREVIOUS SEARCH:");
-        helper.info(previousSearch);
+        helper.info("USING PREVIOUS SEARCH");
+        helper.debug("Retrieved:");
+        helper.debug(previousSearch);
 
         var prev_tweet;
         helper.info("GETTING PREVIOUS TWEETS...");
