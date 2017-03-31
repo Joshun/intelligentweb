@@ -90,7 +90,7 @@ io.of('/').on('connection', function(socket) {
       });
       // TODO: send saved tweets back to client
 
-    tweets = client.get_tweets(db.generate_query(query + ' -filter:retweets'));
+    tweets = client.get_tweets(db.generate_query(query) + ' -filter:retweets');
  // tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
  // tweets = client.get_tweets([query.player_query,        query.team_query]);
 
