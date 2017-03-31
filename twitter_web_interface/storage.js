@@ -128,13 +128,12 @@ function getPreviousSearches(query) {
 				// Query gets all previousSearches that match the parameters of the previous query and are recent enough
 				// DATE_SUB subtracts interval from current date
 				// BETWEEN gets queries between the time parameters
-				"SELECT(id) FROM previousSearches WHERE playerQuery=? AND teamQuery=? AND playerAtChecked=? AND playerHashChecked=? AND playerKeywordChecked=? AND teamAtChecked=? AND teamHashChecked=? AND teamKeywordChecked=?",
+				"SELECT * FROM previousSearches WHERE playerQuery=? AND teamQuery=? AND playerAtChecked=? AND playerHashChecked=? AND playerKeywordChecked=? AND teamAtChecked=? AND teamHashChecked=? AND teamKeywordChecked=?",
 				[playerQuery, teamQuery, 
 					playerAtChecked, playerHashChecked, playerKeywordChecked,
 					teamAtChecked, teamHashChecked, teamKeywordChecked],
 				function(error, results, fields) {
 					if (error) reject(error);
-					helper.debug("HAS SEARCH BEEN MADE? " + ((results.length > 0) ? "yes" : "no"));
 					resolve(results);
 				});
 		});
@@ -162,6 +161,14 @@ function generate_query(query) {
     return tweet_query;
 }
 
+function savedTweetToWeb(tweet) {
+	var tweet = {
+		text: tweet.tweetText,
+		created_at: tweet.tweetTimestamp,
+		user: { screen_name: "testScreenName"},
+		id_str: "http://www.twitter.com"
+	};
+}
 
 // init
 createTable();
@@ -174,7 +181,8 @@ module.exports = {
 	getPreviousSearches: getPreviousSearches,
 	getTeams: getTeams,
 
-	generate_query: generate_query
+	generate_query: generate_query,
+	savedTweetToWeb: savedTweetToWeb
 };
 
 // SELECT player_handles.data, player_hashtag.data, player_keyword.data

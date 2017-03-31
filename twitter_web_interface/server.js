@@ -73,6 +73,22 @@ io.of('/').on('connection', function(socket) {
 
   // callback function, stored here to preserve scope
   socket.on('query', function(query) {
+    db.getPreviousSearches(query)
+      .then(function(data) {
+        helper.info("PREVIOUS SEARCHES: " + (data.length > 0  ? "yes" : "no"));
+        helper.info("PREVIOUS SEARCHES:");
+        helper.info(data);
+
+        var prevTweets = [];
+        for (var i=0; i<data.length; i++) {
+          prevTweets.push(db.savedTweetToWeb(data[i]));
+        }
+      })
+      .catch(function(error) {
+
+      });
+      // TODO: send saved tweets back to client
+
     tweets = client.get_tweets(db.generate_query(query));
  // tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
  // tweets = client.get_tweets([query.player_query,        query.team_query]);
@@ -91,7 +107,7 @@ io.of('/').on('connection', function(socket) {
   // terminates socket.io session if an error is encountered
   socket.on('connect', function() {
     helper.info("Connection Created");
-  })
+  });
   
   // terminates socket.io session if an error is encountered
   socket.on('error', function(error) {
