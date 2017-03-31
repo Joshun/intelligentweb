@@ -20,6 +20,10 @@ Twitter.prototype.getTweets = function(keywords) {
   return this.T.get('search/tweets', {q: keywords, count: this.TWEET_LIMIT});
 };
 
+Twitter.prototype.getTimeline = function(user){
+  return this.T.get('statuses/user_timeline', {screen_name: user});
+}
+
 Twitter.prototype.getFrequencyPastWeek = function(term) {
   console.log("getFrequencyPastWeek()");
   var currentDate = new Date();
@@ -39,7 +43,7 @@ Twitter.prototype.padLeading = function(num, width) {
 Twitter.prototype.formatDate = function(date) {
   return date.getFullYear() + "-" + this.padLeading(date.getMonth()+1, 2) + "-" + this.padLeading(date.getDate(), 2);
 };
- 
+
 Twitter.prototype.getFrequencyBetween = function(term, dateStart, dateEnd) {
   console.log("getFrequencyBetween("+dateStart+","+dateEnd+")");
 
