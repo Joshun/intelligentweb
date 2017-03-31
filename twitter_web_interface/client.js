@@ -16,11 +16,11 @@ function get_tweets(query) {
 }
 
 function get_stream(query) {
-  return T.stream('statuses/filter', { track: query });
+  return T.stream('statuses/filter', { track: query});
 }
 
 function get_timeline(user){
-  return T.get('statuses/user_timeline', {screen_name: user, count:this.TWEET_LIMIT, exlude_replies=true});
+  return T.get('statuses/user_timeline', {screen_name: user, count:this.TWEET_LIMIT});
 }
 
 function get_frequency_weekly(query) {
