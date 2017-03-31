@@ -50,7 +50,7 @@ io.of('/').on('connection', function(socket) {
 
     // generates connection to twitter stream, and listens for tweets
     console.log(db.generate_query(query));
-    stream = client.get_stream(db.generate_query(query).replace(' OR ', ','));
+    stream = client.get_stream(db.generate_query(query).replace(' OR ', ', '));
 
     // generates socket.io emission to webpage with live tweets
     stream.on('tweet', function(reply) {
@@ -74,7 +74,23 @@ io.of('/').on('connection', function(socket) {
 
   // callback function, stored here to preserve scope
   socket.on('query', function(query) {
-    tweets = client.get_tweets(db.generate_query(query));
+    db.getPreviousSearches(query)
+      .then(function(data) {
+        helper.info("PREVIOUS SEARCHES: " + (data.length > 0  ? "yes" : "no"));
+        helper.info("PREVIOUS SEARCHES:");
+        helper.info(data);
+
+        var prevTweets = [];
+        for (var i=0; i<data.length; i++) {
+          prevTweets.push(db.savedTweetToWeb(data[i]));
+        }
+      })
+      .catch(function(error) {
+
+      });
+      // TODO: send saved tweets back to client
+
+    tweets = client.get_tweets(db.generate_query(query + ' -filter:retweets'));
  // tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
  // tweets = client.get_tweets([query.player_query,        query.team_query]);
 
@@ -88,12 +104,12 @@ io.of('/').on('connection', function(socket) {
       tweet_error(error);
     });
   });
-  
+
   // terminates socket.io session if an error is encountered
   socket.on('connect', function() {
     helper.info("Connection Created");
-  })
-  
+  });
+
   // terminates socket.io session if an error is encountered
   socket.on('error', function(error) {
     helper.error('Socket Error: ', error);
