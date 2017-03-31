@@ -148,6 +148,22 @@ function getPreviousSearches(query) {
 	});
 }
 
+function getPreviousTweets(prevSearchId) {
+	return new Promise(function(resolve, reject) {
+		db.getConnection(function(err, connection) {
+			if (err) reject(err);
+			connection.query(
+				"SELECT * from tweets WHERE previousSearchId = ?",
+				[prevSearchId],
+				function(error, results, fields) {
+					if (error) reject(error);
+					resolve(results);
+				}
+			);
+		});
+	});
+}
+
 function getTeams(name) {
 	db.query("SELECT * FROM teams WHERE name = ?", [name]);
 }
@@ -170,7 +186,7 @@ function generate_query(query) {
 }
 
 function savedTweetToWeb(tweet) {
-	var tweet = {
+	return {
 		text: tweet.tweetText,
 		created_at: tweet.tweetTimestamp,
 		user: { screen_name: "testScreenName"},
@@ -187,6 +203,7 @@ module.exports = {
 	logSearch: logSearch,
 	storeTweetData: storeTweetData,
 	getPreviousSearches: getPreviousSearches,
+	getPreviousTweets: getPreviousTweets,
 	getTeams: getTeams,
 
 	generate_query: generate_query,
