@@ -37,57 +37,69 @@ io.of('/').on('connection', function(socket) {
   var tweets;
   var stream;
 
+  // callback function, stored here to preserve scope
   var tweet_reply = function(reply, query) {
     helper.info("Tweets Update Received, Processing...");
-    if (reply.data.errors) throw reply.data.errors;
+    if (reply.data.errors) {
+    	throw reply.data.errors; // if reply object is an error, abort.
+    	return;
+    }
 
-    socket.emit('reply_tweets', reply.data); // TODO return results based on query
+    socket.emit('reply_tweets', reply.data);
     helper.info("Tweets Update Complete");
 
+    // generates connection to twitter stream, and listens for tweets
     stream = client.get_stream([query.player_query + ' ' + query.team_query]);
 
+    // generates socket.io emission to webpage with live tweets
     stream.on('tweet', function(reply) {
       helper.info("Stream Update Received, Processing...");
-      socket.emit('reply_stream', reply); // TODO return results based on query
+      socket.emit('reply_stream', reply);
       helper.info("Stream Update Complete");
     });
 
+    // generates an error if the query is invalid
     stream.catch(function(error) {
       helper.error("Invalid Query");
       throw error;
     });
   };
 
+  // callback function, stored here to preserve scope
   var tweet_error = function(error) {
       helper.error("Invalid Query");
       throw error;
   };
 
-  helper.info("Connection Created");
-
+  // callback function, stored here to preserve scope
   socket.on('query', function(query) {
-    var query;
-    if (query.or_Operator == true) {
-      query = query.player_query.concat(' OR ', query.team_query)}
-      else {
-        query = [query.player_query + ' ' + query.team_query]
-      }
-    tweets = client.get_tweets(query);
+    tweets = client.get_tweets(db.generate_query(query));
+ // tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
+ // tweets = client.get_tweets([query.player_query,        query.team_query]);
 
+ 	// generates socket.io emission to webpage with tweets
     tweets.then(function(reply) {
       tweet_reply(reply, query);
     });
 
+    // generates an error if the query is valid
     tweets.catch(function(error) {
       tweet_error(error);
     });
   });
-
+  
+  // terminates socket.io session if an error is encountered
+  socket.on('connect', function() {
+    helper.info("Connection Created");
+  })
+  
+  // terminates socket.io session if an error is encountered
   socket.on('error', function(error) {
     helper.error('Socket Error: ', error)
     socket.destroy();
   })
 
+  // terminates stream session if the socket is closed
   socket.on('close', function(query) {
     helper.info('Socket Closed')
     if (stream) stream.stop();
@@ -98,7 +110,7 @@ io.of('/').on('connection', function(socket) {
 app.all('*', function(req, res) {
   fs.exists(req.path, function(exists) {
     if (exists) {
-      res.render(req.path);
+      res.render(req.path); // renders static pages found in the public file structure
     }
     else {
       req.error = req.path + '404 File not found';

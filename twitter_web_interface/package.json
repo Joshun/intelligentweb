@@ -4,10 +4,11 @@
   "description": "football twitter web interface for intelligent web",
   "main": "server.js",
   "dependencies": {
+    "chart.js": "^2.5.0",
     "express": "^4.15.2",
+    "mysql": "^2.10.1",
     "socket.io": "^1.7.3",
-    "twit": "^2.2.5",
-    "mysql": "^2.10.1"
+    "twit": "^2.2.5"
   },
   "devDependencies": {
     "eslint": "^3.18.0"

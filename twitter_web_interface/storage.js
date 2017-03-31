@@ -149,6 +149,19 @@ function getPlayers(name) {
 	db.query("SELECT * FROM players WHERE name = ?", [name]);
 }
 
+function generate_query(query) {
+    var tweet_query;
+
+    if (query.or_operator) {
+      tweet_query = [query.player_query + ' OR ' + query.team_query];
+  	}
+    else {
+      tweet_query = [query.player_query + ' '    + query.team_query];
+    }
+
+    return tweet_query;
+}
+
 
 // init
 createTable();
@@ -159,7 +172,9 @@ module.exports = {
 	logSearch: logSearch,
 	storeTweetData: storeTweetData,
 	getPreviousSearches: getPreviousSearches,
-	getTeams: getTeams
+	getTeams: getTeams,
+
+	generate_query: generate_query
 };
 
 // SELECT player_handles.data, player_hashtag.data, player_keyword.data
