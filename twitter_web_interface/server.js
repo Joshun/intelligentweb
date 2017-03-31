@@ -74,94 +74,98 @@ io.of('/').on('connection', function(socket) {
 
   // callback function, stored here to preserve scope
   socket.on('query', function(query) {
-    db.getPreviousSearches(query)
-      .then(function(data) {
-        helper.info("PREVIOUS SEARCHES: " + (data.length > 0  ? "yes" : "no"));
-        // helper.info("PREVIOUS SEARCHES:");
-        // helper.info(data);
-        // helper.info(data[0]);
+    var prev_query = db.getPreviousSearches(query);
 
+    prev_query.then(function(data) {
+      helper.info("PREVIOUS SEARCHES: " + (data.length > 0  ? "yes" : "no"));
+ 
+      if (data.length > 0) {
+        // for now, just use the first previous search if present
+        previousSearch = data[0];
+        helper.info("USING PREVIOUS SEARCH:");
+        helper.info(previousSearch);
 
-        if (data.length > 0) {
-          // for now, just use the first previous search if present
-          previousSearch = data[0];
-          helper.info("USING PREVIOUS SEARCH:");
-          helper.info(previousSearch);
-          db.getPreviousTweets(previousSearch.id)
-            .catch(function(error) {
+        var prev_tweet;
+        prev_tweet = db.getPreviousTweets(previousSearch.id);
+        prev_tweet.catch(function(error) {
 
-            })
-            .then(function(data) {
-              var prevTweets = [];
-              for (var i=0; i<data.length; i++) {
-                prevTweets.push(db.savedTweetToWeb(data[i]));
-              }
-              helper.info("PREV TWEETS:");
-              helper.info(prevTweets);
-
-              tweet_reply(prevTweets, query);
-            });
-        }
-
-
-
-        // var prevTweets = [];
-        // for (var i=0; i<data.length; i++) {
-        //   prevTweets.push(db.savedTweetToWeb(data[i]));
-        // }
-        // helper.info(prevTweets);
-
-        // tweet_reply(prevTweets, query);
-
-        // BEGIN TWITTER SEARCH
-        tweets = client.get_tweets(db.generate_query(query));
-        // tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
-        // tweets = client.get_tweets([query.player_query,        query.team_query]);
-
-        // generates socket.io emission to webpage with tweets
-        tweets.then(function(reply) {
-          db.logSearch(query)
-            .catch(function(error) {
-
-            })
-            .then(function(data) {
-              helper.debug("LOG: ");
-              console.log(data);
-              // helper.debug("REPLY: ");
-              // console.log(reply);
-              db.storeTweetData(reply.data, data.insertId);
-            });
-          tweet_reply(reply, query);
         });
 
-        // generates an error if the query is valid
-        tweets.catch(function(error) {
-          tweet_error(error);
+        prev_tweet.then(function(data) {
+          var prevTweets = [];
+          for (var i=0; i<data.length; i++) {
+            prevTweets.push(db.savedTweetToWeb(data[i]));
+          }
+          helper.info("PREV TWEETS:");
+          helper.info(prevTweets);
+
+          tweet_reply(prevTweets, query);
         });
-        // END TWITTER SEARCH
+      }
 
 
-      })
-      .catch(function(error) {
 
+      // var prevTweets = [];
+      // for (var i=0; i<data.length; i++) {
+      //   prevTweets.push(db.savedTweetToWeb(data[i]));
+      // }
+      // helper.info(prevTweets);
+
+      // tweet_reply(prevTweets, query);
+
+      // BEGIN TWITTER SEARCH
+      tweets = client.get_tweets(db.generate_query(query));
+      // tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
+      // tweets = client.get_tweets([query.player_query,        query.team_query]);
+
+      // generates socket.io emission to webpage with tweets
+      tweets.then(function(reply) {
+        db.logSearch(query)
+          .catch(function(error) {
+
+          })
+          .then(function(data) {
+            helper.debug("LOG: ");
+            console.log(data);
+            // helper.debug("REPLY: ");
+            // console.log(reply);
+            db.storeTweetData(reply.data, data.insertId);
+          });
+        tweet_reply(reply, query);
       });
-      // TODO: send saved tweets back to client
+// <<<<<<< aa2af0857fb1edd8827427e72dc30fa42d19926b
+//       // TODO: send saved tweets back to client
 
-    tweets = client.get_tweets(db.generate_query(query) + ' -filter:retweets');
- // tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
- // tweets = client.get_tweets([query.player_query,        query.team_query]);
+//     tweets = client.get_tweets(db.generate_query(query) + ' -filter:retweets');
+//  // tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
+//  // tweets = client.get_tweets([query.player_query,        query.team_query]);
 
- 	// generates socket.io emission to webpage with tweets
-    tweets.then(function(reply) {
-      tweet_reply(reply, query);
+//  	// generates socket.io emission to webpage with tweets
+//     tweets.then(function(reply) {
+//       tweet_reply(reply, query);
+//     });
+
+//     // generates an error if the query is valid
+//     tweets.catch(function(error) {
+//       tweet_error(error);
+//     });
+//   });
+
+// =======
+
+      // generates an error if the query is valid
+      tweets.catch(function(error) {
+        tweet_error(error);
+      });
+      // END TWITTER SEARCH
+
     });
+    prev_query.catch(function(error) {
 
-    // generates an error if the query is valid
-    tweets.catch(function(error) {
-      tweet_error(error);
     });
-  });
-
+    // TODO: send saved tweets back to client
+});
+  
   // terminates socket.io session if an error is encountered
   socket.on('connect', function() {
     helper.info("Connection Created");
