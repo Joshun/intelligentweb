@@ -15,6 +15,7 @@ var db  = require('mysql').createPool({
 
 helper.info('Database Connection Established');
 
+// Creates tables from the sql schema specified in config.storage.schema
 function createTable() {
 	fs.readFile(config.storage.schema, 'utf8', function(err, data){
 		helper.debug("SQL: " + data);
@@ -33,6 +34,7 @@ function createTable() {
 	helper.debug("DATABASE CREATION SUCCESS");
 }
 
+// Writes a search made by the user to the database, timestamped at the time it was made
 function logSearch(query) {
 	return new Promise(function(resolve, reject){
 		helper.debug("BEGIN LOG QUERY");
@@ -76,6 +78,7 @@ function logSearch(query) {
 	});
 }
 
+// Stores tweets in the database, with a reference to the corresponding user search
 function storeTweetData(data, logPrimaryKey) {
 
 	return new Promise(function(resolve, reject){
@@ -114,6 +117,7 @@ function storeTweetData(data, logPrimaryKey) {
 	});
 }
 
+// Retrieves previous searches that are identical or similar to the specified query
 function getPreviousSearches(query) {
 	return new Promise(function(resolve, reject) {
 
@@ -148,6 +152,7 @@ function getPreviousSearches(query) {
 	});
 }
 
+// Gets previous tweets, given the corresponding id of a previous search
 function getPreviousTweets(prevSearchId) {
 	return new Promise(function(resolve, reject) {
 		db.getConnection(function(err, connection) {
@@ -164,14 +169,7 @@ function getPreviousTweets(prevSearchId) {
 	});
 }
 
-function getTeams(name) {
-	db.query("SELECT * FROM teams WHERE name = ?", [name]);
-}
-
-function getPlayers(name) {
-	db.query("SELECT * FROM players WHERE name = ?", [name]);
-}
-
+// Converts the user's search terms into the appropriate format for the Twitter API
 function generate_query(query) {
     var tweet_query;
 
@@ -185,6 +183,7 @@ function generate_query(query) {
     return tweet_query;
 }
 
+// Converts a previously saved tweet from the database to the format expected by the frontend
 function savedTweetToWeb(tweet) {
 	return {
 		text: tweet.tweetText,
@@ -204,12 +203,12 @@ module.exports = {
 	storeTweetData: storeTweetData,
 	getPreviousSearches: getPreviousSearches,
 	getPreviousTweets: getPreviousTweets,
-	getTeams: getTeams,
 
 	generate_query: generate_query,
 	savedTweetToWeb: savedTweetToWeb
 };
 
+// Drafting of how the handles and hashtag tables might be used
 // SELECT player_handles.data, player_hashtag.data, player_keyword.data
 // 	FROM player_entries
 // 		INNER JOIN player_handles ON (player_entries.player_id = player_handles.player_id)
