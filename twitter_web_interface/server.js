@@ -53,9 +53,9 @@ io.of('/').on('connection', function(socket) {
 
     // generates socket.io emission to webpage with live tweets
     stream.on('tweet', function(reply) {
-      helper.info("Stream Update Received, Processing...");
+      helper.debug("Stream Update Received, Processing...");
       socket.emit('reply_stream', reply);
-      helper.info("Stream Update Complete");
+      helper.debug("Stream Update Complete");
     });
 
     // generates an error if the query is invalid
@@ -95,15 +95,15 @@ io.of('/').on('connection', function(socket) {
   
   // terminates socket.io session if an error is encountered
   socket.on('error', function(error) {
-    helper.error('Socket Error: ', error)
+    helper.error('Socket Error: ', error);
     socket.destroy();
-  })
+  });
 
   // terminates stream session if the socket is closed
   socket.on('close', function(query) {
-    helper.info('Socket Closed')
+    helper.info('Socket Closed');
     if (stream) stream.stop();
-  })
+  });
 });
 
 // retrieves the relevant file to render, or returns a 404 error if none exists
