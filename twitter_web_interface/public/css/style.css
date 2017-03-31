@@ -50,7 +50,10 @@ table tr td {
        -o-animation: fadein 2s linear 0s;
           animation: fadein 2s linear 0s;
 
-  max-width: 15%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  white-space: nowrap;
 }
 
 body {
@@ -60,40 +63,83 @@ body {
 }
 
 #form_div {
+    position: relative;
+
+    padding-right: 16px;
+    margin: -5px -10px 0px -10px;
+}
+
+#form_div table {
+    margin-bottom: 0px;
+}
+
+#post_div {
     position: absolute;
-
-    top: 240px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-
+    overflow-x: hidden;
     overflow-y: scroll;
+
+    top:    36px;
+    bottom:  0px;
+    left:    0px;
+    right:   0px;
+}
+
+#post_div table {
+    margin-bottom: 0px;
+
+    overflow-y: hidden;
+    table-layout: fixed;
+}
+
+#form_div, #post_div {
 }
 
 #page_container {
+    position: relative;
     margin: 5vh auto 5vh auto;
-    padding: 5px 10px 5px 10px;
+    padding: 5px 5px 5px 10px;
 
     width: 75%;
     height: 90vh;
 }
 
 #form_container {
-    position: relative;
     width: 75%;
-    height: 100%;
+    max-height: 230px;
 
-    margin: 0px 5px 0px 0px;
+    margin: 0px 0px 0px 0px;
 
-    float: left;
+    top:     0.0px;
+    bottom:  0.0px;
+    left:   -2.5px;
+    right:   0.0px;
 }
 
 #live_container {
-    height: 100%;
     margin: 0px 0px 0px 5px;
+    width: 25%;
+
+    top:     0.0px;
+    bottom:  0.0px;
+    right:  -2.5px;
 }
 
-#form_container, #live_container {
+#post_container {
+    position: absolute;
+
+    width: 75%;
+
+    top:    230.0px;
+    bottom:   0.0px;
+    left:    -2.5px;
+    right:      0px;
+
+    margin: 5px 5px 0px 0px;
+}
+
+#form_container, #live_container, #post_container {
+    position: absolute;
+
     padding: 5px 10px 5px 10px;
 
     background-color: white;

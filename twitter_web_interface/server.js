@@ -59,11 +59,11 @@ io.of('/').on('connection', function(socket) {
       helper.debug("Stream Update Complete");
     });
 
-    // generates an error if the query is invalid
-    stream.catch(function(error) {
-      helper.error("Invalid Query");
-      throw error;
-    });
+    // // generates an error if the query is invalid
+    // stream.catch(function(error) {
+    //   helper.error("Invalid Query");
+    //   throw error;
+    // });
   };
 
   // callback function, stored here to preserve scope
