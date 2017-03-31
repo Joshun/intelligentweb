@@ -21,7 +21,7 @@ Twitter.prototype.getTweets = function(keywords) {
 };
 
 Twitter.prototype.getTimeline = function(user){
-  return this.T.get('statuses/user_timeline', {screen_name: user});
+  return this.T.get('statuses/user_timeline', {screen_name: user, count:this.TWEET_LIMIT, exlude_replies=true});
 }
 
 Twitter.prototype.getFrequencyPastWeek = function(term) {

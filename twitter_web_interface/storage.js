@@ -60,7 +60,7 @@ function logSearch(query) {
 			if (err) throw err;
 			connection.query(
 				"INSERT INTO previousSearches(playerQuery, teamQuery, playerAtChecked, playerHashChecked, playerKeywordChecked, teamAtChecked, teamHashChecked, teamKeywordChecked, queryTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())",
-				[playerQuery, teamQuery, 
+				[playerQuery, teamQuery,
 					playerAtChecked, playerHashChecked, playerKeywordChecked,
 					teamAtChecked, teamHashChecked, teamKeywordChecked],
 				function(error, results, fields) {
@@ -73,10 +73,10 @@ function logSearch(query) {
 }
 
 function storeTweetData(data, logPrimaryKey) {
-	
+
 	return new Promise(function(resolve, reject){
 		helper.debug("START TWEET STORE:");
-	
+
 		db.getConnection(function(err, connection) {
 			var statuses = data.statuses;
 			var promiseList = [];
@@ -129,7 +129,7 @@ function getPreviousSearches(query) {
 				// DATE_SUB subtracts interval from current date
 				// BETWEEN gets queries between the time parameters
 				"SELECT * FROM previousSearches WHERE playerQuery=? AND teamQuery=? AND playerAtChecked=? AND playerHashChecked=? AND playerKeywordChecked=? AND teamAtChecked=? AND teamHashChecked=? AND teamKeywordChecked=?",
-				[playerQuery, teamQuery, 
+				[playerQuery, teamQuery,
 					playerAtChecked, playerHashChecked, playerKeywordChecked,
 					teamAtChecked, teamHashChecked, teamKeywordChecked],
 				function(error, results, fields) {
@@ -152,10 +152,10 @@ function generate_query(query) {
     var tweet_query;
 
     if (query.or_operator) {
-      tweet_query = [query.player_query + ' OR ' + query.team_query];
+      tweet_query = [query.player_query + ' OR ' + query.team_query + '-filter:retweets'];
   	}
     else {
-      tweet_query = [query.player_query + ' '    + query.team_query];
+      tweet_query = [query.player_query + ' '    + query.team_query + '-filter:retweets'];
     }
 
     return tweet_query;

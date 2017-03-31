@@ -49,7 +49,7 @@ io.of('/').on('connection', function(socket) {
     helper.info("Tweets Update Complete");
 
     // generates connection to twitter stream, and listens for tweets
-    stream = client.get_stream([query.player_query + ' ' + query.team_query]);
+    stream = client.get_stream([query.player_query + ' ' + query.team_query +'-filter:retweets']);
 
     // generates socket.io emission to webpage with live tweets
     stream.on('tweet', function(reply) {
@@ -103,12 +103,12 @@ io.of('/').on('connection', function(socket) {
       tweet_error(error);
     });
   });
-  
+
   // terminates socket.io session if an error is encountered
   socket.on('connect', function() {
     helper.info("Connection Created");
   });
-  
+
   // terminates socket.io session if an error is encountered
   socket.on('error', function(error) {
     helper.error('Socket Error: ', error);
