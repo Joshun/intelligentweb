@@ -27,7 +27,7 @@ function initialise() {
   		handles_player: $('#handles_player').is(':checked'), // checkbox for player handles (boolean)
   		hashtag_player: $('#hashtag_player').is(':checked'), // checkbox for player hashtag (boolean)
   		keyword_player: $('#keyword_player').is(':checked'), // checkbox for player keyword (boolean)
-			or_operator:    $('#or_operator').is(':checked'), // checkbox for searching player OR team
+			// or_operator:    $('#or_operator').is(':checked'), // checkbox for searching player OR team
   		team_query:     $('#team_query').val(), // input for team name (string)
   		handles_team:   $('#handles_team').is(':checked'), // checkbox for team handles (boolean)
   		hashtag_team:   $('#hashtag_team').is(':checked'), // checkbox for team hashtag (boolean)
