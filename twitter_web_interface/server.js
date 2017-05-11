@@ -48,10 +48,8 @@ io.of('/').on('connection', function(socket) {
     helper.info("Tweets Update Complete");
 
     // generates connection to twitter stream, and listens for tweets
-<<<<<<< HEAD
     helper.info(db.generate_query(query));
-=======
->>>>>>> master
+    
     stream = client.get_stream(db.generate_query(query).replace(' OR ', ', '));
 
     // generates socket.io emission to webpage with live tweets
