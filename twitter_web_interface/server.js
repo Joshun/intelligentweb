@@ -40,8 +40,8 @@ io.of('/').on('connection', function(socket) {
   var tweet_reply = function(reply, query) {
     helper.info("Tweets Update Received, Processing...");
     // if (reply.data.errors) {
-    // 	throw reply.data.errors; // if reply object is an error, abort.
-    // 	return;
+    //  throw reply.data.errors; // if reply object is an error, abort.
+    //  return;
     // }
 
     socket.emit('reply_tweets', reply.data);
@@ -73,15 +73,15 @@ io.of('/').on('connection', function(socket) {
   };
 
   // queries tweets, logs the search result and stores the tweets
-  var processTweets = function(query, lastTimestamp) {
+  var tweet_query = function(query, lastTimestamp) {
     return new Promise(function(resolve, reject) {
       helper.info("GETTING NEW TWEETS...");
       helper.debug("LAST TIMESTAMP: " + lastTimestamp);
-      tweets = client.get_tweets(db.generate_query(query));
+      tweets = client.get_tweets(db.generate_query(query)); // + "since:" + lastTimestamp
         // tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
         // tweets = client.get_tweets([query.player_query,        query.team_query]);
 
-        // generates socket.io emission to webpage with tweets
+      // generates socket.io emission to webpage with tweets
       tweets.then(function(reply) {
         helper.info("LOGGING SEARCH RESULT...");
         var log = db.logSearch(query);
@@ -115,56 +115,45 @@ io.of('/').on('connection', function(socket) {
 
   // callback function, stored here to preserve scope
   socket.on('query', function(query) {
-    var prev_query = db.getPreviousSearches(query);
+    var prev_query;
+    var prev_tweet;
+    var latest_timestamp = null;
+
+    prev_query = db.getPreviousSearches(query);
 
     prev_query.then(function(data) {
-      helper.info("PREVIOUS SEARCH?: " + (data.length > 0  ? "yes" : "no"));
- 
+      helper.info(data.length)
       if (data.length > 0) {
-        // for now, just use the first previous search if present
-        previousSearch = data[0];
-        helper.info("USING PREVIOUS SEARCH");
-        helper.debug("Retrieved:");
-        helper.debug(previousSearch);
+        prev_tweet = db.getPreviousTweets(data[0].id); // gets first result of previous tweets
 
-        var prev_tweet;
-        helper.info("GETTING PREVIOUS TWEETS...");
-        prev_tweet = db.getPreviousTweets(previousSearch.id);
-        prev_tweet.catch(function(error) {
-
-        });
-
+        // generates tweet list from twitter and database
         prev_tweet.then(function(data) {
-          var prevTweets = [];
-          for (var i=0; i<data.length; i++) {
-            prevTweets.push(db.savedTweetToWeb(data[i]));
+          var tweet_store = [];
+
+          for (var i = 0; i < data.length; i++) {
+            tweet_store.push(db.savedTweetToWeb(data[i]));
           }
-          var latestTimestamp = data[data.length-1].tweetTimestamp;
 
-          var p = processTweets(query, latestTimestamp);
-          p.then(function(tweets) {
-
-            var combinedStore = tweets.data.statuses.concat(prevTweets);
-            socket.emit('reply_tweets', {statuses: combinedStore});
-          });
-          p.catch(function(error) {
-            throw error;
-          });
+          latest_timestamp = data[data.length - 1].tweetTimestamp;
         });
+
+        // generates an error if the data is invalid
+        prev_tweet.catch(function(error) {
+          // do something
+        });
+
+        query = {statuses: tweets.data.statuses.concat(prev_tweet)};
       }
 
-      else {
-        helper.info("MAKING REFRESH TWITTER REQUEST...");
-        var p = processTweets(query, null);
+      var done_tweet = tweet_query(query, latest_timestamp);
 
-        p.then(function(tweets) {
-          tweet_reply(tweets, query);
-        });
+      done_tweet.then(function(tweets) {
+        tweet_reply(tweets, query);
+      });
 
-        p.catch(function(error) {
-          throw error;
-        });
-      }
+      done_tweet.catch(function(error) {
+        throw error;
+      });
     });
 
     prev_query.catch(function(error) {
@@ -172,7 +161,7 @@ io.of('/').on('connection', function(socket) {
       helper.error(error);
       throw error;
     });
-});
+  });
   
   // terminates socket.io session if an error is encountered
   socket.on('connect', function() {
