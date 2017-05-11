@@ -56,6 +56,8 @@ CREATE TABLE IF NOT EXISTS previousSearches (
 /* Create tweets table */
 CREATE TABLE IF NOT EXISTS tweets (
     id INT NOT NULL AUTO_INCREMENT,
+    userName VARCHAR(255),
+    tweetId VARCHAR(255),
     tweetText VARCHAR(255),
     tweetTimestamp TIMESTAMP,
     previousSearchId INT,

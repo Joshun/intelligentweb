@@ -15,6 +15,7 @@ var db  = require('mysql').createPool({
 
 helper.info('Database Connection Established');
 
+// Creates tables from the sql schema specified in config.storage.schema
 function createTable() {
 	fs.readFile(config.storage.schema, 'utf8', function(err, data){
 		helper.debug("SQL: " + data);
@@ -33,6 +34,7 @@ function createTable() {
 	helper.debug("DATABASE CREATION SUCCESS");
 }
 
+// Writes a search made by the user to the database, timestamped at the time it was made
 function logSearch(query) {
 	return new Promise(function(resolve, reject){
 		helper.debug("BEGIN LOG QUERY");
@@ -76,6 +78,7 @@ function logSearch(query) {
 	});
 }
 
+// Stores tweets in the database, with a reference to the corresponding user search
 function storeTweetData(data, logPrimaryKey) {
 
 	return new Promise(function(resolve, reject){
@@ -90,23 +93,23 @@ function storeTweetData(data, logPrimaryKey) {
 				var timestamp = new Date(status.created_at).getTime() / 1000.0;
 				promiseList.push(new Promise(function(resolve, reject) {
 					connection.query(
-						"INSERT INTO tweets(tweetText, tweetTimestamp, previousSearchId) VALUES (?, FROM_UNIXTIME(?), ?)",
-						[status.text, timestamp, logPrimaryKey],
+						"INSERT INTO tweets(userName, tweetId, tweetText, tweetTimestamp, previousSearchId) VALUES (?, ?, ?, FROM_UNIXTIME(?), ?)",
+						[status.user.screen_name, status.id_str, status.text, timestamp, logPrimaryKey],
 						function(error, results, fields) {
 							if (error) reject(error);
 							else {
 								resolve(results);
-
-								connection.release();
 							}
 					});
 				}));
 			}
 			Promise.all(promiseList)
 			.catch(function(error) {
+				connection.release();
 				reject(error);
 			})
 			.then(function(data) {
+				connection.release();
 				resolve(data);
 			});
 
@@ -114,6 +117,7 @@ function storeTweetData(data, logPrimaryKey) {
 	});
 }
 
+// Retrieves previous searches that are identical or similar to the specified query
 function getPreviousSearches(query) {
 	return new Promise(function(resolve, reject) {
 
@@ -148,14 +152,24 @@ function getPreviousSearches(query) {
 	});
 }
 
-function getTeams(name) {
-	db.query("SELECT * FROM teams WHERE name = ?", [name]);
+// Gets previous tweets, given the corresponding id of a previous search
+function getPreviousTweets(prevSearchId) {
+	return new Promise(function(resolve, reject) {
+		db.getConnection(function(err, connection) {
+			if (err) reject(err);
+			connection.query(
+				"SELECT * from tweets WHERE previousSearchId = ?",
+				[prevSearchId],
+				function(error, results, fields) {
+					if (error) reject(error);
+					resolve(results);
+				}
+			);
+		});
+	});
 }
 
-function getPlayers(name) {
-	db.query("SELECT * FROM players WHERE name = ?", [name]);
-}
-
+// Converts the user's search terms into the appropriate format for the Twitter API
 function generate_query(query) {
     var tweet_query;
 
@@ -174,12 +188,13 @@ function generate_query(query) {
     return tweet_query;
 }
 
+// Converts a previously saved tweet from the database to the format expected by the frontend
 function savedTweetToWeb(tweet) {
-	var tweet = {
+	return {
 		text: tweet.tweetText,
 		created_at: tweet.tweetTimestamp,
-		user: { screen_name: "testScreenName"},
-		id_str: "http://www.twitter.com"
+		user: { screen_name: tweet.userName},
+		id_str: tweet.tweetId
 	};
 }
 
@@ -192,12 +207,13 @@ module.exports = {
 	logSearch: logSearch,
 	storeTweetData: storeTweetData,
 	getPreviousSearches: getPreviousSearches,
-	getTeams: getTeams,
+	getPreviousTweets: getPreviousTweets,
 
 	generate_query: generate_query,
 	savedTweetToWeb: savedTweetToWeb
 };
 
+// Drafting of how the handles and hashtag tables might be used
 // SELECT player_handles.data, player_hashtag.data, player_keyword.data
 // 	FROM player_entries
 // 		INNER JOIN player_handles ON (player_entries.player_id = player_handles.player_id)

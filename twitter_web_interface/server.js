@@ -39,16 +39,19 @@ io.of('/').on('connection', function(socket) {
   // callback function, stored here to preserve scope
   var tweet_reply = function(reply, query) {
     helper.info("Tweets Update Received, Processing...");
-    if (reply.data.errors) {
-    	throw reply.data.errors; // if reply object is an error, abort.
-    	return;
-    }
+    // if (reply.data.errors) {
+    // 	throw reply.data.errors; // if reply object is an error, abort.
+    // 	return;
+    // }
 
     socket.emit('reply_tweets', reply.data);
     helper.info("Tweets Update Complete");
 
     // generates connection to twitter stream, and listens for tweets
+<<<<<<< HEAD
     helper.info(db.generate_query(query));
+=======
+>>>>>>> master
     stream = client.get_stream(db.generate_query(query).replace(' OR ', ', '));
 
     // generates socket.io emission to webpage with live tweets
@@ -71,45 +74,108 @@ io.of('/').on('connection', function(socket) {
       throw error;
   };
 
+  // queries tweets, logs the search result and stores the tweets
+  var processTweets = function(query, lastTimestamp) {
+    return new Promise(function(resolve, reject) {
+      helper.info("GETTING NEW TWEETS...");
+      helper.debug("LAST TIMESTAMP: " + lastTimestamp);
+      tweets = client.get_tweets(db.generate_query(query));
+        // tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
+        // tweets = client.get_tweets([query.player_query,        query.team_query]);
+
+        // generates socket.io emission to webpage with tweets
+      tweets.then(function(reply) {
+        helper.info("LOGGING SEARCH RESULT...");
+        var log = db.logSearch(query);
+
+        log.then(function(data) {
+          helper.info("STORING TWEETS...");
+       
+          var storeTweet = db.storeTweetData(reply.data, data.insertId);
+          storeTweet.then(function(results) {
+            helper.info("TWEETS STORED");
+            resolve(reply);
+          });
+
+          storeTweet.catch(function(error) {
+            reject(error);
+          });
+        });
+
+        log.catch(function(error) {
+          reject(error);
+        });
+      });
+
+      // generates an error if the query is valid
+      tweets.catch(function(error) {
+        // tweet_error(error);
+        reject(error);
+      });
+    });
+  };
+
   // callback function, stored here to preserve scope
   socket.on('query', function(query) {
-    db.getPreviousSearches(query)
-      .then(function(data) {
+    var prev_query = db.getPreviousSearches(query);
 
-        // determines if data has already been obtained for this search query
-        helper.debug("Previous Searches: " + (data.length > 0  ? "YES" : "NO"));
-        if (data.length > 0) {
-          helper.debug("Previous Searches:");
-          helper.debug(data);
-        }
+    prev_query.then(function(data) {
+      helper.info("PREVIOUS SEARCH?: " + (data.length > 0  ? "yes" : "no"));
+ 
+      if (data.length > 0) {
+        // for now, just use the first previous search if present
+        previousSearch = data[0];
+        helper.info("USING PREVIOUS SEARCH");
+        helper.debug("Retrieved:");
+        helper.debug(previousSearch);
 
-        var prevTweets = [];
-        for (var i=0; i<data.length; i++) {
-          prevTweets.push(db.savedTweetToWeb(data[i]));
-        }
-      })
-      .catch(function(error) {
+        var prev_tweet;
+        helper.info("GETTING PREVIOUS TWEETS...");
+        prev_tweet = db.getPreviousTweets(previousSearch.id);
+        prev_tweet.catch(function(error) {
 
-      });
-      // TODO: send saved tweets back to client
+        });
 
-    helper.debug(db.generate_query(query));
+        prev_tweet.then(function(data) {
+          var prevTweets = [];
+          for (var i=0; i<data.length; i++) {
+            prevTweets.push(db.savedTweetToWeb(data[i]));
+          }
+          var latestTimestamp = data[data.length-1].tweetTimestamp;
 
-    tweets = client.get_tweets(db.generate_query(query) + ' -filter:retweets');
- // tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
- // tweets = client.get_tweets([query.player_query,        query.team_query]);
+          var p = processTweets(query, latestTimestamp);
+          p.then(function(tweets) {
 
- 	// generates socket.io emission to webpage with tweets
-    tweets.then(function(reply) {
-      tweet_reply(reply, query);
+            var combinedStore = tweets.data.statuses.concat(prevTweets);
+            socket.emit('reply_tweets', {statuses: combinedStore});
+          });
+          p.catch(function(error) {
+            throw error;
+          });
+        });
+      }
+
+      else {
+        helper.info("MAKING REFRESH TWITTER REQUEST...");
+        var p = processTweets(query, null);
+
+        p.then(function(tweets) {
+          tweet_reply(tweets, query);
+        });
+
+        p.catch(function(error) {
+          throw error;
+        });
+      }
     });
 
-    // generates an error if the query is valid
-    tweets.catch(function(error) {
-      tweet_error(error);
+    prev_query.catch(function(error) {
+      helper.error("Fault in prev_query:");
+      helper.error(error);
+      throw error;
     });
-  });
-
+});
+  
   // terminates socket.io session if an error is encountered
   socket.on('connect', function() {
     helper.info("Connection Created");
