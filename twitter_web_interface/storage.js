@@ -93,8 +93,8 @@ function storeTweetData(data, logPrimaryKey) {
 				var timestamp = new Date(status.created_at).getTime() / 1000.0;
 				promiseList.push(new Promise(function(resolve, reject) {
 					connection.query(
-						"INSERT INTO tweets(tweetText, tweetTimestamp, previousSearchId) VALUES (?, FROM_UNIXTIME(?), ?)",
-						[status.text, timestamp, logPrimaryKey],
+						"INSERT INTO tweets(userName, tweetId, tweetText, tweetTimestamp, previousSearchId) VALUES (?, ?, ?, FROM_UNIXTIME(?), ?)",
+						[status.user.screen_name, status.id_str, status.text, timestamp, logPrimaryKey],
 						function(error, results, fields) {
 							if (error) reject(error);
 							else {
@@ -188,8 +188,8 @@ function savedTweetToWeb(tweet) {
 	return {
 		text: tweet.tweetText,
 		created_at: tweet.tweetTimestamp,
-		user: { screen_name: "testScreenName"},
-		id_str: "http://www.twitter.com"
+		user: { screen_name: tweet.userName},
+		id_str: tweet.tweetId
 	};
 }
 
