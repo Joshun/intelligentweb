@@ -47,19 +47,19 @@ io.of('/').on('connection', function(socket) {
     socket.emit('reply_tweets', reply.data);
     helper.info("Tweets Update Complete");
 
-    // generates connection to twitter stream, and listens for tweets
+    // creates connection to twitter stream, and listens for tweets
     helper.info(db.generate_query(query));
     
     stream = client.get_stream(db.generate_query(query).replace(' OR ', ', '));
 
-    // generates socket.io emission to webpage with live tweets
+    // creates socket.io emission to webpage with live tweets
     stream.on('tweet', function(reply) {
       helper.debug("Stream Update Received, Processing...");
       socket.emit('reply_stream', reply);
       helper.debug("Stream Update Complete");
     });
 
-    // // generates an error if the query is invalid
+    // // returns an error if the query is invalid
     // stream.catch(function(error) {
     //   helper.error("Invalid Query");
     //   throw error;
@@ -71,6 +71,21 @@ io.of('/').on('connection', function(socket) {
       helper.error("Invalid Query");
       throw error;
   };
+
+  // callback function, stored here to preserve scope
+  var tweet_combo = function(query, tweet_time, tweet_store) {
+    tweets = tweet_query(query, tweet_time);
+
+    tweets.then(function(store) {
+      tweet_reply(store, tweet_store == null ? query : {
+        statuses: store.data.statuses.concat(tweet_store)
+      });
+    });
+
+    tweets.catch(function(error) {
+      throw error;
+    });
+  }
 
   // queries tweets, logs the search result and stores the tweets
   var tweet_query = function(query, lastTimestamp) {
@@ -105,7 +120,7 @@ io.of('/').on('connection', function(socket) {
         });
       });
 
-      // generates an error if the query is valid
+      // returns an error if the query is valid
       tweets.catch(function(error) {
         // tweet_error(error);
         reject(error);
@@ -117,48 +132,43 @@ io.of('/').on('connection', function(socket) {
   socket.on('query', function(query) {
     var prev_query;
     var prev_tweet;
-    var latest_timestamp = null;
+    var next_tweet;
 
     prev_query = db.getPreviousSearches(query);
 
     prev_query.then(function(data) {
-      helper.info(data.length)
+
+      // 
       if (data.length > 0) {
         prev_tweet = db.getPreviousTweets(data[0].id); // gets first result of previous tweets
 
-        // generates tweet list from twitter and database
+        // creates tweet list from twitter and database
         prev_tweet.then(function(data) {
+          var tweet_times = null;
           var tweet_store = [];
 
           for (var i = 0; i < data.length; i++) {
             tweet_store.push(db.savedTweetToWeb(data[i]));
           }
 
-          latest_timestamp = data[data.length - 1].tweetTimestamp;
+          tweet_times = data[data.length - 1].tweetTimestamp;
+
+          tweet_combo(query, tweet_times, tweet_store)
         });
 
-        // generates an error if the data is invalid
+        // returns an error if the task is invalid
         prev_tweet.catch(function(error) {
-          // do something
+          helper.error("Task Refused: ", error);
+          throw error;
         });
-
-        query = {statuses: tweets.data.statuses.concat(prev_tweet)};
       }
-
-      var done_tweet = tweet_query(query, latest_timestamp);
-
-      done_tweet.then(function(tweets) {
-        tweet_reply(tweets, query);
-      });
-
-      done_tweet.catch(function(error) {
-        throw error;
-      });
+      else {
+        tweet_combo(query, null, null)
+      }
     });
 
     prev_query.catch(function(error) {
-      helper.error("Fault in prev_query:");
-      helper.error(error);
+      helper.error("Task Refused: ", error);
       throw error;
     });
   });

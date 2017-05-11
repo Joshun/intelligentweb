@@ -201,11 +201,15 @@ input[type=checkbox]:checked + label, input[type=checkbox]:hover:checked + label
     right: 0px;
 }
 
-.left-addon input  {
+.tokenfield  {
     padding-left:  30px;
 }
 
-.right-addon input {
+div.left-addon > div.tokenfield {
+    padding-left: 30px;
+}
+
+div.right-addon > div.tokenfield {
     padding-right: 30px;
 }
 

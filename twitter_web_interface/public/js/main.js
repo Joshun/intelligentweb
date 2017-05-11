@@ -17,6 +17,9 @@ function resultToRow(tweet) {
 function initialise() {
   var socket = io(); // auto-detects port
 
+  $('#player_query').tokenfield();
+  $('#team_query').tokenfield();
+
   // emits query data from the input form to the server
   $('#query_form').submit(function() {
 		$("#form_table tbody tr").remove();
