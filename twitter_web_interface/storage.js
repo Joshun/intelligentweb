@@ -38,29 +38,10 @@ function createTable() {
 function logSearch(query) {
 	return new Promise(function(resolve, reject){
 		helper.debug("BEGIN LOG QUERY");
-		// id INT PRIMARY KEY,
-		// playerQuery VARCHAR(255),
-		// teamQuery VARCHAR(255),
-		// playerAtChecked BOOLEAN,
-		// playerHashChecked BOOLEAN,
-		// playerKeywordChecked BOOLEAN,
-		// teamAtChecked BOOLEAN,
-		// teamHashChecked BOOLEAN,
-		// teamKeywordChecked BOOLEAN,
-		// queryTimestamp TIMESTAMP
 
 		var playerQuery = query.player_query;
 		var teamQuery = query.team_query;
-
 		var isOrOperator = query.or_operator;
-
-		// var playerAtChecked = query.handles_player;
-		// var playerHashChecked = query.hashtag_player;
-		// var playerKeywordChecked = query.keyword_player;
-
-		// var teamAtChecked = query.handles_team;
-		// var teamHashChecked = query.hashtag_team;
-		// var teamKeywordChecked = query.keyword_team;
 
 		db.getConnection(function(err, connection) {
 			if (err) throw err;
@@ -72,11 +53,12 @@ function logSearch(query) {
 				// 	teamAtChecked, teamHashChecked, teamKeywordChecked],
 				[playerQuery, teamQuery, isOrOperator],
 				function(error, results, fields) {
-					if (error) reject(error);
-					helper.debug("LOG QUERY EXECUTED");
-					resolve(results);
-
 					connection.release();
+					if (error) reject(error);
+					else {
+						helper.debug("LOG QUERY EXECUTED");
+						resolve(results);
+					}
 				});
 		});
 	});
@@ -87,6 +69,7 @@ function storeTweetData(data, logPrimaryKey) {
 
 	return new Promise(function(resolve, reject){
 		helper.debug("START TWEET STORE:");
+		helper.debug("Tweet count: " + data.statuses.length);
 
 		db.getConnection(function(err, connection) {
 			var statuses = data.statuses;
@@ -109,6 +92,8 @@ function storeTweetData(data, logPrimaryKey) {
 			}
 			Promise.all(promiseList)
 			.catch(function(error) {
+				helper.warn("Storing tweets failed.");
+				helper.debug(error);
 				connection.release();
 				reject(error);
 			})
@@ -129,31 +114,16 @@ function getPreviousSearches(query) {
 		var teamQuery = query.team_query;
 		var isOrOperator = query.or_operator;
 
-		// var playerAtChecked = query.handles_player;
-		// var playerHashChecked = query.hashtag_player;
-		// var playerKeywordChecked = query.keyword_player;
-		//
-		// var teamAtChecked = query.handles_team;
-		// var teamHashChecked = query.hashtag_team;
-		// var teamKeywordChecked = query.keyword_team;
-
 		db.getConnection(function(err, connection) {
 			if (err) throw err;
 			connection.query(
 				// Query gets all previousSearches that match the parameters of the previous query and are recent enough
-				// DATE_SUB subtracts interval from current date
-				// BETWEEN gets queries between the time parameters
-				// "SELECT * FROM previousSearches WHERE playerQuery=? AND teamQuery=? AND playerAtChecked=? AND playerHashChecked=? AND playerKeywordChecked=? AND teamAtChecked=? AND teamHashChecked=? AND teamKeywordChecked=?",
 				"SELECT * FROM previousSearches WHERE playerQuery=? AND teamQuery=? AND isOrOperator=?",
-				// [playerQuery, teamQuery,
-				// 	playerAtChecked, playerHashChecked, playerKeywordChecked,
-				// 	teamAtChecked, teamHashChecked, teamKeywordChecked],
 				[playerQuery, teamQuery, isOrOperator],
 				function(error, results, fields) {
+					connection.release();
 					if (error) reject(error);
 					resolve(results);
-
-					connection.release();
 				});
 		});
 	});
@@ -169,7 +139,7 @@ function getPreviousTweets(prevSearchId) {
 				[prevSearchId],
 				function(error, results, fields) {
 					if (error) reject(error);
-					resolve(results);
+					else resolve(results);
 				}
 			);
 		});
@@ -190,6 +160,7 @@ function generate_query(query) {
     }
 
 
+	helper.debug("generate_query " + tweet_query);
     helper.debug(tweet_query);
 
     return tweet_query;
