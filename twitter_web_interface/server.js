@@ -48,7 +48,7 @@ io.of('/').on('connection', function(socket) {
     helper.info("Tweets Update Complete");
 
     // generates connection to twitter stream, and listens for tweets
-    console.log(db.generate_query(query));
+    helper.info(db.generate_query(query));
     stream = client.get_stream(db.generate_query(query).replace(' OR ', ', '));
 
     // generates socket.io emission to webpage with live tweets
@@ -75,9 +75,13 @@ io.of('/').on('connection', function(socket) {
   socket.on('query', function(query) {
     db.getPreviousSearches(query)
       .then(function(data) {
-        helper.info("PREVIOUS SEARCHES: " + (data.length > 0  ? "yes" : "no"));
-        helper.info("PREVIOUS SEARCHES:");
-        helper.info(data);
+
+        // determines if data has already been obtained for this search query
+        helper.debug("Previous Searches: " + (data.length > 0  ? "YES" : "NO"));
+        if (data.length > 0) {
+          helper.debug("Previous Searches:");
+          helper.debug(data);
+        }
 
         var prevTweets = [];
         for (var i=0; i<data.length; i++) {
