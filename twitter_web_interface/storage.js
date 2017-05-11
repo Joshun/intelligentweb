@@ -52,21 +52,25 @@ function logSearch(query) {
 		var playerQuery = query.player_query;
 		var teamQuery = query.team_query;
 
-		var playerAtChecked = query.handles_player;
-		var playerHashChecked = query.hashtag_player;
-		var playerKeywordChecked = query.keyword_player;
+		var isOrOperator = query.or_operator;
 
-		var teamAtChecked = query.handles_team;
-		var teamHashChecked = query.hashtag_team;
-		var teamKeywordChecked = query.keyword_team;
+		// var playerAtChecked = query.handles_player;
+		// var playerHashChecked = query.hashtag_player;
+		// var playerKeywordChecked = query.keyword_player;
+
+		// var teamAtChecked = query.handles_team;
+		// var teamHashChecked = query.hashtag_team;
+		// var teamKeywordChecked = query.keyword_team;
 
 		db.getConnection(function(err, connection) {
 			if (err) throw err;
 			connection.query(
-				"INSERT INTO previousSearches(playerQuery, teamQuery, playerAtChecked, playerHashChecked, playerKeywordChecked, teamAtChecked, teamHashChecked, teamKeywordChecked, queryTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())",
-				[playerQuery, teamQuery,
-					playerAtChecked, playerHashChecked, playerKeywordChecked,
-					teamAtChecked, teamHashChecked, teamKeywordChecked],
+				// "INSERT INTO previousSearches(playerQuery, teamQuery, playerAtChecked, playerHashChecked, playerKeywordChecked, teamAtChecked, teamHashChecked, teamKeywordChecked, queryTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())",
+				"INSERT INTO previousSearches(playerQuery, teamQuery, isOrOperator, queryTimestamp) VALUES (?, ?, ?, NOW())",
+				// [playerQuery, teamQuery,
+				// 	playerAtChecked, playerHashChecked, playerKeywordChecked,
+				// 	teamAtChecked, teamHashChecked, teamKeywordChecked],
+				[playerQuery, teamQuery, isOrOperator],
 				function(error, results, fields) {
 					if (error) reject(error);
 					helper.debug("LOG QUERY EXECUTED");
@@ -123,14 +127,15 @@ function getPreviousSearches(query) {
 
 		var playerQuery = query.player_query;
 		var teamQuery = query.team_query;
+		var isOrOperator = query.or_operator;
 
-		var playerAtChecked = query.handles_player;
-		var playerHashChecked = query.hashtag_player;
-		var playerKeywordChecked = query.keyword_player;
-
-		var teamAtChecked = query.handles_team;
-		var teamHashChecked = query.hashtag_team;
-		var teamKeywordChecked = query.keyword_team;
+		// var playerAtChecked = query.handles_player;
+		// var playerHashChecked = query.hashtag_player;
+		// var playerKeywordChecked = query.keyword_player;
+		//
+		// var teamAtChecked = query.handles_team;
+		// var teamHashChecked = query.hashtag_team;
+		// var teamKeywordChecked = query.keyword_team;
 
 		db.getConnection(function(err, connection) {
 			if (err) throw err;
@@ -138,10 +143,12 @@ function getPreviousSearches(query) {
 				// Query gets all previousSearches that match the parameters of the previous query and are recent enough
 				// DATE_SUB subtracts interval from current date
 				// BETWEEN gets queries between the time parameters
-				"SELECT * FROM previousSearches WHERE playerQuery=? AND teamQuery=? AND playerAtChecked=? AND playerHashChecked=? AND playerKeywordChecked=? AND teamAtChecked=? AND teamHashChecked=? AND teamKeywordChecked=?",
-				[playerQuery, teamQuery,
-					playerAtChecked, playerHashChecked, playerKeywordChecked,
-					teamAtChecked, teamHashChecked, teamKeywordChecked],
+				// "SELECT * FROM previousSearches WHERE playerQuery=? AND teamQuery=? AND playerAtChecked=? AND playerHashChecked=? AND playerKeywordChecked=? AND teamAtChecked=? AND teamHashChecked=? AND teamKeywordChecked=?",
+				"SELECT * FROM previousSearches WHERE playerQuery=? AND teamQuery=? AND isOrOperator=?",
+				// [playerQuery, teamQuery,
+				// 	playerAtChecked, playerHashChecked, playerKeywordChecked,
+				// 	teamAtChecked, teamHashChecked, teamKeywordChecked],
+				[playerQuery, teamQuery, isOrOperator],
 				function(error, results, fields) {
 					if (error) reject(error);
 					resolve(results);
