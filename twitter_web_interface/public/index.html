@@ -4,9 +4,13 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Twitter Web Interface</title>
-    <link  href="../bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
-    <link  href="../css/style.css" rel="stylesheet">
+
+    <link  href="../bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link  href="../bootstrap-tokenfield-0.12.0-dist/css/bootstrap-tokenfield.css" rel="stylesheet" />
+    <link  href="../css/style.css" rel="stylesheet" />
+
     <script src="../jquery-3.2.0-min/js/jquery-3.2.0.min.js"></script>
+    <script src="../bootstrap-tokenfield-0.12.0-dist/bootstrap-tokenfield.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="../js/main.js"></script>
 </head>
@@ -18,36 +22,39 @@
       <form id="query_form" class="form-group" action = "">
 
         <label for="player_query">Enter a Player Name:</label>
-        <div class="input-group">
-          <input type="text" class="form-control" name="player_query" id="player_query" placeholder="e.g. Wayne Rooney">
+        <div class="input-group inner-addon left-addon">
+          <input type="text" class="form-control" name="player_query" id="player_query" placeholder="e.g. Wayne Rooney" />
+          <i class="glyphicon glyphicon-search"></i>
           <span class="input-group-btn">
-            <input type="checkbox" class="hidden" id="handles_player" name="handles_player" checked>
+            <!-- <input type="checkbox" class="hidden" id="handles_player" name="handles_player" checked>
             <label for="handles_player" class="btn btn-default">@</label>
             <input type="checkbox" class="hidden" id="hashtag_player" name="hashtag_player" checked>
             <label for="hashtag_player" class="btn btn-default">#</label>
             <input type="checkbox" class="hidden" id="keyword_player" name="keyword_player" checked>
-            <label for="keyword_player" class="btn btn-default">?</label>
-            <!-- <input type="checkbox" class="hidden" id="or_operator" name="or_operator">
-            <label for="or_operator" class="btn btn-default">OR</label> -->
+            <label for="keyword_player" class="btn btn-default">?</label> -->
+
+            <input type="checkbox" class="hidden" id="or_operator" name="or_operator">
+            <label for="or_operator" class="btn btn-default"></label>
           </span>
         </div>
 
         <label for="team_query">Enter a Team Name:</label>
-        <div class="input-group col-10">
-          <input type="text" class="form-control" name="team_query" id="team_query" placeholder="e.g. Manchester United">
-          <span class="input-group-btn">
+        <div class="inner-addon left-addon">
+          <input type="text" class="form-control" name="team_query" id="team_query" placeholder="e.g. Manchester United" />
+          <i class="glyphicon glyphicon-search"></i>
+          <!-- <span class="input-group-btn">
             <input type="checkbox" class="hidden" id="handles_team" name="handles_team" checked>
             <label for="handles_team" class="btn btn-default">@</label>
             <input type="checkbox" class="hidden" id="hashtag_team" name="hashtag_team" checked>
             <label for="hashtag_team" class="btn btn-default">#</label>
             <input type="checkbox" class="hidden" id="keyword_team" name="keyword_team" checked>
             <label for="keyword_team" class="btn btn-default">?</label>
-          </span>
+          </span> -->
         </div>
 
-        <input type="submit" class="btn btn-default">
+        <input type="submit" class="btn btn-default" />
 
-        <input type="checkbox" class="hidden" id="database_only" name="database_only">
+        <input type="checkbox" class="hidden" id="database_only" name="database_only" />
         <label for="database_only" class="btn btn-default">Just From Database</label>
         <!-- <div class="form-check">
           <label for="queryteam" class="form-check-label">Team</label>

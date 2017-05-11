@@ -24,17 +24,17 @@ function initialise() {
 
   	socket.emit('query', {
   		player_query:   $('#player_query').val(), // input for player name (string)
-  		handles_player: $('#handles_player').is(':checked'), // checkbox for player handles (boolean)
-  		hashtag_player: $('#hashtag_player').is(':checked'), // checkbox for player hashtag (boolean)
-  		keyword_player: $('#keyword_player').is(':checked'), // checkbox for player keyword (boolean)
+  		// handles_player: $('#handles_player').is(':checked'), // checkbox for player handles (boolean)
+  		// hashtag_player: $('#hashtag_player').is(':checked'), // checkbox for player hashtag (boolean)
+  		// keyword_player: $('#keyword_player').is(':checked'), // checkbox for player keyword (boolean)
 
   		team_query:     $('#team_query').val(), // input for team name (string)
-  		handles_team:   $('#handles_team').is(':checked'), // checkbox for team handles (boolean)
-  		hashtag_team:   $('#hashtag_team').is(':checked'), // checkbox for team hashtag (boolean)
-  		keyword_team:   $('#keyword_team').is(':checked'), // checkbox for team keyword (boolean)
+  		// handles_team:   $('#handles_team').is(':checked'), // checkbox for team handles (boolean)
+  		// hashtag_team:   $('#hashtag_team').is(':checked'), // checkbox for team hashtag (boolean)
+  		// keyword_team:   $('#keyword_team').is(':checked'), // checkbox for team keyword (boolean)
 
-      database_only:  $('#database_only').is(':checked')
-      // or_operator:    $('#or_operator').is(':checked') // checkbox for searching player OR team
+      database_only:  $('#database_only').is(':checked'),
+      or_operator:    $('#or_operator').is(':checked') // checkbox for searching player OR team
 
   	});
   	return false; // stops page from refreshing

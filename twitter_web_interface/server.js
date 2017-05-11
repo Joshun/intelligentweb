@@ -2,7 +2,6 @@
  * server.js
  */
 
-
 var express = require('express');
 var app     = express();
 
@@ -89,6 +88,8 @@ io.of('/').on('connection', function(socket) {
 
       });
       // TODO: send saved tweets back to client
+
+    helper.debug(db.generate_query(query));
 
     tweets = client.get_tweets(db.generate_query(query) + ' -filter:retweets');
  // tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);

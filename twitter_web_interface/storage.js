@@ -159,12 +159,17 @@ function getPlayers(name) {
 function generate_query(query) {
     var tweet_query;
 
+    helper.debug(query, query.or_operator);
+
     if (query.or_operator) {
       tweet_query = query.player_query + ' OR ' + query.team_query;
   	}
     else {
       tweet_query = query.player_query + ' '    + query.team_query;
     }
+
+
+    helper.debug(tweet_query);
 
     return tweet_query;
 }
