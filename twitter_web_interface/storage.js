@@ -69,6 +69,7 @@ function storeTweetData(data, logPrimaryKey) {
 
 	return new Promise(function(resolve, reject){
 		helper.debug("START TWEET STORE:");
+		helper.debug("logPrimaryKey: ", logPrimaryKey);
 		helper.debug("Tweet count: " + data.statuses.length);
 
 		db.getConnection(function(err, connection) {
@@ -76,8 +77,16 @@ function storeTweetData(data, logPrimaryKey) {
 			var promiseList = [];
 			for (var i=0; i<statuses.length; i++) {
 				var status = statuses[i];
+
 				// Convert RFC2822 to millisecond epoch, and then to second epoch
 				var timestamp = new Date(status.created_at).getTime() / 1000.0;
+
+				// Skip tweets that have invalid properties (i.e. null name, text, id or timestamp)
+				if (! (status.user.screen_name && status.id_str && status.text && timestamp)) {
+					helper.debug("Skipping tweet with invalid property (", i, ")");
+					continue;
+				}
+
 				promiseList.push(new Promise(function(resolve, reject) {
 					connection.query(
 						"INSERT INTO tweets(userName, tweetId, tweetText, tweetTimestamp, previousSearchId) VALUES (?, ?, ?, FROM_UNIXTIME(?), ?)",
