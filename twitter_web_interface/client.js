@@ -170,4 +170,4 @@ module.exports = {
 
   tweet_reply:              tweet_reply,
   tweet_error:              tweet_error
-}
+};
