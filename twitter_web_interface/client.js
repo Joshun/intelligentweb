@@ -71,10 +71,14 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
     helper.info("Tweets Update Received, Processing...");
     helper.info("Tweets Update Complete");
 
+    helper.info("Prev tweetlist length ", prev_tweetlist.length);
+    helper.info(prev_tweetlist[0]);
+
     // creates connection to twitter search, and retrieves tweets
     var tweets;
 
     if (prev_timestamp != null) {
+      helper.info("prev_timestamp: ", prev_timestamp);
       tweets = get_tweets(db.generate_query(query) + " since: " + prev_timestamp); //TODO format prev_timestamp
     }
     else {
@@ -130,9 +134,9 @@ function stream_reply(socket, query) {
 
   // creates socket.io emission to webpage with live tweets
   stream.on('tweet', function(reply) {
-    helper.debug("Stream Update Received, Processing...");
+    // helper.debug("Stream Update Received, Processing...");
     socket.emit('reply_stream', reply);
-    helper.debug("Stream Update Complete");
+    // helper.debug("Stream Update Complete");
   });
 
   // returns an error if the query is invalid

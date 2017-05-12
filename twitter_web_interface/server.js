@@ -49,17 +49,18 @@ io.of('/').on('connection', function(socket) {
         // Previous search term existed, and tweets were stored
           if (prev_tweets.length > 0) {
 
-            helper.info("Tweets Found: " + prev_tweets.length);
+            helper.info("Previous search tweets found: " + prev_tweets.length);
+            helper.debug(prev_tweets[0]);
 
             // creates tweet list from twitter and database
             var prev_timestamp = null;
             var prev_tweetlist = [];
 
-            for (var i = 0; i < results.length; i++) {
-              prev_tweetlist.push(db.savedTweetToWeb(results[i]));
+            for (var i = 0; i < prev_tweets.length; i++) {
+              prev_tweetlist.push(db.savedTweetToWeb(prev_tweets[i]));
             }
 
-            prev_timestamp = results[results.length - 1].tweetTimestamp;
+            prev_timestamp = prev_tweets[prev_tweets.length - 1].tweetTimestamp;
 
             client.tweet_reply(socket, query, prev_timestamp, prev_tweetlist);
           }
