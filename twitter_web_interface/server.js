@@ -37,98 +37,6 @@ io.of('/').on('connection', function(socket) {
   var stream;
 
   // callback function, stored here to preserve scope
-  var tweet_reply = function(reply, query) {
-    helper.info("Tweets Update Received, Processing...");
-    // if (reply.data.errors) {
-    //  throw reply.data.errors; // if reply object is an error, abort.
-    //  return;
-    // }
-
-    socket.emit('reply_tweets', reply.data);
-    helper.info("Tweets Update Complete");
-
-    // creates connection to twitter stream, and listens for tweets
-    helper.info(db.generate_query(query));
-    
-    stream = client.get_stream(db.generate_query(query).replace(' OR ', ', '));
-
-    // creates socket.io emission to webpage with live tweets
-    stream.on('tweet', function(reply) {
-      helper.debug("Stream Update Received, Processing...");
-      socket.emit('reply_stream', reply);
-      helper.debug("Stream Update Complete");
-    });
-
-    // // returns an error if the query is invalid
-    // stream.catch(function(error) {
-    //   helper.error("Invalid Query");
-    //   throw error;
-    // });
-  };
-
-  // callback function, stored here to preserve scope
-  var tweet_error = function(error) {
-      helper.error("Invalid Query");
-      throw error;
-  };
-
-  // callback function, stored here to preserve scope
-  var tweet_combo = function(query, tweet_time, tweet_store) {
-    tweets = tweet_query(query, tweet_time);
-
-    tweets.then(function(store) {
-      tweet_reply(store, tweet_store == null ? query : {
-        statuses: store.data.statuses.concat(tweet_store)
-      });
-    });
-
-    tweets.catch(function(error) {
-      throw error;
-    });
-  }
-
-  // queries tweets, logs the search result and stores the tweets
-  var tweet_query = function(query, lastTimestamp) {
-    return new Promise(function(resolve, reject) {
-      helper.info("GETTING NEW TWEETS...");
-      helper.debug("LAST TIMESTAMP: " + lastTimestamp);
-      tweets = client.get_tweets(db.generate_query(query)); // + "since:" + lastTimestamp
-        // tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
-        // tweets = client.get_tweets([query.player_query,        query.team_query]);
-
-      // generates socket.io emission to webpage with tweets
-      tweets.then(function(reply) {
-        helper.info("LOGGING SEARCH RESULT...");
-        var log = db.logSearch(query);
-
-        log.then(function(data) {
-          helper.info("STORING TWEETS...");
-       
-          var storeTweet = db.storeTweetData(reply.data, data.insertId);
-          storeTweet.then(function(results) {
-            helper.info("TWEETS STORED");
-            resolve(reply);
-          });
-
-          storeTweet.catch(function(error) {
-            reject(error);
-          });
-        });
-
-        log.catch(function(error) {
-          reject(error);
-        });
-      });
-
-      // returns an error if the query is valid
-      tweets.catch(function(error) {
-        // tweet_error(error);
-        reject(error);
-      });
-    });
-  };
-
-  // callback function, stored here to preserve scope
   socket.on('query', function(query) {
     var prev_query;
     var prev_tweet;
@@ -153,7 +61,7 @@ io.of('/').on('connection', function(socket) {
 
           tweet_times = data[data.length - 1].tweetTimestamp;
 
-          tweet_combo(query, tweet_times, tweet_store)
+          client.tweet_combo(socket, query, tweet_times, tweet_store);
         });
 
         // returns an error if the task is invalid
@@ -163,7 +71,7 @@ io.of('/').on('connection', function(socket) {
         });
       }
       else {
-        tweet_combo(query, null, null)
+        client.tweet_combo(socket, query, null, null);
       }
     });
 
