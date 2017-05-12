@@ -1,5 +1,6 @@
 var config = require('./config.json');
 var db     = require('./storage.js');
+var helper = require('./helper.js');
 
 var Twit = require('twit');
 var T = new Twit({
@@ -67,18 +68,12 @@ function get_data_padded(data, size) {
 // callback function, stored here to preserve scope
 function tweet_reply(socket, reply, query) {
   helper.info("Tweets Update Received, Processing...");
-  // if (reply.data.errors) {
-  //  throw reply.data.errors; // if reply object is an error, abort.
-  //  return;
-  // }
+
+  // creates connection to twitter stream, and listens for tweets
+  var stream = get_stream(db.generate_query(query).replace(' OR ', ', '));
 
   socket.emit('reply_tweets', reply.data);
   helper.info("Tweets Update Complete");
-
-  // creates connection to twitter stream, and listens for tweets
-  helper.info(db.generate_query(query));
-  
-  stream = get_stream(db.generate_query(query).replace(' OR ', ', '));
 
   // creates socket.io emission to webpage with live tweets
   stream.on('tweet', function(reply) {
@@ -102,7 +97,7 @@ function tweet_error(socket, error) {
 
 // callback function, stored here to preserve scope
 function tweet_combo(socket, query, tweet_time, tweet_store) {
-  tweets = tweet_query(socket, query, tweet_time);
+  var tweets = tweet_query(socket, query, tweet_time);
 
   tweets.then(function(store) {
     tweet_reply(socket, store, tweet_store == null ? query : {
@@ -122,7 +117,7 @@ function tweet_query(socket, query, time) {
     helper.info("Collecting Tweets...");
     helper.debug("  Started @: " + time);
 
-    tweets = get_tweets(db.generate_query(query)); // + "since:" + time
+    var tweets = get_tweets(db.generate_query(query)); // + "since:" + time
       // tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
       // tweets = client.get_tweets([query.player_query,        query.team_query]);
 
@@ -152,7 +147,6 @@ function tweet_query(socket, query, time) {
 
     // returns an error if the query is valid
     tweets.catch(function(error) {
-      // tweet_error(error);
       reject(error);
     });
   });
