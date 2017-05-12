@@ -66,63 +66,32 @@ function get_data_padded(data, size) {
 ///////////////////////////////////////////////////////////////////////////////
 
 // callback function, stored here to preserve scope
-function tweet_reply(socket, reply, query) {
-  helper.info("Tweets Update Received, Processing...");
+function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
+  // return new Promise(function(resolve, reject) {
+    helper.info("Tweets Update Received, Processing...");
+    helper.info("Tweets Update Complete");
 
-  // creates connection to twitter stream, and listens for tweets
-  var stream = get_stream(db.generate_query(query).replace(' OR ', ', '));
+    // creates connection to twitter search, and retrieves tweets
+    var tweets;
 
-  socket.emit('reply_tweets', reply.data);
-  helper.info("Tweets Update Complete");
-
-  // creates socket.io emission to webpage with live tweets
-  stream.on('tweet', function(reply) {
-    helper.debug("Stream Update Received, Processing...");
-    socket.emit('reply_stream', reply);
-    helper.debug("Stream Update Complete");
-  });
-
-  // returns an error if the query is invalid
-  stream.catch(function(error) {
-    helper.error("Invalid Query");
-    throw error;
-  });
-};
-
-// callback function, stored here to preserve scope
-function tweet_error(socket, error) {
-    helper.error("Invalid Query");
-    throw error;
-};
-
-// callback function, stored here to preserve scope
-function tweet_combo(socket, query, tweet_time, tweet_store) {
-  var tweets = tweet_query(socket, query, tweet_time);
-
-  tweets.then(function(store) {
-    tweet_reply(socket, store, tweet_store == null ? query : {
-      statuses: store.data.statuses.concat(tweet_store)
-    });
-  });
-
-  tweets.catch(function(error) {
-    throw error;
-  });
-}
-
-// queries tweets, logs the search result and stores the tweets
-function tweet_query(socket, query, time) {
-  return new Promise(function(resolve, reject) {
-
-    helper.info("Collecting Tweets...");
-    helper.debug("  Started @: " + time);
-
-    var tweets = get_tweets(db.generate_query(query)); // + "since:" + time
-      // tweets = client.get_tweets([query.player_query + ' ' + query.team_query]);
-      // tweets = client.get_tweets([query.player_query,        query.team_query]);
+    if (prev_timestamp != null) {
+      tweets = get_tweets(db.generate_query(query) + " since: " + prev_timestamp); //TODO format prev_timestamp
+    }
+    else {
+      tweets = get_tweets(db.generate_query(query));
+    }
 
     // generates socket.io emission to webpage with tweets
     tweets.then(function(reply) {
+      helper.info("Tweets Retrieved from Twitter: " + reply.data.statuses.length);
+
+
+      reply = { data: { statuses: reply.data.statuses.concat(prev_tweetlist) } };
+
+      socket.emit('reply_tweets', reply.data);
+
+      stream_reply(socket, query);
+
       helper.info("Logging...");
       var log = db.logSearch(query);
 
@@ -132,24 +101,51 @@ function tweet_query(socket, query, time) {
         var storeTweet = db.storeTweetData(reply.data, data.insertId);
         storeTweet.then(function(results) {
           helper.info("Stored!");
-          resolve(reply);
+          // resolve(reply);
         });
 
         storeTweet.catch(function(error) {
-          reject(error);
+        helper.error("Unable to Store Tweet:", error);
+          // reject(error);
         });
       });
 
       log.catch(function(error) {
-        reject(error);
+        helper.error("Unable to Log Tweet:", error);
+        // reject(error);
       });
     });
 
     // returns an error if the query is valid
     tweets.catch(function(error) {
-      reject(error);
+        helper.error("Invalid Query:", error);
+      // reject(error);
     });
+  // });
+};
+
+function stream_reply(socket, query) {
+  // creates connection to twitter stream, and listens for tweets
+  var stream = get_stream(db.generate_query(query).replace(' OR ', ', '));
+
+  // creates socket.io emission to webpage with live tweets
+  stream.on('tweet', function(reply) {
+    helper.debug("Stream Update Received, Processing...");
+    socket.emit('reply_stream', reply);
+    helper.debug("Stream Update Complete");
   });
+
+  // returns an error if the query is invalid
+  // stream.catch(function(error) {
+  //   helper.error("Invalid Query");
+  //   throw error;
+  // });
+}
+
+// callback function, stored here to preserve scope
+function tweet_error(socket, error) {
+    helper.error("Invalid Query");
+    throw error;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -163,7 +159,5 @@ module.exports = {
   get_frequency:            get_frequency,
 
   tweet_reply:              tweet_reply,
-  tweet_error:              tweet_error,
-  tweet_combo:              tweet_combo,
-  tweet_query:              tweet_query
+  tweet_error:              tweet_error
 }

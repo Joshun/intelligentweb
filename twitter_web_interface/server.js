@@ -33,62 +33,54 @@ app.use(express['static'](__dirname + '/public'));
 
 // retrieves the most recent tweet on a specified user's timeline, and outputs it on the console
 io.of('/').on('connection', function(socket) {
-  var tweets;
-  var stream;
 
   // callback function, stored here to preserve scope
-
   socket.on('query', function(query) {
-    var prev_query;
-    var prev_tweet;
-    var next_tweet;
+    var prev_search;
 
-    prev_query = db.getPreviousSearches(query);
-
-    prev_query.then(function(data) {
+    prev_search = db.getPreviousSearches(query);
+    prev_search.then(function(results) {
 
       // Previous search term(s) exist
-      if (data.length > 0) {
-
-        // prev_tweet =; // gets first result of previous tweets
+      if (results.length > 0) {
 
         // get first result of previous tweets
-         db.getPreviousTweets(data[0].id).then(function(prev_tweets) {
+         db.getPreviousTweets(results[0].id).then(function(prev_tweets) {
         // Previous search term existed, and tweets were stored
           if (prev_tweets.length > 0) {
-            console.log("length:" + prev_tweets.length);
+
+            helper.info("Tweets Found: " + prev_tweets.length);
+
             // creates tweet list from twitter and database
-              var tweet_times = null;
-              var tweet_store = [];
+            var prev_timestamp = null;
+            var prev_tweetlist = [];
 
-              for (var i = 0; i < data.length; i++) {
-                tweet_store.push(db.savedTweetToWeb(data[i]));
-              }
-
-              tweet_times = data[data.length - 1].tweetTimestamp;
-
-              client.tweet_combo(socket, query, tweet_times, tweet_store);
+            for (var i = 0; i < results.length; i++) {
+              prev_tweetlist.push(db.savedTweetToWeb(results[i]));
             }
+
+            prev_timestamp = results[results.length - 1].tweetTimestamp;
+
+            client.tweet_reply(socket, query, prev_timestamp, prev_tweetlist);
+          }
 
           // Previous search term existed, however there were no tweets stored
           else {
-            helper.warn("No previous tweets found for query");
-            tweet_combo(socket, query, null, null);
+            helper.warn("Cannot Find Tweets, Invoking Alternative...");
+            client.tweet_reply(socket, query, null, []);
           }
         })
         .catch(function(error) {
-          helper.warn("error getting previous tweets");
-          helper.debug(error);
+          helper.error("Cannot Retrieve Tweets:", error);
         });
       }
-
       else {
-        client.tweet_combo(socket, query, null, null);
+        client.tweet_reply(socket, query, null, []);
       }
     });
 
-    prev_query.catch(function(error) {
-      helper.error("Task Refused: ", error);
+    prev_search.catch(function(error) {
+      helper.error("Task Refused:", error);
       throw error;
     });
   });
@@ -100,14 +92,14 @@ io.of('/').on('connection', function(socket) {
 
   // terminates socket.io session if an error is encountered
   socket.on('error', function(error) {
-    helper.error('Socket Error: ', error);
+    helper.error("Socket Error:", error);
     socket.destroy();
   });
 
   // terminates stream session if the socket is closed
   socket.on('close', function(query) {
-    helper.info('Socket Closed');
-    if (stream) stream.stop();
+    helper.info("Socket Closed");
+    // if (stream) stream.stop();
   });
 });
 
@@ -124,26 +116,26 @@ app.all('*', function(req, res) {
   });
 });
 
- function tweet_reply(socket, reply, query) {
-    helper.info("Tweets Update Received, Processing...");
+ // function tweet_reply(socket, reply, query) {
+ //    helper.info("Tweets Update Received, Processing...");
 
-    socket.emit('reply_tweets', reply.data);
-    helper.info("Tweets Update Complete");
+ //    socket.emit('reply_tweets', reply.data);
+ //    helper.info("Tweets Update Complete");
 
-    // creates connection to twitter stream, and listens for tweets
-    helper.info("query: ");
-    helper.info(query);
-    // helper.info(db.generate_query(query));
+ //    // creates connection to twitter stream, and listens for tweets
+ //    helper.info("query: ");
+ //    helper.info(query);
+ //    // helper.info(db.generate_query(query));
     
-    stream = client.get_stream(db.generate_query(query).replace(' OR ', ', '));
+ //    stream = client.get_stream(db.generate_query(query).replace(' OR ', ', '));
 
-    // creates socket.io emission to webpage with live tweets
-    stream.on('tweet', function(reply) {
-      helper.debug("Stream Update Received, Processing...");
-      socket.emit('reply_stream', reply);
-      helper.debug("Stream Update Complete");
-    });
-  }
+ //    // creates socket.io emission to webpage with live tweets
+ //    stream.on('tweet', function(reply) {
+ //      helper.debug("Stream Update Received, Processing...");
+ //      socket.emit('reply_stream', reply);
+ //      helper.debug("Stream Update Complete");
+ //    });
+ //  }
 
   // function tweet_combo(socket, query, tweet_time, tweet_store) {
   //   tweets = tweet_query(query, tweet_time);
