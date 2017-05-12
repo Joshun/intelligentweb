@@ -51,15 +51,17 @@ function get_frequency(query, prev, curr) {
 }
 
 function get_date_format(date) {
-  return              date.getFullYear()      + "-"
-    + get_date_padded(date.getMonth() + 1, 2) + "-"
-    + get_date_padded(date.getDate(),      2);
+  return              date.getFullYear().toString()      + "-"
+    + get_date_padded((date.getMonth()+1).toString(), 2) + "-"
+    + get_date_padded(date.getDate().toString(), 2);
 }
 
-function get_data_padded(data, size) {
-  var out = data.trim();
-  while (out.length < size)
-  	out = '0' + out;
+function get_date_padded(date, size) {
+  var out = date.trim();
+  while (out.length < size) {
+    out = '0' + out;
+  }
+  
   return out;
 }
 
@@ -79,7 +81,11 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
 
     if (prev_timestamp != null) {
       helper.info("prev_timestamp: ", prev_timestamp);
-      tweets = get_tweets(db.generate_query(query) + " since: " + prev_timestamp); //TODO format prev_timestamp
+
+      // Convert timestamp into format API expects
+      var formatted_prev_timestamp = get_date_format(new Date(prev_timestamp));
+      helper.info("formatted_prev_timestamp: ", formatted_prev_timestamp);
+      tweets = get_tweets(db.generate_query(query) + " since: " + formatted_prev_timestamp);
     }
     else {
       tweets = get_tweets(db.generate_query(query));
