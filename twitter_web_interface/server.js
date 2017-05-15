@@ -36,6 +36,9 @@ io.of('/').on('connection', function(socket) {
 
   // callback function, stored here to preserve scope
   socket.on('query', function(query) {
+    client.stop_tweets();
+    client.stop_stream();
+
     var prev_search;
 
     prev_search = db.getPreviousSearches(query);
@@ -45,11 +48,12 @@ io.of('/').on('connection', function(socket) {
       if (results.length > 0) {
 
         // get first result of previous tweets
-         db.getPreviousTweets(results[0].id).then(function(prev_tweets) {
+        db.getPreviousTweets(results[0].id).then(function(prev_tweets) {
+          
         // Previous search term existed, and tweets were stored
           if (prev_tweets.length > 0) {
 
-            helper.info("Previous search tweets found: " + prev_tweets.length);
+            helper.info("Previous Tweets Found:", prev_tweets.length);
             helper.debug(prev_tweets[0]);
 
             // creates tweet list from twitter and database
