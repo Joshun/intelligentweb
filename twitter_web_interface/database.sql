@@ -1,20 +1,3 @@
-/* Create teams table */
-CREATE TABLE IF NOT EXISTS teams (
-    id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(20),
-    league VARCHAR(20),
-    location VARCHAR(20),
-    PRIMARY KEY(id)
-);
-
-/* Create players table */
-CREATE TABLE IF NOT EXISTS players (
-    id INT NOT NULL AUTO_INCREMENT,
-    firstName VARCHAR(20),
-    lastName VARCHAR(20),
-    age TINYINT,
-    PRIMARY KEY(id)
-);
 
 /* Create previousSearches table
  * This is to store queries so that if an identical query is made in a given
@@ -39,3 +22,29 @@ CREATE TABLE IF NOT EXISTS tweets (
     FOREIGN KEY(previousSearchId) REFERENCES previousSearches(id),
     PRIMARY KEY(id)
 ) CHARACTER SET='utf8mb4';
+
+/* Create teams table */
+CREATE TABLE IF NOT EXISTS teams (
+    id INT NOT NULL AUTO_INCREMENT,
+    screenName VARCHAR(255),
+    realName VARCHAR(255),
+    PRIMARY KEY(id)
+);
+
+/* Create players table */
+CREATE TABLE IF NOT EXISTS players (
+    id INT NOT NULL AUTO_INCREMENT,
+    screenName VARCHAR(255),
+    realName VARCHAR(255),
+    PRIMARY KEY(id)
+);
+
+/* Add sample teams to teams table */
+INSERT IGNORE INTO teams (screenName, realName) VALUES ('ManUtd', 'Manchester United');
+INSERT IGNORE INTO teams (screenName, realName) VALUES ('ChelseaFC', 'Chelsea');
+INSERT IGNORE INTO teams (screenName, realName) VALUES ('Arsenal', 'Arsenal');
+
+/* Add sample players to players table */
+INSERT IGNORE INTO players (screenName, realName) VALUES ('WayneRooney', 'Wayne Rooney');
+INSERT IGNORE INTO players (screenName, realName) VALUES ('Cristiano', 'Christiano Ronaldo');
+INSERT IGNORE INTO players (screenName, realName) VALUES ('lionel_official', 'Lionel Messi');
