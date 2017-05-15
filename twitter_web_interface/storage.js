@@ -46,18 +46,40 @@ function logSearch(query) {
 		db.getConnection(function(err, connection) {
 			if (err) throw err;
 			connection.query(
-				// "INSERT INTO previousSearches(playerQuery, teamQuery, playerAtChecked, playerHashChecked, playerKeywordChecked, teamAtChecked, teamHashChecked, teamKeywordChecked, queryTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())",
-				"INSERT INTO previousSearches(playerQuery, teamQuery, isOrOperator, queryTimestamp) VALUES (?, ?, ?, NOW())",
-				// [playerQuery, teamQuery,
-				// 	playerAtChecked, playerHashChecked, playerKeywordChecked,
-				// 	teamAtChecked, teamHashChecked, teamKeywordChecked],
+				"SELECT * FROM previousSearches \
+					WHERE playerQuery = ? \
+					AND teamQuery = ? \
+					AND isOrOperator = ?",
 				[playerQuery, teamQuery, isOrOperator],
 				function(error, results, fields) {
-					connection.release();
 					if (error) reject(error);
 					else {
-						helper.debug("LOG QUERY EXECUTED");
-						resolve(results);
+						if (results.length > 0) {
+							connection.query(
+								"UPDATE previousSearches SET queryTimestamp = NOW() WHERE playerQuery = ? AND teamQuery = ? AND isOrOperator = ?",
+							[playerQuery, teamQuery, isOrOperator],
+							function(error, results, fields) {
+								connection.release();
+								if (error) reject(error);
+								else {
+									helper.debug("Log Complete!");
+									resolve(results);
+								}
+							});
+						}
+						else {
+							connection.query(
+								"INSERT INTO previousSearches (playerQuery, teamQuery, isOrOperator, queryTimestamp) VALUES (?, ?, ?, NOW())",
+							[playerQuery, teamQuery, isOrOperator],
+							function(error, results, fields) {
+								connection.release();
+								if (error) reject(error);
+								else {
+									helper.debug("Log Complete!");
+									resolve(results);
+								}
+							});
+						}
 					}
 				});
 		});
