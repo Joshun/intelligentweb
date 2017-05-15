@@ -192,6 +192,34 @@ function savedTweetToWeb(tweet) {
 	};
 }
 
+function getAttributeFromScreenName(attributeTable, screenName) {
+	return new Promise(function (resolve, reject) {
+		db.getConnection(function(err, connection) {
+			if (err) reject(err);
+			connection.query("SELECT * FROM ? WHERE screenName = ?", attributeTable, screenName, function(error, results, fields) {
+				if (error) reject(error);
+				else {
+					if (results != null && results.length > 0) {
+						resolve(results);
+					}
+					else {
+						reject(null);
+					}
+				}
+			});
+		});
+	});
+}
+
+function getTeamFromScreenName(screenName) {
+	return getAttributeFromScreenName('teams', screenName);
+}
+
+function getPlayerFromScreenName(screenName) {
+	return getAttributeFromScreenName('players', screenName);
+}
+
+
 // init
 createTable();
 
