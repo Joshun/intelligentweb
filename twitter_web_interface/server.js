@@ -12,6 +12,7 @@ var fs      = require('fs');
 var config  = require('./config.json');
 var client  = require('./client.js');
 var db      = require('./storage.js');
+var dbpedia = require('./dbpedia.js');
 var helper  = require('./helper.js');
 
 var port    = process.env.PORT || 3000;

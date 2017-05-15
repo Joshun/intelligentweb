@@ -1,14 +1,26 @@
 
 var dbp = require('dbpediaclient');
+var helper = require('./helper.js');
 
-function search(term) {
+function searchPlayer(term) {
+    return search(term, 'soccer player');
+}
+
+function searchTeam(term) {
+    return search(term, 'soccer club');
+}
+
+function search(term, ontologyClass) {
+    helper.debug('term: ', term, ' class: ', ontologyClass);
     return new Promise(function(resolve, reject) {
-        dbp.keywordSearch(keyword, "SportsLeague", function(result) {
+        dbp.keywordSearch(term.player_query, ontologyClass, function(results) {
             resolve(results);
         });
     });  
 }
 
+
 module.exports = {
-    search: search
+    searchTeam: searchTeam,
+    searchPlayer: searchPlayer
 };
