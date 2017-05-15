@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS tweets (
     tweetText VARCHAR(255),
     tweetTimestamp TIMESTAMP,
     previousSearchId INT,
-    FOREIGN KEY(previousSearchId) REFERENCES previousSearches(id),
+    -- FOREIGN KEY(previousSearchId) REFERENCES previousSearches(id),
     PRIMARY KEY(id)
 ) CHARACTER SET='utf8mb4';
 

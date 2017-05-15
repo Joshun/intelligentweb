@@ -110,10 +110,10 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
       helper.info("Logging...");
       var log = db.logSearch(query);
 
-      log.then(function(data) {
-        helper.info("Storing...");
+      log.then(function(index) {
+        helper.info("Storing:", index);
      
-        var storeTweet = db.storeTweetData(reply.data, data.insertId);
+        var storeTweet = db.storeTweetData(reply.data, index);
         storeTweet.then(function(results) {
           helper.info("Stored!");
           // resolve(reply);

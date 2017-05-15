@@ -49,21 +49,22 @@ function logSearch(query) {
 				"SELECT * FROM previousSearches \
 					WHERE playerQuery = ? \
 					AND teamQuery = ? \
-					AND isOrOperator = ?",
+					AND isOrOperator = ? \
+					LIMIT 1",
 				[playerQuery, teamQuery, isOrOperator],
-				function(error, results, fields) {
+				function(error, results, field) {
 					if (error) reject(error);
 					else {
 						if (results.length > 0) {
 							connection.query(
 								"UPDATE previousSearches SET queryTimestamp = NOW() WHERE playerQuery = ? AND teamQuery = ? AND isOrOperator = ?",
 							[playerQuery, teamQuery, isOrOperator],
-							function(error, results, fields) {
+							function(error, data, fields) {
 								connection.release();
 								if (error) reject(error);
 								else {
 									helper.debug("Log Complete!");
-									resolve(results);
+									resolve(results[0].id);
 								}
 							});
 						}
@@ -71,12 +72,12 @@ function logSearch(query) {
 							connection.query(
 								"INSERT INTO previousSearches (playerQuery, teamQuery, isOrOperator, queryTimestamp) VALUES (?, ?, ?, NOW())",
 							[playerQuery, teamQuery, isOrOperator],
-							function(error, results, fields) {
+							function(error, data, fields) {
 								connection.release();
 								if (error) reject(error);
 								else {
 									helper.debug("Log Complete!");
-									resolve(results);
+									resolve(data.insertId);
 								}
 							});
 						}
