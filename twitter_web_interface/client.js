@@ -103,10 +103,7 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
     tweets.then(function(reply) {
       helper.info("Tweets Retrieved from Twitter: " + reply.data.statuses.length);
 
-
-      reply = { data: { statuses: reply.data.statuses.concat(prev_tweetlist) } };
-
-      socket.emit('reply_tweets', reply.data);
+      socket.emit('reply_tweets', { statuses: reply.data.statuses.concat(prev_tweetlist) });
 
       stream_reply(socket, query);
 
