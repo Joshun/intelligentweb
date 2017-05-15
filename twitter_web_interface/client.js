@@ -27,7 +27,7 @@ function get_timeline(user){
 
 function get_frequency_weekly(query) {
   var curr_date = new Date();
-  var prev_date = new Date(curr_date)
+  var prev_date = new Date(curr_date);
       prev_date.setDate(curr_date.getDate() - 7);
 
   helper.info(curr_date, prev_date);
@@ -42,7 +42,7 @@ function get_frequency(query, prev, curr) {
 
   return get_tweets(query_string)
     .then(function(tweets) {
-      helper.info(tweets.data.statuses)
+      helper.info(tweets.data.statuses);
       return tweets.data.statuses.length;
     })
     .catch(function(error) {

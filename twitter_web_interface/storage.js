@@ -127,7 +127,7 @@ function getPreviousSearches(query) {
 			if (err) throw err;
 			connection.query(
 				// Query gets all previousSearches that match the parameters of the previous query and are recent enough
-				"SELECT * FROM previousSearches WHERE playerQuery=? AND teamQuery=? AND isOrOperator=?",
+				"SELECT * FROM previousSearches WHERE playerQuery=? AND teamQuery=? AND isOrOperator=? ORDER BY queryTimestamp DESC",
 				[playerQuery, teamQuery, isOrOperator],
 				function(error, results, fields) {
 					connection.release();
@@ -144,7 +144,7 @@ function getPreviousTweets(prevSearchId) {
 		db.getConnection(function(err, connection) {
 			if (err) reject(err);
 			connection.query(
-				"SELECT * from tweets WHERE previousSearchId = ?",
+				"SELECT * from tweets WHERE previousSearchId = ? ORDER BY tweetId DESC",
 				[prevSearchId],
 				function(error, results, fields) {
 					if (error) reject(error);
