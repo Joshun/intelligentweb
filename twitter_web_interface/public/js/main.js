@@ -17,8 +17,8 @@ function resultToRow(tweet) {
 function initialise() {
   var socket = io(); // auto-detects port
 
-  $('#player_query').tokenfield();
-  $('#team_query').tokenfield();
+  $('#player_query').tokenfield({ delimiter: ", " });
+  $('#team_query').tokenfield({ delimiter: ", " });
 
   // emits query data from the input form to the server
   $('#query_form').submit(function() {
@@ -26,12 +26,12 @@ function initialise() {
     socket.emit('close', "Form Data!");
 
   	socket.emit('query', {
-  		player_query:   $('#player_query').val().replace(", ", " OR "), // input for player name (string)
+  		player_query:   $('#player_query').val(), // input for player name (string)
   		// handles_player: $('#handles_player').is(':checked'), // checkbox for player handles (boolean)
   		// hashtag_player: $('#hashtag_player').is(':checked'), // checkbox for player hashtag (boolean)
   		// keyword_player: $('#keyword_player').is(':checked'), // checkbox for player keyword (boolean)
 
-  		team_query:     $('#team_query').val().replace(", ", " OR "), // input for team name (string)
+  		team_query:     $('#team_query').val(), // input for team name (string)
   		// handles_team:   $('#handles_team').is(':checked'), // checkbox for team handles (boolean)
   		// hashtag_team:   $('#hashtag_team').is(':checked'), // checkbox for team hashtag (boolean)
   		// keyword_team:   $('#keyword_team').is(':checked'), // checkbox for team keyword (boolean)
@@ -40,6 +40,7 @@ function initialise() {
       or_operator:    $('#or_operator').is(':checked') // checkbox for searching player OR team
 
   	});
+    
   	return false; // stops page from refreshing
   });
 
