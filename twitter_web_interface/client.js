@@ -134,11 +134,10 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
     // returns an error if the tweets cannot be stored within the database
     .catch(function(error) {
     helper.error("Unable to Store Tweets:", error);
-    });
-
+    })
     .then(function(results) {
       helper.info("Stored!");
-    })
+    });
 
     // returns an error if the search terms invalid
     tweets.catch(function(error) {
