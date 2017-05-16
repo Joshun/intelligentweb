@@ -35,7 +35,7 @@ function createTable() {
 }
 
 // Writes a search made by the user to the database, timestamped at the time it was made
-function logSearch(query) {
+function logSearch(query, reply) {
 	return new Promise(function(resolve, reject){
 		helper.debug("BEGIN LOG QUERY");
 
@@ -64,7 +64,7 @@ function logSearch(query) {
 								if (error) reject(error);
 								else {
 									helper.debug("Log Complete!");
-									resolve(results[0].id);
+									resolve([results[0].id, reply]);
 								}
 							});
 						}
@@ -77,7 +77,7 @@ function logSearch(query) {
 								if (error) reject(error);
 								else {
 									helper.debug("Log Complete!");
-									resolve(data.insertId);
+									resolve([data.insertId, reply]);
 								}
 							});
 						}

@@ -17,8 +17,8 @@ function resultToRow(tweet) {
 function initialise() {
   var socket = io(); // auto-detects port
 
-  $('#player_query').tokenfield();
-  $('#team_query').tokenfield();
+  $('#player_query').tokenfield({ delimiter: ", " });
+  $('#team_query').tokenfield({ delimiter: ", " });
 
   // emits query data from the input form to the server
   $('#query_form').submit(function() {
@@ -40,6 +40,7 @@ function initialise() {
       or_operator:    $('#or_operator').is(':checked') // checkbox for searching player OR team
 
   	});
+    
   	return false; // stops page from refreshing
   });
 

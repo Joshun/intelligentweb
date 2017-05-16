@@ -40,42 +40,44 @@ io.of('/').on('connection', function(socket) {
 
       // Previous search term(s) exist
       if (results.length > 0) {
-
         // get first result of previous tweets
-        db.getPreviousTweets(results[0].id).then(function(prev_tweets) {
-          
-        // Previous search term existed, and tweets were stored
-          if (prev_tweets.length > 0) {
-
-            helper.info("Previous Tweets Found:", prev_tweets.length);
-            helper.debug(prev_tweets[0]);
-
-            // creates tweet list from twitter and database
-            var prev_timestamp = null;
-            var prev_tweetlist = [];
-
-            for (var i = 0; i < prev_tweets.length; i++) {
-              prev_tweetlist.push(db.savedTweetToWeb(prev_tweets[i]));
-            }
-
-            prev_timestamp = prev_tweets[prev_tweets.length - 1].tweetTimestamp;
-
-            client.tweet_reply(socket, query, prev_timestamp, prev_tweetlist);
-          }
-
-          // Previous search term existed, however there were no tweets stored
-          else {
-            helper.warn("Cannot Find Tweets, Invoking Alternative...");
-            client.tweet_reply(socket, query, null, []);
-          }
-        })
-        .catch(function(error) {
-          helper.error("Cannot Retrieve Tweets:", error);
-        });
+        return db.getPreviousTweets(results[0].id);
       }
       else {
         client.tweet_reply(socket, query, null, []);
+        return Promise.reject(new Error("No Tweets Found"));
       }
+    })
+    .then(function(prev_tweets) {
+          
+    // Previous search term existed, and tweets were stored
+      if (prev_tweets.length > 0) {
+
+        helper.info("Previous Tweets Found:", prev_tweets.length);
+        helper.debug(prev_tweets[0]);
+
+        // creates tweet list from twitter and database
+        var prev_timestamp = null;
+        var prev_tweetlist = [];
+
+        for (var i = 0; i < prev_tweets.length; i++) {
+          prev_tweetlist.push(db.savedTweetToWeb(prev_tweets[i]));
+        }
+
+        prev_timestamp = prev_tweets[prev_tweets.length - 1].tweetTimestamp;
+
+        client.tweet_reply(socket, query, prev_timestamp, prev_tweetlist);
+      }
+
+      // Previous search term existed, however there were no tweets stored
+      else {
+        helper.warn("Cannot Find Tweets, Invoking Alternative...");
+        client.tweet_reply(socket, query, null, []);
+      }
+    })
+    
+    .catch(function(error) {
+      helper.error("Cannot Retrieve Tweets:", error);
     });
 
     prev_search.catch(function(error) {

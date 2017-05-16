@@ -93,21 +93,21 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
     helper.info("Tweets Update Complete");
 
     // creates connection to twitter search, and retrieves tweets
-
     if (prev_timestamp != null) {
       helper.info("prev_timestamp: ", prev_timestamp);
 
-      // Convert timestamp into format API expects
+      // convert timestamp into compatible database format
       var formatted_prev_timestamp = get_date_format(new Date(prev_timestamp));
-      helper.info("Complete String:", (db.generate_query(query) + " since_id:" + prev_tweetlist[0].id_str));
+
+      helper.info("Complete Tweets String:", (db.generate_query(query) + " since_id:" + prev_tweetlist[0].id_str));
       tweets = get_tweets(db.generate_query(query) + " since_id:" + prev_tweetlist[0].id_str);
     }
     else {
-      helper.info("Complete String:", db.generate_query(query));
+      helper.info("Complete Tweets String:", db.generate_query(query));
       tweets = get_tweets(db.generate_query(query));
     }
 
-    // generates socket.io emission to webpage with tweets
+    // creates socket.io emission to webpage with tweets
     tweets.then(function(reply) {
       helper.info("Tweets Retrieved from Twitter: " + reply.data.statuses.length);
 
@@ -116,33 +116,33 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
       stream_reply(socket, query);
 
       helper.info("Logging...");
-      var log = db.logSearch(query);
+      return db.logSearch(query, reply);
+    })
 
-      log.then(function(index) {
-        helper.info("Storing:", index);
-     
-        var storeTweet = db.storeTweetData(reply.data, index);
-        storeTweet.then(function(results) {
-          helper.info("Stored!");
-          // resolve(reply);
-        });
+    // returns an error if the search terms cannot be stored within the database
+    .catch(function(error) {
+      helper.error("Unable to Store Search:", error);
+    })
 
-        storeTweet.catch(function(error) {
-        helper.error("Unable to Store Tweet:", error);
-          // reject(error);
-        });
-      });
 
-      log.catch(function(error) {
-        helper.error("Unable to Log Tweet:", error);
-        // reject(error);
-      });
+    .then(function(reply) {
+      helper.info("Storing:", reply[1].data.statuses.length);
+   
+      return db.storeTweetData(reply[1].data, reply[0]);
+    })
+
+    // returns an error if the tweets cannot be stored within the database
+    .catch(function(error) {
+    helper.error("Unable to Store Tweets:", error);
     });
 
-    // returns an error if the query is valid
+    .then(function(results) {
+      helper.info("Stored!");
+    })
+
+    // returns an error if the search terms invalid
     tweets.catch(function(error) {
-        helper.error("Invalid Query:", error);
-      // reject(error);
+        helper.error("Search Terms Invalid:", error);
     });
   // });
 };
@@ -160,18 +160,19 @@ function stream_reply(socket, query) {
   else {
     for (var i = 0 ; i < tweet_p.length ; i++) {
       for (var j = 0 ; j < tweet_t.length ; j++) {
-        tweet.push(("\"" + tweet_p[i].trim() + "\" \"" + tweet_t[j]).trim() + "\"");
+        tweet.push((tweet_p[i].trim() + " " + tweet_t[j]).trim());
       }
     }
   }
 
-  helper.info("Formed Stream String:", tweet.toString());
+  helper.info("Complete Stream String:", tweet);
 
-  stream = get_stream(tweet.toString());
+  stream = get_stream(tweet);
 
   // creates socket.io emission to webpage with live tweets
   stream.on('tweet', function(reply) {
     // helper.debug("Stream Update Received, Processing...");
+
     socket.emit('reply_stream', reply);
     // helper.debug("Stream Update Complete");
   });
