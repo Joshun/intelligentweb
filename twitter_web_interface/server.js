@@ -33,6 +33,8 @@ io.of('/').on('connection', function(socket) {
     client.stop_tweets();
     client.stop_stream();
 
+    dbpedia.getAndEmitStats(socket, query.player_query, query.team_query);
+
     var prev_search;
 
     prev_search = db.getPreviousSearches(query);

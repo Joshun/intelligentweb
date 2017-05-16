@@ -185,6 +185,15 @@ body {
     right:  -2.5px;
 }
 
+#stats_container h1 {
+    font-size: 14pt;
+    font-weight: bold;
+}
+
+#stats_container p {
+    font-size: 10pt;
+}
+
 #post_container {
     position: absolute;
 
