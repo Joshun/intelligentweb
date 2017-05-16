@@ -26,16 +26,16 @@ CREATE TABLE IF NOT EXISTS tweets (
 /* Create teams table */
 CREATE TABLE IF NOT EXISTS teams (
     id INT NOT NULL AUTO_INCREMENT,
-    screenName VARCHAR(255),
-    realName VARCHAR(255),
+    screenName VARCHAR(255) UNIQUE,
+    realName VARCHAR(255) UNIQUE,
     PRIMARY KEY(id)
 );
 
 /* Create players table */
 CREATE TABLE IF NOT EXISTS players (
     id INT NOT NULL AUTO_INCREMENT,
-    screenName VARCHAR(255),
-    realName VARCHAR(255),
+    screenName VARCHAR(255) UNIQUE,
+    realName VARCHAR(255) UNIQUE,
     PRIMARY KEY(id)
 );
 
