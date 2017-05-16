@@ -36,6 +36,14 @@ io.of('/').on('connection', function(socket) {
     var prev_search;
 
     prev_search = db.getPreviousSearches(query);
+
+    dbpedia.getTeamStats(query.team_query).then(function(result) {
+      helper.debug('dbpedia:');
+      console.log(result);
+    }).catch(function(error) {
+      helper.error(error);
+    });
+
     prev_search.then(function(results) {
 
       // Previous search term(s) exist
