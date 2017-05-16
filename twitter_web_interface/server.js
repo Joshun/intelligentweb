@@ -64,6 +64,10 @@ io.of('/').on('connection', function(socket) {
           prev_tweetlist.push(db.savedTweetToWeb(prev_tweets[i]));
         }
 
+        for (var i = 0; i < prev_tweetlist.length; i++) {
+          prev_tweetlist[i].db_state = true;
+        }
+
         prev_timestamp = prev_tweets[prev_tweets.length - 1].tweetTimestamp;
 
         client.tweet_reply(socket, query, prev_timestamp, prev_tweetlist);

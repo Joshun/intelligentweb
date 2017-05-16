@@ -1,4 +1,4 @@
-@-webkit-keyframes fadein {
+@-webkit-keyframes fadein_storage {
     from {
         background-color: #CCFFCC;
     }
@@ -7,7 +7,16 @@
     }
 }
 
-@-moz-keyframes fadein {
+@-webkit-keyframes fadein_twitter {
+    from {
+        background-color: #CCCCFF;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+@-moz-keyframes fadein_storage {
     from {
         background-color: #CCFFCC;
     }
@@ -16,7 +25,16 @@
     }
 }
 
-@-ms-keyframes fadein {
+@-moz-keyframes fadein_twitter {
+    from {
+        background-color: #CCCCFF;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+@-ms-keyframes fadein_storage {
     from {
         background-color: #CCFFCC;
     }
@@ -25,7 +43,16 @@
     }
 }
 
-@-o-keyframes fadein {
+@-ms-keyframes fadein_twitter {
+    from {
+        background-color: #CCCCFF;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+@-o-keyframes fadein_storage {
     from {
         background-color: #CCFFCC;
     }
@@ -34,9 +61,27 @@
     }
 }
 
-@keyframes fadein {
+@-o-keyframes fadein_twitter {
+    from {
+        background-color: #CCCCFF;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+@keyframes fadein_storage {
     from {
         background-color: #CCFFCC;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+@keyframes fadein_twitter {
+    from {
+        background-color: #CCCCFF;
     }
     to {
         background-color: inherit;
@@ -48,12 +93,25 @@
     src: url("/fonts/ubuntu_regular.ttf");
 }
 
-table tr td {
-  -webkit-animation: fadein 2s linear 0s;
-     -moz-animation: fadein 2s linear 0s;
-      -ms-animation: fadein 2s linear 0s;
-       -o-animation: fadein 2s linear 0s;
-          animation: fadein 2s linear 0s;
+table tr.storage td {
+  -webkit-animation: fadein_storage 2s linear 0s;
+     -moz-animation: fadein_storage 2s linear 0s;
+      -ms-animation: fadein_storage 2s linear 0s;
+       -o-animation: fadein_storage 2s linear 0s;
+          animation: fadein_storage 2s linear 0s;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+table tr.twitter td {
+  -webkit-animation: fadein_twitter 2s linear 0s;
+     -moz-animation: fadein_twitter 2s linear 0s;
+      -ms-animation: fadein_twitter 2s linear 0s;
+       -o-animation: fadein_twitter 2s linear 0s;
+          animation: fadein_twitter 2s linear 0s;
 
   overflow: hidden;
   text-overflow: ellipsis;

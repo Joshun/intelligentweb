@@ -4,8 +4,16 @@
 
 // passes results into table
 function resultToRow(tweet) {
-	row = "<tr>"
-    	+   "<td width=\"10%\"><a href=" + "https://twitter.com/" + tweet["user"].screen_name + ">@" + tweet["user"].screen_name + "</a></td>"
+  var row;
+
+  if (tweet.db_state) {
+    row = "<tr class=\"storage\">"
+  }
+  else {
+    row = "<tr class=\"twitter\">"
+  }
+
+  row +=  "<td width=\"10%\"><a href=" + "https://twitter.com/" + tweet["user"].screen_name + ">@" + tweet["user"].screen_name + "</a></td>"
     	+   "<td width=\"50%\">" + tweet["text"] + "</td>"
     	+   "<td width=\"15%\">" + tweet["created_at"].substring(11,19) + "</td>"
     	+   "<td width=\"15%\">" + tweet["created_at"].substring(0,10) + "</td>"
@@ -16,6 +24,8 @@ function resultToRow(tweet) {
 
 function initialise() {
   var socket = io(); // auto-detects port
+
+  var stream = [];
 
   $('#player_query').tokenfield({ delimiter: ", " });
   $('#team_query').tokenfield({ delimiter: ", " });
@@ -46,13 +56,23 @@ function initialise() {
 
   socket.on('reply_tweets', function(tweets) {
     // write results into table
-  	console.log(tweets);
+    console.log(tweets);
 
-  	table = $('#form_table');
-  	for (var i = 0; i < tweets.statuses.length; i++) {
-  		table.append(resultToRow(tweets.statuses[i]));
+    table = $('#form_table');
+    for (var i = 0; i < tweets.statuses.length; i++) {
+      table.append(resultToRow(tweets.statuses[i]));
     }
   });
+
+  // socket.on('reply_tweets', function(tweets) {
+  //   // write results into table
+  // 	console.log(tweets);
+
+  // 	table = $('#form_table');
+  // 	for (var i = 0; i < tweets.statuses.length; i++) {
+  // 		table.append(resultToRow(tweets.statuses[i]));
+  //   }
+  // });
 
   socket.on('reply_stream', function(stream) {
     // write results into table
@@ -64,4 +84,15 @@ function initialise() {
       $("#form_table tr:last").remove();
     }
   });
+
+  // socket.on('reply_stream', function(stream) {
+  //   // write results into table
+  //   table = $('#form_table');
+  //   table.prepend(resultToRow(stream));
+
+    // //limits table size
+  //   while($("#form_table tr").length > 300) {
+  //     $("#form_table tr:last").remove();
+  //   }
+  // });
 }
