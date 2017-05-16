@@ -22,7 +22,17 @@ function resultToRow(tweet) {
 	return row;
 }
 
+function displayNoStats() {
+	var statsContainer = $("#stats_container");
+	// statsContainer.empty();
+	var noStatsText = $("<span>").css("font-size", "14pt");
+	noStatsText.html("No stats found");
+	statsContainer.append(noStatsText);
+}
+
 function initialise() {
+	displayNoStats();
+
   var socket = io(); // auto-detects port
 
   var stream = [];
