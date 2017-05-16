@@ -45,28 +45,49 @@ function get_timeline(user){
 }
 
 function get_frequency_weekly(query) {
+  return new Promise(function(resolve,reject) {
+
   var curr_date = new Date();
-  var prev_date = new Date(curr_date);
-      prev_date.setDate(curr_date.getDate() - 7);
+  var prev_date = new Date(curr_date-1);
+  var dict = {};
+  var count = [];
 
-  helper.info(curr_date, prev_date);
+  var j = 0;
+  var i = 0;
+  for (var i=1; i<=7; i++) {
+    curr_date.setDate(prev_date.getDate());
+    prev_date.setDate(curr_date.getDate() - 1);
 
-  return get_frequency(query, prev_date, curr_date);
-}
+    get_frequency(query,prev_date,curr_date).then(function(result){
+      count.push(result);
+      dict[j] = result;
+      j+=1;
+
+      if (j == 7) {
+        resolve(count);
+      } else if (j ==8) {
+        reject(null)
+      }
+
+    })
+  };
+  })
+};
 
 function get_frequency(query, prev, curr) {
+  return new Promise(function(resolve,reject) {
   var prev_date = get_date_format(prev);
   var curr_date = get_date_format(curr);
   var query_string = query + " since:" + prev_date + " until:" + curr_date;
+  var pair = {};
+    get_tweets(query_string).then(function(tweets) {
+      pair[curr_date] = tweets.data.statuses.length
+      resolve(pair)
 
-  return get_tweets(query_string)
-    .then(function(tweets) {
-      helper.info(tweets.data.statuses);
-      return tweets.data.statuses.length;
+    }).catch(function(error) {
+      reject(error)
     })
-    .catch(function(error) {
-    	return error;
-    });
+  });
 }
 
 function get_date_format(date) {
@@ -80,7 +101,7 @@ function get_date_padded(date, size) {
   while (out.length < size) {
     out = '0' + out;
   }
-  
+
   return out;
 }
 
@@ -107,6 +128,13 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
       tweets = get_tweets(db.generate_query(query));
     }
 
+    // todo: send tweetfreqs via socket.io
+    tweetfreqs = get_frequency_weekly(db.generate_query(query));
+    tweetfreqs.then(function(data) {
+        helper.info(data);
+    })
+
+
     // creates socket.io emission to webpage with tweets
     tweets.then(function(reply) {
       helper.info("Tweets Retrieved from Twitter: " + reply.data.statuses.length);
@@ -127,7 +155,7 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
 
     .then(function(reply) {
       helper.info("Storing:", reply[1].data.statuses.length);
-   
+
       return db.storeTweetData(reply[1].data, reply[0]);
     })
 
