@@ -40,9 +40,9 @@ CREATE TABLE IF NOT EXISTS players (
 );
 
 /* Add sample teams to teams table */
-INSERT IGNORE INTO teams (screenName, realName) VALUES ('ManUtd', 'Manchester United');
-INSERT IGNORE INTO teams (screenName, realName) VALUES ('ChelseaFC', 'Chelsea');
-INSERT IGNORE INTO teams (screenName, realName) VALUES ('Arsenal', 'Arsenal');
+INSERT IGNORE INTO teams (screenName, realName) VALUES ('ManUtd', 'Manchester F.C.');
+INSERT IGNORE INTO teams (screenName, realName) VALUES ('ChelseaFC', 'Chelsea F.C.');
+INSERT IGNORE INTO teams (screenName, realName) VALUES ('Arsenal', 'Arsenal F.C.');
 
 /* Add sample players to players table */
 INSERT IGNORE INTO players (screenName, realName) VALUES ('WayneRooney', 'Wayne Rooney');

@@ -36,6 +36,8 @@ io.of('/').on('connection', function(socket) {
     var prev_search;
 
     prev_search = db.getPreviousSearches(query);
+
+
     prev_search.then(function(results) {
 
       // Previous search term(s) exist

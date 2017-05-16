@@ -180,7 +180,7 @@ function stream_reply(socket, query) {
   stream.on('disconnect', function(error) {
     helper.warn("Multiple Streams Detected, Closing...");
     stream.stop();
-  })
+  });
 
   // returns an error if the query is invalid
   // stream.catch(function(error) {

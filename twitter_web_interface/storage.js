@@ -215,18 +215,24 @@ function savedTweetToWeb(tweet) {
 	};
 }
 
-function getAttributeFromScreenName(attributeTable, screenName) {
+function getRealNameFromScreenName(nameTable, screenName) {
 	return new Promise(function (resolve, reject) {
 		db.getConnection(function(err, connection) {
 			if (err) reject(err);
-			connection.query("SELECT * FROM ? WHERE screenName = ?", attributeTable, screenName, function(error, results, fields) {
+			helper.debug("SELECT * FROM $TABLE WHERE screenName = ?".replace("$TABLE", nameTable));
+			helper.debug(screenName);
+			connection.query("SELECT * FROM $TABLE WHERE screenName = ?".replace("$TABLE", nameTable), screenName, function(error, results, fields) {
+				helper.debug('query done');
 				if (error) reject(error);
 				else {
-					if (results != null && results.length > 0) {
-						resolve(results);
+					if (results == null) {
+						reject("getRealNameFromScreenName failed!");
+					}
+					else if (results.length > 0) {
+						resolve(results[0].realName);
 					}
 					else {
-						reject(null);
+						resolve(null);
 					}
 				}
 			});
@@ -235,11 +241,11 @@ function getAttributeFromScreenName(attributeTable, screenName) {
 }
 
 function getTeamFromScreenName(screenName) {
-	return getAttributeFromScreenName('teams', screenName);
+	return getRealNameFromScreenName('teams', screenName);
 }
 
 function getPlayerFromScreenName(screenName) {
-	return getAttributeFromScreenName('players', screenName);
+	return getRealNameFromScreenName('players', screenName);
 }
 
 
@@ -255,7 +261,10 @@ module.exports = {
 	getPreviousTweets: getPreviousTweets,
 
 	generate_query: generate_query,
-	savedTweetToWeb: savedTweetToWeb
+	savedTweetToWeb: savedTweetToWeb,
+
+	getTeamFromScreenName: getTeamFromScreenName,
+	getPlayerFromScreenName: getPlayerFromScreenName
 };
 
 // Drafting of how the handles and hashtag tables might be used
