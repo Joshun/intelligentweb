@@ -17,15 +17,19 @@ function searchTeam(term) {
 function search(term, ontologyClass) {
     helper.debug('term: ', term, ' class: ', ontologyClass);
     return new Promise(function(resolve, reject) {
-        dbp.keywordSearch(term.player_query, ontologyClass, function(results) {
+        dbp.keywordSearch(term, ontologyClass, function(results) {
             if (results == null) {
                 reject("error searching");
             }
-            else if (results.length > 0) {
-                resolve(results[0]);
-            }
             else {
-                resolve(null);
+                var parsedResults = JSON.parse(results).results;
+                if (results.length > 0) {
+                    helper.debug(parsedResults);
+                    resolve(parsedResults);
+                }
+                else {
+                    resolve(null);
+                }
             }
         });
     });  
@@ -55,7 +59,7 @@ function getTeamStats(teamTwitterHandle) {
 
 function getPlayerStats(playerTwitterHandle) {
     return new Promise(function(resolve, reject) {
-       storage.getTeamFromScreenName(playerTwitterHandle).then(function(result) {
+       storage.getPlayerFromScreenName(playerTwitterHandle).then(function(result) {
            return searchPlayer(result);
        }).catch(function(error) {
            helper.error("getPlayerStats failed: ", error);
