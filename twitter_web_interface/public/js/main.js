@@ -44,7 +44,7 @@ function makeDescription(container, stats) {
 		descriptionBtn.attr("data-toggle", "collapse");
 		descriptionBtn.prop("href", "#"+generatedId);
 		descriptionBtn.addClass("btn");
-		descriptionBtn.addClass("btn-info");
+		descriptionBtn.addClass("btn-default");
 		descriptionBtn.html("show description");
 		container.append(descriptionBtn);
 
