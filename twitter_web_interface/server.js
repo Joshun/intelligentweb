@@ -17,13 +17,6 @@ var helper  = require('./helper.js');
 
 var port    = process.env.PORT || 3000;
 
-process.stdin.resume();
-
-process.on('SIGINT', function() {
-  helper.info("Program Terminated");
-  process.exit();
-});
-
 // specifies which port the server should be hosted on
 server.listen(port, function() {
   helper.info('Server Listening on Port %d', port);

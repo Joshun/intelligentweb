@@ -180,24 +180,24 @@ function getPreviousTweets(prevSearchId) {
 
 // Converts the user's search terms into the appropriate format for the Twitter API
 function generate_query(query) {
-	var tweet_p = query.player_query.split(", ");
-	var tweet_t = query.team_query.split(", ");
+	var tweet_p = query.player_query.split(",");
+	var tweet_t = query.team_query.split(",");
 
 	tweet_p = tweet_p.map(function(str) {
-		return "\"" + str + "\"";
+		return "\"" + str.trim() + "\"";
 	});
 
 	tweet_t = tweet_t.map(function(str) {
-		return "\"" + str + "\"";
+		return "\"" + str.trim() + "\"";
 	});
 
 	var tweet_query;
 
     if (query.or_operator) {
-      tweet_query = tweet_p.toString() + ' OR ' + tweet_t.toString();
+      tweet_query = tweet_p.toString().replace(",", " OR ") + ' OR ' + tweet_t.toString().replace(",", " OR ") ;
   	}
     else {
-      tweet_query = tweet_p.toString() + ' '    + tweet_t.toString();
+      tweet_query = tweet_p.toString().replace(",", " OR ") + ' '    + tweet_t.toString().replace(",", " OR ");
     }
 
     helper.debug("Processed:", tweet_query, query.or_operator);

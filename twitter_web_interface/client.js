@@ -16,6 +16,14 @@ var tweet_limit = 300;
 var tweets; // global reference to tweets handler
 var stream; // global reference to stream handler
 
+process.stdin.resume();
+
+process.on('SIGINT', function() {
+  helper.info("Program Terminated");
+  stop_stream();
+  process.exit();
+});
+
 function get_tweets(query) {
   return T.get('search/tweets', { q: query, count: tweet_limit });
 }
@@ -152,7 +160,7 @@ function stream_reply(socket, query) {
   else {
     for (var i = 0 ; i < tweet_p.length ; i++) {
       for (var j = 0 ; j < tweet_t.length ; j++) {
-        tweet.push((tweet_p[i] + " " + tweet_t[j]).trim());
+        tweet.push(("\"" + tweet_p[i].trim() + "\" \"" + tweet_t[j]).trim() + "\"");
       }
     }
   }
