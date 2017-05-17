@@ -36,17 +36,26 @@ function search(term, ontologyClass, firstOnly) {
     });  
 }
 
+function removeAtTag(twitterHandle) {
+    // Trim whitespace
+    twitterHandle = twitterHandle.trim();
+
+    // If "@" not present, don't do anything and return null
+    if (! twitterHandle.startsWith("@")) {
+        return null;
+    }
+    else {
+        // If "@" present, remove it and return
+        return twitterHandle.slice(1, twitterHandle.length);
+    }
+}
 
 function getTeamStats(teamTwitterHandle) {
     return new Promise(function(resolve, reject) {
-        // If "@" not present, don't query anything
-        if (! teamTwitterHandle.startsWith("@")) {
+        teamTwitterHandle = removeAtTag(teamTwitterHandle);
+        if (teamTwitterHandle == null) {
             resolve(null);
-        }
-        else {
-            // If "@" present, trim it and carry on with query
-            teamTwitterHandle = teamTwitterHandle.slice(1, teamTwitterHandle.length);
-        }
+        }   
 
        storage.getTeamFromScreenName(teamTwitterHandle).then(function(result) {
               teamTwitterHandle = teamTwitterHandle.trim();
@@ -69,14 +78,10 @@ function getTeamStats(teamTwitterHandle) {
 
 function getPlayerStats(playerTwitterHandle) {
     return new Promise(function(resolve, reject) {
-        playerTwitterHandle = playerTwitterHandle.trim();
-        // If "@" not present, don't query anything
-        if (! playerTwitterHandle.startsWith("@")) {
+
+        playerTwitterHandle = removeAtTag(playerTwitterHandle);
+        if (playerTwitterHandle == null) {
             resolve(null);
-        }
-        else {
-            // If "@" present, trim it and carry on with query
-                playerTwitterHandle = playerTwitterHandle.slice(1, playerTwitterHandle.length);
         }
         storage.getPlayerFromScreenName(playerTwitterHandle).then(function(result) {
             searchPlayer(result).then(function(stats) {
