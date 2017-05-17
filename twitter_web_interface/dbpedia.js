@@ -3,6 +3,8 @@ var dbp = require('dbpediaclient');
 var storage = require('./storage.js');
 var helper = require('./helper.js');
 
+//var fs = require('fs');
+
 // Searches player stats given player term
 function searchPlayer(term) {
     return search(term, 'soccer player', true);
@@ -26,6 +28,16 @@ function search(term, ontologyClass, firstOnly) {
                 if (results.length > 0) {
                     helper.debug(parsedResults);
                     // If firstOnly set, only retrieve first result
+
+                    //// DEBUGGING DBPEDIA
+                    // var fname = "/tmp/node-out-" + (Math.random() * 1e9).toString() ;
+                    // fs.writeFile(fname, results, function(err) {
+                    //     if (err) console.log(err);
+                    //     else console.log("saved! ", fname);
+                    // });
+                    ////
+
+
                     resolve(firstOnly ? parsedResults[0] : parsedResults);
                 }
                 else {
@@ -108,7 +120,8 @@ function getAndEmitStats(socket, playerTwitterHandle, teamTwitterHandle) {
     getTeamStats(teamTwitterHandle).then(function(teamResults) {
         helper.debug("got team results");
         var statsToSend = {
-            "description": teamResults != null && "description" in teamResults ? teamResults.description : ""
+            "description": teamResults != null && "description" in teamResults ? teamResults.description : "",
+            "label": teamResults != null && "label" in teamResults ? teamResults.label : ""
         };
         socket.emit('team_stats', statsToSend);
 
@@ -121,7 +134,8 @@ function getAndEmitStats(socket, playerTwitterHandle, teamTwitterHandle) {
         helper.debug("got player results");
         helper.debug("stats sent!");
         var statsToSend = { 
-            "description": playerResults != null && "description" in playerResults ? playerResults.description : ""
+            "description": playerResults != null && "description" in playerResults ? playerResults.description : "",
+            "label": playerResults != null && "label" in playerResults ? playerResults.label : ""
         };
         socket.emit('player_stats', statsToSend);
 
