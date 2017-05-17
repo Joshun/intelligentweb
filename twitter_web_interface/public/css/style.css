@@ -99,11 +99,6 @@ table tr.storage td {
       -ms-animation: fadein_storage 2s linear 0s;
        -o-animation: fadein_storage 2s linear 0s;
           animation: fadein_storage 2s linear 0s;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: inline-block;
-  white-space: nowrap;
 }
 
 table tr.twitter td {
@@ -112,7 +107,9 @@ table tr.twitter td {
       -ms-animation: fadein_twitter 2s linear 0s;
        -o-animation: fadein_twitter 2s linear 0s;
           animation: fadein_twitter 2s linear 0s;
+}
 
+table tr td {
   overflow: hidden;
   text-overflow: ellipsis;
   display: inline-block;
