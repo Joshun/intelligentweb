@@ -51,7 +51,9 @@ function makeDescription(container, stats) {
 		var descriptionPg = $("<p>");
 		descriptionPg.attr("id", generatedId);
 		descriptionPg.addClass("collapse");
-		descriptionPg.html(stats.description);
+		descriptionPg.html(
+			(stats.description != null && stats.description.length > 0) ? stats.description : "not available"
+			);
 		container.append(descriptionPg);
 	}
 }

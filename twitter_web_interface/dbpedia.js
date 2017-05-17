@@ -39,12 +39,21 @@ function search(term, ontologyClass, firstOnly) {
 
 function getTeamStats(teamTwitterHandle) {
     return new Promise(function(resolve, reject) {
+        // If "@" not present, don't query anything
+        if (! teamTwitterHandle.startsWith("@")) {
+            resolve(null);
+        }
+        else {
+            // If "@" present, trim it and carry on with query
+            teamTwitterHandle = teamTwitterHandle.slice(1, teamTwitterHandle.length);
+        }
+
        storage.getTeamFromScreenName(teamTwitterHandle).then(function(result) {
-           helper.debug('getTeamStats (1): ', result);
+              teamTwitterHandle = teamTwitterHandle.trim();
+               
            if (result == null) resolve(null);
            else {
                searchTeam(result).then(function(stats) {
-                   helper.debug('getTeamStats (2): ', stats);
                    resolve(stats);
                }).catch(function(error) {
                    helper.error('getTeamStats failed');
@@ -60,26 +69,31 @@ function getTeamStats(teamTwitterHandle) {
 
 function getPlayerStats(playerTwitterHandle) {
     return new Promise(function(resolve, reject) {
-        helper.debug("playerTwitterhANDLE:", playerTwitterHandle);
-       storage.getPlayerFromScreenName(playerTwitterHandle).then(function(result) {
-           searchPlayer(result).then(function(stats) {
-                helper.debug('getPlayerStats (1): ', result);
-
+        playerTwitterHandle = playerTwitterHandle.trim();
+        // If "@" not present, don't query anything
+        if (! playerTwitterHandle.startsWith("@")) {
+            resolve(null);
+        }
+        else {
+            // If "@" present, trim it and carry on with query
+                playerTwitterHandle = playerTwitterHandle.slice(1, playerTwitterHandle.length);
+        }
+        storage.getPlayerFromScreenName(playerTwitterHandle).then(function(result) {
+            searchPlayer(result).then(function(stats) {
                 if (result == null) resolve(null);
                 else {
                     searchPlayer(result).then(function(stats) {
-                        helper.debug('getPlayerStats (2): ', stats);
                         resolve(stats);
                     }).catch(function(error) {
                         helper.error('getPlayerStats failed');
                         reject(error);
                     });
                 }
-           });
-       }).catch(function(error) {
-           helper.error("getPlayerStats failed: ", error);
-           reject("getPlayerStats failed");
-       });
+            });
+        }).catch(function(error) {
+            helper.error("getPlayerStats failed: ", error);
+            reject("getPlayerStats failed");
+        });
     });
 }
 
@@ -89,7 +103,7 @@ function getAndEmitStats(socket, playerTwitterHandle, teamTwitterHandle) {
     getTeamStats(teamTwitterHandle).then(function(teamResults) {
         helper.debug("got team results");
         var statsToSend = {
-            "description": "description" in teamResults ? teamResults.description : ""
+            "description": teamResults != null && "description" in teamResults ? teamResults.description : ""
         };
         socket.emit('team_stats', statsToSend);
 
@@ -102,7 +116,7 @@ function getAndEmitStats(socket, playerTwitterHandle, teamTwitterHandle) {
         helper.debug("got player results");
         helper.debug("stats sent!");
         var statsToSend = { 
-            "description": "description" in playerResults ? playerResults.description : ""
+            "description": playerResults != null && "description" in playerResults ? playerResults.description : ""
         };
         socket.emit('player_stats', statsToSend);
 
