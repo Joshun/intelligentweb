@@ -152,7 +152,16 @@ body {
     table-layout: fixed;
 }
 
+#stat_div {
+    position: absolute;
+    overflow-x: hidden;
+    overflow-y: scroll;
 
+    top:     0px;
+    bottom:  0px;
+    left:    0px;
+    right:   0px;
+}
 
 #page_container {
     position: relative;
@@ -175,7 +184,7 @@ body {
     right:   0.0px;
 }
 
-#stats_container {
+#stat_container {
     margin: 0px 0px 0px 5px;
     width: 25%;
 
@@ -187,14 +196,14 @@ body {
     /*max-height: 100px;*/
 }
 
-#stats_container h1 {
+/*#stat_container h1 {
     font-size: 14pt;
     font-weight: bold;
 }
 
-#stats_container p {
+#stat_container p {
     font-size: 10pt;
-}
+}*/
 
 #post_container {
     position: absolute;
@@ -209,7 +218,7 @@ body {
     margin: 5px 5px 0px 0px;
 }
 
-#form_container, #stats_container, #post_container {
+#form_container, #stat_container, #post_container {
     position: absolute;
 
     padding: 5px 10px 5px 10px;

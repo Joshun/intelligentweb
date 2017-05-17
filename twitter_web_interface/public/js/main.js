@@ -24,72 +24,70 @@ function resultToRow(tweet) {
 
 var statsState = { 'team_stats': null, 'player_stats': null };
 
+// function displayNoStats() {
+// 	var statsContainer = $("#stats_container");
+// 	statsContainer.empty();
+// 	var noStatsText = $("<h1>");
+// 	noStatsText.html("No stats found");
+// 	statsContainer.append(noStatsText);
+// }
 
+// function makeDescription(container, stats) {
+// 	if ("description" in stats) {
+// 		console.log(stats.description);
 
-function displayNoStats() {
-	var statsContainer = $("#stats_container");
-	statsContainer.empty();
-	var noStatsText = $("<h1>");
-	noStatsText.html("No stats found");
-	statsContainer.append(noStatsText);
-}
+// 		var generatedId = "gen-id-" + Math.round(Math.random()*1e9).toString();
 
-function makeDescription(container, stats) {
-	if ("description" in stats) {
-		console.log(stats.description);
+// 		var descriptionBtn = $("<a>");
+// 		descriptionBtn.attr("data-toggle", "collapse");
+// 		descriptionBtn.prop("href", "#"+generatedId);
+// 		descriptionBtn.addClass("btn");
+// 		descriptionBtn.addClass("btn-default");
+// 		descriptionBtn.html("show description");
+// 		container.append(descriptionBtn);
 
-		var generatedId = "gen-id-" + Math.round(Math.random()*1e9).toString();
+// 		var descriptionPg = $("<p>");
+// 		descriptionPg.attr("id", generatedId);
+// 		descriptionPg.addClass("collapse");
+// 		descriptionPg.html(
+// 			(stats.description != null && stats.description.length > 0) ? stats.description : "not available"
+// 			);
+// 		container.append(descriptionPg);
+// 	}
+// }
 
-		var descriptionBtn = $("<a>");
-		descriptionBtn.attr("data-toggle", "collapse");
-		descriptionBtn.prop("href", "#"+generatedId);
-		descriptionBtn.addClass("btn");
-		descriptionBtn.addClass("btn-default");
-		descriptionBtn.html("show description");
-		container.append(descriptionBtn);
+// function updateStatsPanel() {
+// 	var statsContainer = $("#stats_container");
 
-		var descriptionPg = $("<p>");
-		descriptionPg.attr("id", generatedId);
-		descriptionPg.addClass("collapse");
-		descriptionPg.html(
-			(stats.description != null && stats.description.length > 0) ? stats.description : "not available"
-			);
-		container.append(descriptionPg);
-	}
-}
+// 	// Both player_stats and team_stats empty
+// 	if (statsState.player_stats == null && statsState.team_stats == null) {
+// 			displayNoStats();
+// 	}
+// 	else {
+// 		// Clear the stats container
+// 		statsContainer.empty();
 
-function updateStatsPanel() {
-	var statsContainer = $("#stats_container");
-
-	// Both player_stats and team_stats empty
-	if (statsState.player_stats == null && statsState.team_stats == null) {
-			displayNoStats();
-	}
-	else {
-		// Clear the stats container
-		statsContainer.empty();
-
-		// player_stats available
-		if (statsState.player_stats != null) {
-			console.log("Displaying player stats...");
-			var playerStatsHeading = $("<h1>");
-			playerStatsHeading.html("Player");
-			statsContainer.append(playerStatsHeading);
-			makeDescription(statsContainer, statsState.player_stats);
-		}
-		// team_stats available
-		if (statsState.team_stats != null) {
-			console.log("Displaying team stats...");
-			var teamStatsHeading = $("<h1>");
-			teamStatsHeading.html("Team");
-			statsContainer.append(teamStatsHeading);
-			makeDescription(statsContainer, statsState.team_stats);
-		}
-	}
-}
+// 		// player_stats available
+// 		if (statsState.player_stats != null) {
+// 			console.log("Displaying player stats...");
+// 			var playerStatsHeading = $("<h1>");
+// 			playerStatsHeading.html("Player");
+// 			statsContainer.append(playerStatsHeading);
+// 			makeDescription(statsContainer, statsState.player_stats);
+// 		}
+// 		// team_stats available
+// 		if (statsState.team_stats != null) {
+// 			console.log("Displaying team stats...");
+// 			var teamStatsHeading = $("<h1>");
+// 			teamStatsHeading.html("Team");
+// 			statsContainer.append(teamStatsHeading);
+// 			makeDescription(statsContainer, statsState.team_stats);
+// 		}
+// 	}
+// }
 
 function initialise() {
-	displayNoStats();
+	// displayNoStats();
 
   var socket = io(); // auto-detects port
 
@@ -153,18 +151,40 @@ function initialise() {
     }
   });
 
+  socket.on('player_stats', function(stats) {
+    console.log('player stats received');
+    console.log(stats);
+    statsState.player_stats = stats;
+    // updateStatsPanel();
+  });
+
 
 	socket.on('team_stats', function(stats) {
 		console.log('team stats received');
 		console.log(stats);
 		statsState.team_stats = stats;
-		updateStatsPanel();
+		// updateStatsPanel();
 	});
 
-	socket.on('player_stats', function(stats) {
-		console.log('player stats received');
-		console.log(stats);
-		statsState.player_stats = stats;
-		updateStatsPanel();
-	});
+  $('#player_modal').on('click', statsState, function(stats) {
+    var data;
+
+    if (stats.data.player_stats == null) {
+      data.name = stats.data.player_stats.label;
+      data.desc = stats.data.player_stats.description;
+    }
+    else {
+      data.name = "No Player Found";
+      data.desc = "No Description Found";
+    }
+
+    $('#head_div h4.modal-title').html(data.name);
+    $('#body_div').html("<p>" + data.desc + "</p>");
+  });
+
+  $('#team_modal').on('click', statsState, function(stats) {
+    // $('#head_div h4.modal-title').html(stats.data.team_stats.name);
+    $('#head_div h4.modal-title').html(stats.data.tean_stats.description);
+  });
+
 }
