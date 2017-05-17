@@ -152,7 +152,15 @@ body {
     table-layout: fixed;
 }
 
-#form_div, #post_div {
+#stat_div {
+    position: absolute;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    top:     0px;
+    bottom:  0px;
+    left:    0px;
+    right:   0px;
 }
 
 #page_container {
