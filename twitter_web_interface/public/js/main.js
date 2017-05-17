@@ -7,10 +7,10 @@ function resultToRow(tweet) {
   var row;
 
   if (tweet.db_state) {
-    row = "<tr class=\"storage\">"
+    row = "<tr class=\"storage\">";
   }
   else {
-    row = "<tr class=\"twitter\">"
+    row = "<tr class=\"twitter\">";
   }
 
   row +=  "<td width=\"10%\"><a href=" + "https://twitter.com/" + tweet["user"].screen_name + ">@" + tweet["user"].screen_name + "</a></td>"

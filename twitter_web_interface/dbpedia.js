@@ -88,7 +88,10 @@ function getAndEmitStats(socket, playerTwitterHandle, teamTwitterHandle) {
     helper.debug('getAndEmitStats: ', playerTwitterHandle, ', ', teamTwitterHandle);
     getTeamStats(teamTwitterHandle).then(function(teamResults) {
         helper.debug("got team results");
-        socket.emit('team_stats', teamResults);
+        var statsToSend = {
+            "description": "description" in teamResults ? teamResults.description : ""
+        };
+        socket.emit('team_stats', statsToSend);
 
     }).catch(function(error) {
         helper.error("getAndEmitStats failed: ", error);
@@ -98,7 +101,10 @@ function getAndEmitStats(socket, playerTwitterHandle, teamTwitterHandle) {
     getPlayerStats(playerTwitterHandle).then(function(playerResults) {
         helper.debug("got player results");
         helper.debug("stats sent!");
-        socket.emit('player_stats', playerResults);
+        var statsToSend = { 
+            "description": "description" in playerResults ? playerResults.description : ""
+        };
+        socket.emit('player_stats', statsToSend);
 
     }).catch(function(error) {
         helper.error("getAndEmitStats failed: ", error);

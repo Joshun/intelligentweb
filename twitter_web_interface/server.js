@@ -22,9 +22,15 @@ server.listen(port, function() {
   helper.info('Server Listening on Port %d', port);
 });
 
+
 // allows paths to be defined relative to the public folder
 app.use(express['static'](__dirname + '/public'));
 
+// app.use(function (err, req, res, next) {
+//   console.error(err.stack);
+//   // res.status(500).send('Something broke!');
+//   helper.error("Error: ", err);
+// });
 // retrieves the most recent tweet on a specified user's timeline, and outputs it on the console
 io.of('/').on('connection', function(socket) {
 

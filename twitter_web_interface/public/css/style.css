@@ -152,8 +152,7 @@ body {
     table-layout: fixed;
 }
 
-#form_div, #post_div {
-}
+
 
 #page_container {
     position: relative;
@@ -183,6 +182,9 @@ body {
     top:     0.0px;
     bottom:  0.0px;
     right:  -2.5px;
+
+    overflow-y: scroll;
+    /*max-height: 100px;*/
 }
 
 #stats_container h1 {
