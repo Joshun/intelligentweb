@@ -1,0 +1,337 @@
+@-webkit-keyframes fadein_storage {
+    from {
+        background-color: #CCFFCC;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+@-webkit-keyframes fadein_twitter {
+    from {
+        background-color: #CCCCFF;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+@-moz-keyframes fadein_storage {
+    from {
+        background-color: #CCFFCC;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+@-moz-keyframes fadein_twitter {
+    from {
+        background-color: #CCCCFF;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+@-ms-keyframes fadein_storage {
+    from {
+        background-color: #CCFFCC;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+@-ms-keyframes fadein_twitter {
+    from {
+        background-color: #CCCCFF;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+@-o-keyframes fadein_storage {
+    from {
+        background-color: #CCFFCC;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+@-o-keyframes fadein_twitter {
+    from {
+        background-color: #CCCCFF;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+@keyframes fadein_storage {
+    from {
+        background-color: #CCFFCC;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+@keyframes fadein_twitter {
+    from {
+        background-color: #CCCCFF;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+@font-face {
+    font-family: "Ubuntu";
+    src: url("/fonts/ubuntu_regular.ttf");
+}
+
+table tr.storage td {
+  -webkit-animation: fadein_storage 2s linear 0s;
+     -moz-animation: fadein_storage 2s linear 0s;
+      -ms-animation: fadein_storage 2s linear 0s;
+       -o-animation: fadein_storage 2s linear 0s;
+          animation: fadein_storage 2s linear 0s;
+}
+
+table tr.twitter td {
+  -webkit-animation: fadein_twitter 2s linear 0s;
+     -moz-animation: fadein_twitter 2s linear 0s;
+      -ms-animation: fadein_twitter 2s linear 0s;
+       -o-animation: fadein_twitter 2s linear 0s;
+          animation: fadein_twitter 2s linear 0s;
+}
+
+table tr td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+body {
+  background-color: #209DFF;
+  background-image: url("/media/congruent_pentagon.png");
+  font-family: "Ubuntu";
+  height: 100%;
+}
+
+#form_div {
+    position: relative;
+
+    padding-right: 16px;
+    margin: -5px -10px 0px -10px;
+}
+
+#form_div table {
+    margin-bottom: 0px;
+}
+
+#post_div {
+    position: absolute;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    top:    36px;
+    bottom:  0px;
+    left:    0px;
+    right:   0px;
+}
+
+#post_div table {
+    margin-bottom: 0px;
+
+    overflow-y: hidden;
+    table-layout: fixed;
+}
+
+#stat_div {
+    position: absolute;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    top:     0px;
+    bottom:  0px;
+    left:    0px;
+    right:   0px;
+}
+
+#page_container {
+    position: relative;
+    margin: 5vh auto 5vh auto;
+    padding: 5px 5px 5px 10px;
+
+    width: 75%;
+    height: 90vh;
+}
+
+#form_container {
+    width: 75%;
+    max-height: 230px;
+
+    margin: 0px 0px 0px 0px;
+
+    top:     0.0px;
+    bottom:  0.0px;
+    left:   -2.5px;
+    right:   0.0px;
+}
+
+#stat_container {
+    margin: 0px 0px 0px 5px;
+    width: 25%;
+
+    top:     0.0px;
+    bottom:  0.0px;
+    right:  -2.5px;
+
+    overflow-y: scroll;
+    /*max-height: 100px;*/
+}
+
+/*#stat_container h1 {
+    font-size: 14pt;
+    font-weight: bold;
+}
+
+#stat_container p {
+    font-size: 10pt;
+}*/
+
+#post_container {
+    position: absolute;
+
+    width: 75%;
+
+    top:    230.0px;
+    bottom:   0.0px;
+    left:    -2.5px;
+    right:      0px;
+
+    margin: 5px 5px 0px 0px;
+}
+
+#form_container, #stat_container, #post_container {
+    position: absolute;
+
+    padding: 5px 10px 5px 10px;
+
+    background-color: white;
+    border-radius: 5px;
+
+    overflow: hidden;
+}
+
+.hidden {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+}
+
+/*input[type=checkbox]         + label, input[type=checkbox]:hover         + label {
+    color: #993333;
+    background-color: #FF9999;
+}
+
+input[type=checkbox]:checked + label, input[type=checkbox]:hover:checked + label {
+    color: #339933;
+    background-color: #99FF99;
+}*/
+
+#or_operator         + label:after, #or_operator         + label:after {
+    content: "AND";
+}
+
+#or_operator:checked + label:after, #or_operator:checked + label:after {
+    content: "OR";
+}
+
+#or_operator + label {
+    width: 64px;
+}
+
+.inner-addon { 
+    position: relative;
+}
+
+.inner-addon .glyphicon {
+  position: absolute;
+  padding: 10px;
+
+  pointer-events: none;
+  z-index: 9;
+}
+
+.left-addon .glyphicon  {
+    left:  0px;
+}
+.right-addon .glyphicon {
+    right: 0px;
+}
+
+.tokenfield  {
+    padding-left:  30px;
+}
+
+div.left-addon > div.tokenfield {
+    padding-left: 30px;
+}
+
+div.right-addon > div.tokenfield {
+    padding-right: 30px;
+}
+
+/** {
+    margin: 1;
+    padding: 1;
+    box-sizing: border-box;
+}
+
+body {
+    font: 16px Helvetica, Arial;
+}
+
+
+form {
+    border: 3;
+    background: white;
+    padding: 0px;
+    position: fixed;
+    bottom: 0;
+    left:0;
+    width: 100%;
+}
+
+form input {
+    padding: 9px;
+    float:left;
+    width: 90%;
+}
+
+form button {
+    width: 10%;
+    background: lightblue;
+    border: none;
+    padding: 11px;
+}
+
+.messages {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.messages li {
+    padding: 5px 10px;
+}
+
+.messages li:nth-child(odd) {
+    background: #eee;
+}*/
