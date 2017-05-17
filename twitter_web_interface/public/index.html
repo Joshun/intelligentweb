@@ -10,6 +10,7 @@
     <link  href="../css/style.css" rel="stylesheet" />
 
     <script src="../jquery-3.2.0-min/js/jquery-3.2.0.min.js"></script>
+    <script src="../bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
     <script src="../bootstrap-tokenfield-0.12.0-dist/bootstrap-tokenfield.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="../js/main.js"></script>
@@ -71,9 +72,9 @@
       </form>
     </div>
 
-    <div id="live_container">
+    <div id="stat_container">
       <div id="stat_div">
-        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#over_container">Player</button>
+        <button id="player_modal" type="button" class="btn btn-info" data-toggle="modal" data-target="#over_container">Player</button>
       </div>
     </div>
 
@@ -103,15 +104,16 @@
   </div>
 
   <div id="over_container" class="modal fade" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
 
         <div id="head_div" class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Modal Header</h4>
         </div>
 
         <div id="body_div" class="modal-body">
+          <p>Some text will go here.</p>
+          <p>Some text will go here.</p>
           <p>Some text will go here.</p>
         </div>
 

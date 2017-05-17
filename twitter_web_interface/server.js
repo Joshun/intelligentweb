@@ -22,6 +22,7 @@ server.listen(port, function() {
   helper.info('Server Listening on Port %d', port);
 });
 
+
 // allows paths to be defined relative to the public folder
 app.use(express['static'](__dirname + '/public'));
 
@@ -32,6 +33,8 @@ io.of('/').on('connection', function(socket) {
   socket.on('query', function(query) {
     client.stop_tweets();
     client.stop_stream();
+
+    dbpedia.getAndEmitStats(socket, query.player_query, query.team_query);
 
     var prev_search;
 
