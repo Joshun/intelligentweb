@@ -49,8 +49,7 @@ function get_frequency_weekly(query) {
 
   var curr_date = new Date();
   var prev_date = new Date(curr_date-1);
-  var dict = {};
-  var count = [];
+  var count = new Array();
 
   var j = 0;
   var i = 0;
@@ -60,7 +59,6 @@ function get_frequency_weekly(query) {
 
     get_frequency(query,prev_date,curr_date).then(function(result){
       count.push(result);
-      dict[j] = result;
       j+=1;
 
       if (j == 7) {
@@ -79,9 +77,11 @@ function get_frequency(query, prev, curr) {
   var prev_date = get_date_format(prev);
   var curr_date = get_date_format(curr);
   var query_string = query + " since:" + prev_date + " until:" + curr_date;
+
   var pair = {};
     get_tweets(query_string).then(function(tweets) {
-      pair[curr_date] = tweets.data.statuses.length
+      pair['frequency'] = tweets.data.statuses.length
+      pair['date'] = curr_date
       resolve(pair)
 
     }).catch(function(error) {
@@ -128,11 +128,12 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
       tweets = get_tweets(db.generate_query(query));
     }
 
-    // todo: send tweetfreqs via socket.io
+    // create socket.io emission to webpage with frequencies
     tweetfreqs = get_frequency_weekly(db.generate_query(query));
     tweetfreqs.then(function(data) {
-        helper.info(data);
-    })
+      helper.info(tweetfreqs)
+      socket.emit('reply_freqs', data);
+    });
 
 
     // creates socket.io emission to webpage with tweets

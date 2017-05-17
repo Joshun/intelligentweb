@@ -22,6 +22,14 @@ function resultToRow(tweet) {
 	return row;
 }
 
+function sortByDate(array, key) {
+    return array.sort(function(a, b) {
+        var x = a[key]; var y = b[key];
+        if (x<y) return -1;
+        if (x>y) return 1;
+    });
+}
+
 var statsState = { 'team_stats': null, 'player_stats': null };
 
 // function displayNoStats() {
@@ -93,8 +101,36 @@ function initialise() {
 
   var stream = [];
 
-  $('#player_query').tokenfield({ delimiter: ", " });
-  $('#team_query').tokenfield({ delimiter: ", " });
+  var ctx = document.getElementById('myChart').getContext('2d');
+
+  var options = {
+      scales: {
+          yAxes: [{
+              display: true,
+              ticks: {
+                  beginAtZero: true // minimum value will be 0.
+              },
+              gridLines: {}
+          }]
+      }
+  };
+
+  var myTestChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+          labels: ['F', 'O', 'O', 'T', 'B', 'A', 'LL'],
+          datasets: [{
+              label: 'Frequencies of tweets',
+              data: [],
+              backgroundColor: "rgba(0, 102, 255, 0.5)",
+              borderJoinStyle: 'miter',
+          }]
+      },
+      options: options
+  });
+
+  $('#player_query').tokenfield({ delimiter: "," });
+  $('#team_query').tokenfield({ delimiter: "," });
 
   // emits query data from the input form to the server
   $('#query_form').submit(function() {
@@ -116,7 +152,7 @@ function initialise() {
       or_operator:    $('#or_operator').is(':checked') // checkbox for searching player OR team
 
   	});
-    
+
   	return false; // stops page from refreshing
   });
 
@@ -150,6 +186,20 @@ function initialise() {
       $("#form_table tr:last").remove();
     }
   });
+
+
+  socket.on('reply_freqs', function(freqs) {
+    data = new Array();
+    sortByDate(freqs, 'date')
+    freqs.forEach(function(length){
+      data = freqs.map(function(x) {return x.frequency;})
+    });
+
+    myTestChart.data.datasets[0].data = data;
+    myTestChart.data.labels = freqs.map(function(x) {return x.date})
+    myTestChart.update();
+
+});
 
   socket.on('player_stats', function(stats) {
     console.log('player stats received');
@@ -186,5 +236,4 @@ function initialise() {
     // $('#head_div h4.modal-title').html(stats.data.team_stats.name);
     $('#head_div h4.modal-title').html(stats.data.tean_stats.description);
   });
-
 }
