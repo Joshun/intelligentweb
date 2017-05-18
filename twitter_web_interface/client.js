@@ -54,14 +54,17 @@ function get_frequency_weekly(query) {
   var j = 0;
   var i = 0;
   for (var i=1; i<=7; i++) {
+    // returns frequency day by day
     curr_date.setDate(prev_date.getDate());
     prev_date.setDate(curr_date.getDate() - 1);
 
     get_frequency(query,prev_date,curr_date).then(function(result){
+      // pushes data for a day at a time to the resulting array
       count.push(result);
       j+=1;
 
       if (j == 7) {
+        // when all data has been retrieved resolves array
         resolve(count);
       } else if (j ==8) {
         reject(null)
@@ -80,6 +83,7 @@ function get_frequency(query, prev, curr) {
 
   var pair = {};
     get_tweets(query_string).then(function(tweets) {
+      // adds related date and frequency with pertinent keys
       pair['frequency'] = tweets.data.statuses.length
       pair['date'] = curr_date
       resolve(pair)

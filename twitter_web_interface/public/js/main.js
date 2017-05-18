@@ -22,6 +22,7 @@ function resultToRow(tweet) {
 	return row;
 }
 
+// function to sort an array of objects with date attributes
 function sortByDate(array, key) {
     return array.sort(function(a, b) {
         var x = a[key]; var y = b[key];
@@ -108,19 +109,20 @@ function initialise() {
           yAxes: [{
               display: true,
               ticks: {
-                  beginAtZero: true // minimum value will be 0.
+                  beginAtZero: true // minimum value will be 0 as can never be below
               },
               gridLines: {}
           }]
       }
   };
 
-  var myTestChart = new Chart(ctx, {
+  var myChart = new Chart(ctx, {
       type: 'line',
       data: {
+          // initial placeholder labels
           labels: ['F', 'O', 'O', 'T', 'B', 'A', 'LL'],
           datasets: [{
-              label: 'Frequencies of tweets',
+              label: 'Number of tweets',
               data: [],
               backgroundColor: "rgba(0, 102, 255, 0.5)",
               borderJoinStyle: 'miter',
@@ -134,19 +136,14 @@ function initialise() {
 
   // emits query data from the input form to the server
   $('#query_form').submit(function() {
+    document.getElementById('player_modal').disabled = false;
 		$("#form_table tbody tr").remove();
     socket.emit('close', "Form Data!");
 
   	socket.emit('query', {
   		player_query:   $('#player_query').val(), // input for player name (string)
-  		// handles_player: $('#handles_player').is(':checked'), // checkbox for player handles (boolean)
-  		// hashtag_player: $('#hashtag_player').is(':checked'), // checkbox for player hashtag (boolean)
-  		// keyword_player: $('#keyword_player').is(':checked'), // checkbox for player keyword (boolean)
 
   		team_query:     $('#team_query').val(), // input for team name (string)
-  		// handles_team:   $('#handles_team').is(':checked'), // checkbox for team handles (boolean)
-  		// hashtag_team:   $('#hashtag_team').is(':checked'), // checkbox for team hashtag (boolean)
-  		// keyword_team:   $('#keyword_team').is(':checked'), // checkbox for team keyword (boolean)
 
       database_only:  $('#database_only').is(':checked'),
       or_operator:    $('#or_operator').is(':checked') // checkbox for searching player OR team
@@ -195,9 +192,10 @@ function initialise() {
       data = freqs.map(function(x) {return x.frequency;})
     });
 
-    myTestChart.data.datasets[0].data = data;
-    myTestChart.data.labels = freqs.map(function(x) {return x.date})
-    myTestChart.update();
+    // add sorted frequency results to chart and update
+    myChart.data.datasets[0].data = data;
+    myChart.data.labels = freqs.map(function(x) {return x.date})
+    myChart.update();
 
 });
 
