@@ -217,6 +217,9 @@ function savedTweetToWeb(tweet) {
 
 function getRealNameFromScreenName(nameTable, screenName) {
 	return new Promise(function (resolve, reject) {
+		if (screenName == undefined || screenName == null) {
+			reject("screenName null or undefined;");
+		}
 		db.getConnection(function(err, connection) {
 			if (err) reject(err);
 			helper.debug("SELECT * FROM $TABLE WHERE screenName = ?".replace("$TABLE", nameTable));
