@@ -66,25 +66,34 @@ function getTeamStats(teamTwitterHandle) {
     return new Promise(function(resolve, reject) {
         teamTwitterHandle = removeAtTag(teamTwitterHandle);
         if (teamTwitterHandle == null) {
+            helper.debug("Twitter Handle Failed", 1);
             resolve(null);
         }   
 
-       storage.getTeamFromScreenName(teamTwitterHandle).then(function(result) {
-              teamTwitterHandle = teamTwitterHandle.trim();
+        storage.getTeamFromScreenName(teamTwitterHandle).then(function(result) {
+            teamTwitterHandle = teamTwitterHandle.trim();
                
-           if (result == null) resolve(null);
-           else {
-               searchTeam(result).then(function(stats) {
-                   resolve(stats);
-               }).catch(function(error) {
-                   helper.error('getTeamStats failed');
-                   reject(error);
-               });
-           }
-       }).catch(function(error) {
-           helper.error("getTeamStats failed: ", error);
-           reject("getTeamStats failed");
-       });
+            if (result == null) {
+                helper.debug("Twitter Handle Failed:", 2);
+                resolve(null);
+            }
+            else {
+                searchTeam(result)
+
+                .then(function(stats) {
+                    helper.debug("Returns Results", stats);
+                    resolve(stats);
+                })
+
+                .catch(function(error) {
+                    helper.error('getTeamStats failed');
+                    reject(error);
+                });
+            }
+        }).catch(function(error) {
+            helper.error("getTeamStats failed: ", error);
+            reject("getTeamStats failed");
+        });
     });
 }
 
@@ -116,9 +125,9 @@ function getPlayerStats(playerTwitterHandle) {
 
 
 function getAndEmitStats(socket, playerTwitterHandle, teamTwitterHandle) {
-    helper.debug('getAndEmitStats: ', playerTwitterHandle, ', ', teamTwitterHandle);
+    helper.debug('getAndEmitStats: ', playerTwitterHandle, ',', teamTwitterHandle);
     getTeamStats(teamTwitterHandle).then(function(teamResults) {
-        helper.debug("got team results");
+        helper.debug("got team results", teamResults);
         var statsToSend = {
             "description": teamResults != null && "description" in teamResults ? teamResults.description : "",
             "label": teamResults != null && "label" in teamResults ? teamResults.label : ""
