@@ -36,3 +36,10 @@ div.left-addon > div.tokenfield {
 }
 
 
+.button-inline-label {
+    font-size: 200%;
+}
+
+.voffset {
+    padding-top: 20px;
+}

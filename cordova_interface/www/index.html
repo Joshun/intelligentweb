@@ -16,89 +16,121 @@
     <script src="js/main.js"></script>
 </head>
 
-<body onload="initialise();" id="bootstrap-override">
-  <div id="page_container" class="container">
-    <div id="form_container" class="container">
-      <h1>Twitter Web Interface</h1>
-      <form id="query_form" class="form-group" action = "">
-
-        <label for="player_query">Enter a Player Name:</label>
-        <div class="input-group inner-addon left-addon">
-          <input type="text" class="form-control" name="player_query" id="player_query" placeholder="e.g. Wayne Rooney" />
-          <i class="glyphicon glyphicon-search"></i>
-          <span class="input-group-btn">
-            <!-- <input type="checkbox" class="hidden" id="handles_player" name="handles_player" checked>
-            <label for="handles_player" class="btn btn-default">@</label>
-            <input type="checkbox" class="hidden" id="hashtag_player" name="hashtag_player" checked>
-            <label for="hashtag_player" class="btn btn-default">#</label>
-            <input type="checkbox" class="hidden" id="keyword_player" name="keyword_player" checked>
-            <label for="keyword_player" class="btn btn-default">?</label> -->
-
-            <input type="checkbox" class="hidden" id="or_operator" name="or_operator">
-            <label for="or_operator" class="btn btn-default"></label>
-          </span>
+<body onload="initialise();" id="bootstrap-override" class="container">
+  <div id="page_container" class="row">
+    <div class="col-xs-12">
+      <div id="form_container" class="row">
+        <div class="row">
+          <div class="col-xs-12">
+            <h1>Twitter Web Interface</h1>
+          </div>
         </div>
 
-        <label for="team_query">Enter a Team Name:</label>
-        <div class="inner-addon left-addon">
-          <input type="text" class="form-control" name="team_query" id="team_query" placeholder="e.g. Manchester United" />
-          <i class="glyphicon glyphicon-search"></i>
-          <!-- <span class="input-group-btn">
-            <input type="checkbox" class="hidden" id="handles_team" name="handles_team" checked>
-            <label for="handles_team" class="btn btn-default">@</label>
-            <input type="checkbox" class="hidden" id="hashtag_team" name="hashtag_team" checked>
-            <label for="hashtag_team" class="btn btn-default">#</label>
-            <input type="checkbox" class="hidden" id="keyword_team" name="keyword_team" checked>
-            <label for="keyword_team" class="btn btn-default">?</label>
-          </span> -->
-        </div>
+        <form id="query_form" action="">
 
-        <input type="submit" class="btn btn-default" />
+          <!-- start -->
 
-        <input type="checkbox" class="hidden" id="database_only" name="database_only" />
-        <label for="database_only" class="btn btn-default">Just From Database</label>
-        <!-- <div class="form-check">
-          <label for="queryteam" class="form-check-label">Team</label>
-          <input type="checkbox" class="form-check-input" name="queryteam" id="queryteam" value="true">
-        </div>
-        <div class="form-check">
-          <label for="queryplayer" class="form-check-label">Player</label>
-          <input type="checkbox" class="form-check-input" name="queryplayer" id="queryplayer" value="true">
-        </div>
-        <div class="form-check">
-          <label for="queryauthor" class="form-check-label">Author</label>
-          <input type="checkbox" class="form-check-input" name="queryauthor" id="queryauthor" value="true">
-        </div> -->
-      </form>
+          <div class="row">
+            <div class="col-xs-6">
+              <h2>Player</h2>
+            </div>
+            <div class="col-xs-6">
+              <h2>Team</h2>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="inner-addon left-addon">
+                <input type="text" class="form-control" name="player_query" id="player_query" placeholder="e.g. Wayne Rooney" />
+                <i class="glyphicon glyphicon-search"></i>
+              </div>
+            </div>
+
+            <div class="col-xs-6">
+                <div class="inner-addon left-addon">
+                <input type="text" class="form-control" name="team_query" id="team_query" placeholder="e.g. Manchester United" />
+                <i class="glyphicon glyphicon-search"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- end -->
+
+          <!--<div class="row">
+            <div class="col-xs-12 form-group ">
+              <label for="player_query">Enter a Player Name:</label>
+              <div class="inner-addon left-addon">
+                <input type="text" class="form-control" name="player_query" id="player_query" placeholder="e.g. Wayne Rooney" />
+                <i class="glyphicon glyphicon-search"></i>
+              </div>
+            </div>
+          </div>-->
+
+          <div class="row">
+            <!--<div class="col-xs-6">
+                <span>Search mode</span>
+            </div>-->
+            <div class="col-xs-8">
+              <span class="button-inline-label">Search</span>
+            </div>
+            <div class="col-xs-2">
+              <input type="checkbox" class="hidden" id="or_operator" name="or_operator">
+              <label for="or_operator" class="btn btn-default"></label>
+            </div>
+            <div class="col-xs-2 ">
+              <input type="submit" class="btn btn-default btn-primary" />        
+            </div>
+          </div>
+                
+
+        </form>
+      </div>
     </div>
 
-    <div id="stat_container" class="container">
-      <div id="stat_div">
+    <div class="row">
+      <div class="col-xs-8">
+        <span class="button-inline-label">Statistics</span>
+      </div>
+
+      <div class="col-xs-2">
         <button id="player_modal" type="button" class="btn btn-info" data-toggle="modal" data-target="#over_container">Player</button>
       </div>
+
+      <div class="col-xs-2">
+        <button id="team_model" type="button" class="btn btn-info">Team</button>
+      </div>
     </div>
 
-    <div id="post_container" class="container">
 
-      <div id="form_div">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th width="10%">Author</th>
-              <th width="50%">Text</th>
-              <th width="15%">Time</th>
-              <th width="15%">Date</th>
-              <th width="10%">Link</th>
-            </tr>
-          </thead>
-        </table>
+    <div class="row">
+      <div class="col-xs-12">
+        <h2>Results</h2>
       </div>
+    </div>
 
-      <div id="post_div">
-        <table id="form_table" class="table table-striped">
-          <tbody>
-          </tbody>
-        </table>
+    <div class="row">
+      <div id="post_container" class="col-xs-12">
+        <div id="form_div">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th width="10%">Author</th>
+                <th width="50%">Text</th>
+                <th width="15%">Time</th>
+                <th width="15%">Date</th>
+                <th width="10%">Link</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+
+        <div id="post_div">
+          <table id="form_table" class="table table-striped">
+            <tbody>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
