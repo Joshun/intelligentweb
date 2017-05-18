@@ -288,6 +288,40 @@ div.right-addon > div.tokenfield {
     padding-right: 30px;
 }
 
+@media only screen and (max-device-width: 480px) {
+    body {
+        font-size: 20pt;
+        margin: auto;
+        background-color: white;
+        background-image: none;
+        width: 95%;
+    }
+
+    #form_container, #page_container {
+        padding-left: 50px;
+        /*padding: 50px;*/
+        width: 100%;
+    }
+
+    #post_container {
+        padding-top: 50px;
+        padding-left: 50px;
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 40pt;
+    }
+
+    #bootstrap-override input, label {
+        width: 80%;
+        height: 40px;
+        /*padding: 50px;*/
+        margin: 0;
+    }
+
+}
+
 /** {
     margin: 1;
     padding: 1;
