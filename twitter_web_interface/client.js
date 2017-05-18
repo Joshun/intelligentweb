@@ -11,7 +11,7 @@ var T = new Twit({
   timeout_ms:           30000
 });
 
-var tweet_limit = 300;
+var tweet_limit = 100;
 
 var tweets; // global reference to tweets handler
 var stream; // global reference to stream handler
@@ -25,7 +25,41 @@ process.on('SIGINT', function() {
 });
 
 function get_tweets(query) {
-  return T.get('search/tweets', { q: query, count: tweet_limit });
+  if (query.match("until")) {
+    return T.get('search/tweets', { q: query, count: tweet_limit });
+  }
+  else {
+    return get_tweets_helper(query, 0, "");
+  }
+}
+
+function get_tweets_helper(query, index, max_id) {
+  var tweets;
+  var nested;
+
+  return new Promise(function(resolve, reject) {
+
+    helper.error("Search Term:", query + max_id)
+    tweets = T.get('search/tweets', { q: query + max_id, count: tweet_limit });
+
+    tweets.then(function(reply) {
+      if (reply.data.statuses === undefined) {
+        reject(reply);
+      }
+      else {
+        if (reply.data.statuses.length == tweet_limit && index < 2) {
+          nested = get_tweets_helper(query, index + 1, " max_id:" + reply.data.statuses[reply.data.statuses.length - 1].id_str);
+
+          nested.then(function(tweet) {
+            resolve({ "data": { "statuses": reply.data.statuses.concat(tweet.data.statuses) }})
+          })
+        }
+        else {
+          resolve({ "data": { "statuses": reply.data.statuses }});
+        }
+      }
+    });
+  });
 }
 
 function get_stream(query) {
