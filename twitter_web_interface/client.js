@@ -43,23 +43,51 @@ function get_tweets_helper(query, index, max_id) {
     tweets = T.get('search/tweets', { q: query + max_id, count: tweet_limit });
 
     tweets.then(function(reply) {
+
+      // rejects twitter reply if statuses are undefined, due to exceeding rate limits
       if (reply.data.statuses === undefined) {
         reject(reply);
       }
       else {
         if (reply.data.statuses.length == tweet_limit && index < 2) {
-          nested = get_tweets_helper(query, index + 1, " max_id:" + reply.data.statuses[reply.data.statuses.length - 1].id_str);
+
+          // retrieves next set of tweets if current set is "full", and limit is not exceeded
+          nested = get_tweets_helper(query, index + 1, " max_id:" + get_id_format(reply.data.statuses[reply.data.statuses.length - 1].id_str));
 
           nested.then(function(tweet) {
+
+            // concatenates statuses and reconstructs object format
             resolve({ "data": { "statuses": reply.data.statuses.concat(tweet.data.statuses) }})
           })
         }
         else {
+
+          // reconstructs object format
           resolve({ "data": { "statuses": reply.data.statuses }});
         }
       }
     });
   });
+}
+
+function get_id_format(value) {
+  var rest = value.substring(0, value.length - 1);
+  var last = value.substring(value.length - 1);
+
+  if (last === "0")
+    return get_id_format(rest) + "9"; // sets last digit to 9, and recurses
+  else
+    return get_id_padded(rest + (parseInt(last, 10) - 1).toString(), "0"); // reduces last digit by 1, and trims result
+}
+
+function get_id_padded(value, pad) {
+  var i = 0;
+
+  while (i < value.length && value[i] === pad) {
+    i++;
+  }
+
+  return value.substring(i); // trims leading zeros
 }
 
 function get_stream(query) {
