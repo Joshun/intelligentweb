@@ -5,20 +5,20 @@
     <meta charset="UTF-8">
     <title>Twitter Web Interface</title>
 
-    <link  href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link  href="bootstrap-tokenfield-0.12.0-dist/css/bootstrap-tokenfield.css" rel="stylesheet" />
+    <link  href="../bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link  href="../bootstrap-tokenfield-0.12.0-dist/css/bootstrap-tokenfield.css" rel="stylesheet" />
     <link  href="css/style.css" rel="stylesheet" />
 
-    <script src="jquery-3.2.0-min/js/jquery-3.2.0.min.js"></script>
-    <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
-    <script src="bootstrap-tokenfield-0.12.0-dist/bootstrap-tokenfield.js"></script>
-    <!--<script src="/socket.io/socket.io.js"></script>-->
-    <script src="js/main.js"></script>
+    <script src="../jquery-3.2.0-min/js/jquery-3.2.0.min.js"></script>
+    <script src="../bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <script src="../bootstrap-tokenfield-0.12.0-dist/bootstrap-tokenfield.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../js/main.js"></script>
 </head>
 
-<body onload="initialise();">
-  <div id="page_container">
-    <div id="form_container">
+<body onload="initialise();" id="bootstrap-override">
+  <div id="page_container" class="container">
+    <div id="form_container" class="container">
       <h1>Twitter Web Interface</h1>
       <form id="query_form" class="form-group" action = "">
 
@@ -72,13 +72,13 @@
       </form>
     </div>
 
-    <div id="stat_container">
+    <div id="stat_container" class="container">
       <div id="stat_div">
         <button id="player_modal" type="button" class="btn btn-info" data-toggle="modal" data-target="#over_container">Player</button>
       </div>
     </div>
 
-    <div id="post_container">
+    <div id="post_container" class="container">
 
       <div id="form_div">
         <table class="table table-striped">

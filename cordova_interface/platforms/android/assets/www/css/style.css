@@ -90,7 +90,7 @@
 
 @font-face {
     font-family: "Ubuntu";
-    src: url("../fonts/ubuntu_regular.ttf");
+    src: url("/fonts/ubuntu_regular.ttf");
 }
 
 table tr.storage td {
@@ -118,7 +118,7 @@ table tr td {
 
 body {
   background-color: #209DFF;
-  background-image: url("../media/congruent_pentagon.png");
+  background-image: url("/media/congruent_pentagon.png");
   font-family: "Ubuntu";
   height: 100%;
 }
@@ -286,6 +286,40 @@ div.left-addon > div.tokenfield {
 
 div.right-addon > div.tokenfield {
     padding-right: 30px;
+}
+
+@media only screen and (max-device-width: 480px) {
+    body {
+        font-size: 20pt;
+        margin: auto;
+        background-color: white;
+        background-image: none;
+        width: 95%;
+    }
+
+    #form_container, #page_container {
+        padding-left: 50px;
+        /*padding: 50px;*/
+        width: 100%;
+    }
+
+    #post_container {
+        padding-top: 50px;
+        padding-left: 50px;
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 40pt;
+    }
+
+    #bootstrap-override input, label {
+        width: 80%;
+        height: 40px;
+        /*padding: 50px;*/
+        margin: 0;
+    }
+
 }
 
 /** {
