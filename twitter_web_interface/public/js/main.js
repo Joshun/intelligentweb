@@ -215,19 +215,16 @@ function initialise() {
 	});
 
   $('#player_modal').on('click', statsState, function(stats) {
-    var data;
+    var data_name = "No Player Found";
+    var data_desc = "No Description Found";
 
-    if (stats.data.player_stats == null) {
-      data.name = stats.data.player_stats.label;
-      data.desc = stats.data.player_stats.description;
-    }
-    else {
-      data.name = "No Player Found";
-      data.desc = "No Description Found";
+    if (stats.data.player_stats != null) {
+      data_name = stats.data.player_stats.label;
+      data_desc = stats.data.player_stats.description;
     }
 
-    $('#head_div h4.modal-title').html(data.name);
-    $('#body_div').html("<p>" + data.desc + "</p>");
+    $('#head_div h4.modal-title').html(data_name);
+    $('#body_div').html("<p>" + data_desc + "</p>");
   });
 
   $('#team_modal').on('click', statsState, function(stats) {
