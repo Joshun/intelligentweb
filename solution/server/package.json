@@ -9,7 +9,10 @@
     "mysql": "^2.13.0",
     "socket.io": "^2.0.1",
     "twit": "^2.2.5",
-    "dbpediaclient": "^1.0.0"
+    "dbpediaclient": "^1.0.0",
+    "wikidata-sdk": "^5.1.4",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1"
   },
   "devDependencies": {
     "eslint": "^3.18.0"

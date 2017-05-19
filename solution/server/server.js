@@ -13,6 +13,7 @@ var config  = require('./config.json');
 var client  = require('./client.js');
 var db      = require('./storage.js');
 var dbpedia = require('./dbpedia.js');
+var wkdata  = require('./wikidata.js');
 var helper  = require('./helper.js');
 
 var port    = process.env.PORT || 3000;
@@ -33,6 +34,8 @@ io.of('/').on('connection', function(socket) {
   socket.on('query', function(query) {
     client.stop_tweets();
     client.stop_stream();
+
+    wkdata.search_player("Hello");
 
     dbpedia.getAndEmitStats(socket, query.player_query, query.team_query);
 
