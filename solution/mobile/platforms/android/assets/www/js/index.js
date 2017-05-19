@@ -1,4 +1,5 @@
 
+var db;
 
 var app = {
     // Application Constructor
@@ -13,6 +14,8 @@ var app = {
     // 'pause', 'resume', etc.
 
     onDeviceReady: function() {
+        db = new Database();
+
         $("#team-stats-btn").on("click", function() {
             showStatsContent("team");
         });
