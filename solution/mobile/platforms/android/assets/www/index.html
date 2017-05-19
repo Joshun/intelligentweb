@@ -3,158 +3,145 @@
 
 <head lang="en">
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src &apos;self&apos; data: gap: https://ssl.gstatic.com &apos;unsafe-eval&apos;; style-src &apos;self&apos; &apos;unsafe-inline&apos;; media-src *; img-src &apos;self&apos; data: content:;">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
     <title>Twitter Web Interface</title>
 
-    <link  href="dist/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link  href="dist/bootstrap-tokenfield-0.12.0-dist/css/bootstrap-tokenfield.css" rel="stylesheet" />
-    <link  href="css/style.css" rel="stylesheet" />
+    <link href="dist/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="dist/bootstrap-tokenfield-0.12.0-dist/css/bootstrap-tokenfield.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="js/jquery-1.5.0.mobile.min.css">
 
-    <script src="dist/jquery-3.2.0-min/js/jquery-3.2.0.min.js"></script>
-    <script src="dist/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
-    <script src="dist/bootstrap-tokenfield-0.12.0-dist/bootstrap-tokenfield.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/jquery-1.11.1.min.js" id="cordova-jquery"></script>
+		<!--<script type="text/javascript" id="jqm-trans-disable">-->
+		<!--// /* For having a faster transition */-->
+		<!--// $(document).on("mobileinit", function() {-->
+		<!--// 		$.mobile.defaultPageTransition = "none";-->
+		<!--// 		$.mobile.defaultDialogTransition = "none";-->
+		<!--// });-->
+		<!--// </script>-->
+
     <script src="dist/socket.io-2.0.1/socket.io.js"></script>
-    <script src="js/main.js"></script>
+    <script src="dist/chart.js-2.1.4/Chart.min.js"></script>
+    <script src="js/index.js"></script>
 </head>
 
-<body onload="initialise();" id="bootstrap-override" class="container">
-  <div id="page_container" class="row">
-    <div class="col-xs-12">
-      <div id="form_container" class="row">
-        <div class="row">
-          <div class="col-xs-12">
-            <h1>Twitter Web Interface</h1>
-          </div>
-        </div>
+<body id="bootstrap-override" class="container">
+  <div id="main-content">
+
+    <!-- begin search section -->
+    <div class="row">
+      <div class="col-xs-12">
 
         <form id="query_form" action="">
 
-          <!-- start -->
-
           <div class="row">
-            <div class="col-xs-6">
-              <h2>Player</h2>
-            </div>
-            <div class="col-xs-6">
-              <h2>Team</h2>
+            <div class="col-xs-12">
+              <h2>Search</h2>
             </div>
           </div>
 
           <div class="row">
-            <div class="col-xs-6">
-              <div class="inner-addon left-addon">
-                <input type="text" class="form-control" name="player_query" id="player_query" placeholder="e.g. Wayne Rooney" />
-                <i class="glyphicon glyphicon-search"></i>
-              </div>
-            </div>
-
-            <div class="col-xs-6">
-                <div class="inner-addon left-addon">
-                <input type="text" class="form-control" name="team_query" id="team_query" placeholder="e.g. Manchester United" />
-                <i class="glyphicon glyphicon-search"></i>
-              </div>
+            <div class="col-xs-12">
+              <input type="text" id="team_query" name="team_query" class="form-control" placeholder="team">
             </div>
           </div>
-
-          <!-- end -->
-
-          <!--<div class="row">
-            <div class="col-xs-12 form-group ">
-              <label for="player_query">Enter a Player Name:</label>
-              <div class="inner-addon left-addon">
-                <input type="text" class="form-control" name="player_query" id="player_query" placeholder="e.g. Wayne Rooney" />
-                <i class="glyphicon glyphicon-search"></i>
-              </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <input type="text" id="player_query" name="player_query" class="form-control" placeholder="player">
             </div>
-          </div>-->
+          </div>
 
           <div class="row">
-            <!--<div class="col-xs-6">
-                <span>Search mode</span>
-            </div>-->
-            <div class="col-xs-8">
-              <span class="button-inline-label">Search</span>
-            </div>
-            <div class="col-xs-2">
-              <input type="checkbox" class="hidden" id="or_operator" name="or_operator">
-              <label for="or_operator" class="btn btn-default"></label>
-            </div>
-            <div class="col-xs-2 ">
-              <input type="submit" class="btn btn-default btn-primary" />        
+            <div class="col-xs-12">
+              <div id="search-buttons" class="btn-group-justified" role="group" aria-label="...">
+                <div class="btn-group" role="group" aria-label="...">
+                  <input type="checkbox" class="hidden" id="or_operator" name="or_operator"> 
+                  <label for="or_operator" class="btn btn-default"></label>
+                </div>
+                <div class="btn-group" role="group" aria-label="...">
+                  <input type="submit" id="submit-btn" class="btn btn-default btn-primary">
+                </div>
+              </div>
             </div>
           </div>
-                
 
         </form>
+
       </div>
     </div>
+    <!-- end search section -->
 
-    <div class="row">
-      <div class="col-xs-8">
-        <span class="button-inline-label">Statistics</span>
-      </div>
-
-      <div class="col-xs-2">
-        <button id="player_modal" type="button" class="btn btn-info" data-toggle="modal" data-target="#over_container">Player</button>
-      </div>
-
-      <div class="col-xs-2">
-        <button id="team_model" type="button" class="btn btn-info">Team</button>
-      </div>
-    </div>
-
-
+    <!-- begin stats section -->
     <div class="row">
       <div class="col-xs-12">
-        <h2>Results</h2>
+        <div class="row">
+          <div class="col-xs-12">
+            <h2>Stats</h2>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="btn-group btn-group-justified" role="group" aria-label="...">
+              <div class="btn-group" role="group" aria-label="...">
+                <button class="btn btn-info" id="team-stats-btn">Team</button>
+              </div>
+              <div class="btn-group" role="group" aria-label="...">
+                <button class="btn btn-info" id="player-stats-btn">Player</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+    <!-- end stats section -->
 
+  </div>
+
+  <div id="results-content" class="hidden">
+    <!-- begin results section -->
     <div class="row">
-      <div id="post_container" class="col-xs-12">
-        <div id="form_div">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th width="10%">Author</th>
-                <th width="50%">Text</th>
-                <th width="15%">Time</th>
-                <th width="15%">Date</th>
-                <th width="10%">Link</th>
-              </tr>
-            </thead>
-          </table>
+      <div class="col-xs-12">
+        <div class="row">
+          <div class="col-xs-12">
+            <h2>Results</h2>
+          </div>
         </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <span>...</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <button class="back-to-main-content btn btn-default btn-primary">Back</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end results section -->
+  </div>
 
-        <div id="post_div">
-          <table id="form_table" class="table table-striped">
-            <tbody>
-            </tbody>
-          </table>
+  <div id="stats-content" class="hidden">
+    <h2 id="team-stats-header">Team stats</h2>
+    <h2 id="player-stats-header">Player Stats</h2>
+    <div class="row">
+      <div col="col-xs-12">
+        <div id="chart">
+            <canvas id="myChart" class="modal-body"></canvas>
         </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <button class="back-to-main-content btn btn-default btn-primary">Back</button>
       </div>
     </div>
   </div>
 
-  <div id="over_container" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-
-        <div id="head_div" class="modal-header">
-          <h4 class="modal-title">Modal Header</h4>
-        </div>
-
-        <div id="body_div" class="modal-body">
-          <p>Some text will go here.</p>
-          <p>Some text will go here.</p>
-          <p>Some text will go here.</p>
-        </div>
-
-        <div id="foot_div" class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-
-      </div>
-    </div>
-  </div>
 </body>
 </html>
