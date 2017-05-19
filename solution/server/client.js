@@ -175,7 +175,6 @@ function get_date_padded(date, size) {
 
 // callback function, stored here to preserve scope
 function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
-  // return new Promise(function(resolve, reject) {
     helper.info("Tweets Update Received, Processing...");
     helper.info("Tweets Update Complete");
 
@@ -239,7 +238,6 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
     tweets.catch(function(error) {
         helper.error("Search Terms Invalid:", error);
     });
-  // });
 };
 
 function stream_reply(socket, query) {

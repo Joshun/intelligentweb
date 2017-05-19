@@ -24,7 +24,7 @@ server.listen(port, function() {
 
 
 // allows paths to be defined relative to the public folder
-app.use(express['static'](__dirname + '/public'));
+app.use(express.static('../webapp'));
 
 // retrieves the most recent tweet on a specified user's timeline, and outputs it on the console
 io.of('/').on('connection', function(socket) {
