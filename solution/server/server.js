@@ -35,7 +35,15 @@ io.of('/').on('connection', function(socket) {
     client.stop_tweets();
     client.stop_stream();
 
-    wkdata.search_player("Hello");
+    wiki_search = wkdata.search_player("Hello");
+
+    wiki_search.catch(function(error) {
+      helper.error("Wikidata Search Failed:", error);
+    });
+
+    wiki_search.then(function(reply) {
+      helper.info("Wikidata Search Complete:", reply);
+    });
 
     dbpedia.getAndEmitStats(socket, query.player_query, query.team_query);
 

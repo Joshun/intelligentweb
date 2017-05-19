@@ -7,6 +7,12 @@ var helper  = require('./helper.js');
 function search_player(terms) {
   return new Promise(function(resolve, reject) {
 
+  	// P106 = 'occupation'           , Q937857 = 'association football player'
+  	// P18  = 'image'
+  	// P54  = 'member of sports team',
+  	// P31  = 'instance of'          , Q476028 = 'association football club'
+  	// P582 = 'end time'
+  	
   	var url = wkdata.sparqlQuery(
 	  'SELECT DISTINCT ?human ?humanLabel ?team ?teamLabel ?image ?date \
 	   WHERE { \
@@ -15,6 +21,7 @@ function search_player(terms) {
 				  wdt:P18 ?image; \
 				  p:P54 ?list. \
 		   ?list  ps:P54 ?team. \
+		   ?team  wdt:P31 wd:Q476028. \
 		   OPTIONAL{?list pq:P582 ?date} \
 		   FILTER(!BOUND(?date)) \
 		   SERVICE wikibase:label { bd:serviceParam wikibase:language "en" } \
@@ -22,16 +29,18 @@ function search_player(terms) {
 	   LIMIT 10'
   	);
 
-  	request(url);
+  	var data = request(url);
 
-  	request.catch(function(error) {
-  		helper.error("Invalid Response:", error);
+  	data.catch(function(error) {
   		reject(error);
   	});
 
-  	request.then(function(reply) {
-  		helper.info("Response from Wikidata:", reply);
+  	data.then(function(reply) {
   		resolve(reply);
   	});
   });
+}
+
+module.exports = {
+	search_player: search_player
 }
