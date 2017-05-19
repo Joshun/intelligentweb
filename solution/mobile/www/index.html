@@ -17,144 +17,88 @@
 </head>
 
 <body onload="initialise();" id="bootstrap-override" class="container">
-  <div id="page_container" class="row">
+
+  <!-- begin search section -->
+  <div class="row">
     <div class="col-xs-12">
-      <div id="form_container" class="row">
-        <div class="row">
-          <div class="col-xs-12">
-            <h1>Twitter Web Interface</h1>
-          </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <h2>Search</h2>
         </div>
+      </div>
 
-        <form id="query_form" action="">
+      <div class="row">
+        <div class="col-xs-12">
+          <input type="text" class="form-control" placeholder="team">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <input type="text" class="form-control" placeholder="player">
+        </div>
+      </div>
 
-          <!-- start -->
-
-          <div class="row">
-            <div class="col-xs-6">
-              <h2>Player</h2>
-            </div>
-            <div class="col-xs-6">
-              <h2>Team</h2>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-xs-6">
-              <div class="inner-addon left-addon">
-                <input type="text" class="form-control" name="player_query" id="player_query" placeholder="e.g. Wayne Rooney" />
-                <i class="glyphicon glyphicon-search"></i>
-              </div>
-            </div>
-
-            <div class="col-xs-6">
-                <div class="inner-addon left-addon">
-                <input type="text" class="form-control" name="team_query" id="team_query" placeholder="e.g. Manchester United" />
-                <i class="glyphicon glyphicon-search"></i>
-              </div>
-            </div>
-          </div>
-
-          <!-- end -->
-
-          <!--<div class="row">
-            <div class="col-xs-12 form-group ">
-              <label for="player_query">Enter a Player Name:</label>
-              <div class="inner-addon left-addon">
-                <input type="text" class="form-control" name="player_query" id="player_query" placeholder="e.g. Wayne Rooney" />
-                <i class="glyphicon glyphicon-search"></i>
-              </div>
-            </div>
-          </div>-->
-
-          <div class="row">
-            <!--<div class="col-xs-6">
-                <span>Search mode</span>
-            </div>-->
-            <div class="col-xs-8">
-              <span class="button-inline-label">Search</span>
-            </div>
-            <div class="col-xs-2">
-              <input type="checkbox" class="hidden" id="or_operator" name="or_operator">
+      <div class="row">
+        <div class="col-xs-12">
+          <div id="search-buttons" class="btn-group-justified" role="group" aria-label="...">
+            <div class="btn-group" role="group" aria-label="...">
+              <input type="checkbox" class="hidden" id="or_operator" name="or_operator"> 
               <label for="or_operator" class="btn btn-default"></label>
             </div>
-            <div class="col-xs-2 ">
-              <input type="submit" class="btn btn-default btn-primary" />        
+            <div class="btn-group" role="group" aria-label="...">
+              <input type="submit" class="btn btn-default btn-primary" ></input>
             </div>
           </div>
-                
-
-        </form>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-xs-8">
-        <span class="button-inline-label">Statistics</span>
-      </div>
-
-      <div class="col-xs-2">
-        <button id="player_modal" type="button" class="btn btn-info" data-toggle="modal" data-target="#over_container">Player</button>
-      </div>
-
-      <div class="col-xs-2">
-        <button id="team_model" type="button" class="btn btn-info">Team</button>
-      </div>
-    </div>
-
-
-    <div class="row">
-      <div class="col-xs-12">
-        <h2>Results</h2>
-      </div>
-    </div>
-
-    <div class="row">
-      <div id="post_container" class="col-xs-12">
-        <div id="form_div">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th width="10%">Author</th>
-                <th width="50%">Text</th>
-                <th width="15%">Time</th>
-                <th width="15%">Date</th>
-                <th width="10%">Link</th>
-              </tr>
-            </thead>
-          </table>
         </div>
+      </div>
+    </div>
+  </div>
+  <!-- end search section -->
 
-        <div id="post_div">
-          <table id="form_table" class="table table-striped">
-            <tbody>
-            </tbody>
-          </table>
+  <!-- begin stats section -->
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="row">
+        <div class="col-xs-12">
+          <h2>Stats</h2>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="btn-group btn-group-justified" role="group" aria-label="...">
+            <div class="btn-group" role="group" aria-label="...">
+              <button class="btn btn-info">Team</button>
+            </div>
+            <div class="btn-group" role="group" aria-label="...">
+              <button class="btn btn-info">Player</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end stats section -->
+
+  
+  <!-- begin results section -->
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="row">
+        <div class="col-xs-12">
+          <h2>Results</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <span>...</span>
         </div>
       </div>
     </div>
   </div>
 
-  <div id="over_container" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
+  <!-- end results section -->
 
-        <div id="head_div" class="modal-header">
-          <h4 class="modal-title">Modal Header</h4>
-        </div>
 
-        <div id="body_div" class="modal-body">
-          <p>Some text will go here.</p>
-          <p>Some text will go here.</p>
-          <p>Some text will go here.</p>
-        </div>
-
-        <div id="foot_div" class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-
-      </div>
-    </div>
-  </div>
 </body>
 </html>
