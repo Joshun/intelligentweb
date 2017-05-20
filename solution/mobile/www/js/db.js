@@ -70,6 +70,7 @@ function Database() {
 
 }
 
+// Given searchParams, retrieve previous tweet results
 Database.prototype.getResult = function(searchParams) {
     var that = this;
     return new Promise(function(resolve, reject) {
@@ -97,6 +98,7 @@ Database.prototype.getResult = function(searchParams) {
     });
 };
 
+// Helper for getResult, gets prev search result given searchParams
 Database.prototype.getSearch = function(searchParams) {
     var that = this;
     return new Promise(function(resolve, reject) {
@@ -122,6 +124,7 @@ Database.prototype.getSearch = function(searchParams) {
     });
 };
 
+// Helper for getSearch, gets prev tweets given previousSearchId
 Database.prototype.getSearchTweets = function(previousSearchId) {
     var that = this;
     return new Promise(function(resolve, reject) {
@@ -147,7 +150,7 @@ Database.prototype.getSearchTweets = function(previousSearchId) {
 };
 
 
-
+// Given searchParams and tweetList, store the previous search and corresponding tweets
 Database.prototype.storeResult = function(searchParams, tweetList) {
     var that = this;
     return new Promise(function(resolve, reject) {
@@ -167,6 +170,7 @@ Database.prototype.storeResult = function(searchParams, tweetList) {
     });
 };
 
+// Given search params, log a previous search result
 Database.prototype.storeSearch = function(searchParams) {
     var that = this;
     return new Promise(function(resolve, reject) {
@@ -191,6 +195,7 @@ Database.prototype.storeSearch = function(searchParams) {
     });
 };
 
+// Given a previousSearchId and list of tweets, store tweets
 Database.prototype.storeSearchTweets = function(previousSearchId, tweetList) {
     var that = this;
     return new Promise(function(resolve, reject) {
