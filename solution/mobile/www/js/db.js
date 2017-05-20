@@ -2,8 +2,6 @@
 // working: storing results and tweets
 // not yet tested: retrieving results and tweets
 
-// var SQLite = window.cordova.require('cordova-sqlite-plugin.SQLite');
-
 function Database() {
     this.db = window.sqlitePlugin.openDatabase({name: "football.db", location: "default"});
 
@@ -37,23 +35,9 @@ function Database() {
         console.log("db error: ", error);
     });
 
-
-
-    // this.storeTweets([1, 2, 3]);
-    // this.getTweets([0, "previouSearchTerm0"]);
     var tweetList = [1,2,3];
     var prevSearch = { isOrOperator: 0, playerQuery: "player", teamQuery: "team"};
     var that = this;
-    // this.storeSearch(prevSearch, function(result) {
-    //     console.log("done: ", result);
-    // });
-    // this.storeSearch(prevSearch).then(function(res) {
-    //     console.log("res: ", res);
-    // });
-
-    // this.storeSearchTweets(2, [1,2,3]).then(function(res) {
-    //     console.log("res: ", res);
-    // });
 
     var that = this;
     this.storeResult(prevSearch, [4,5,6,7]).then(function(result) {
@@ -65,8 +49,6 @@ function Database() {
     }).catch(function(err) {
         console.log("error: ", err);
     });
-
-    // this.getSearch(prevSearch);
 
 }
 
@@ -134,7 +116,7 @@ Database.prototype.getSearchTweets = function(previousSearchId) {
                 function(tx, rs) {
                     console.log("QUERY success: ", tx);
 
-                    tweets = [];
+                    var tweets = [];
                     for (var i=0; i<rs.rows.length; i++) {
                         tweets.push(rs.rows.item(i));
                     }
@@ -222,7 +204,6 @@ Database.prototype.storeSearchTweets = function(previousSearchId, tweetList) {
             resolve(batchList.length);
         }, function(error) {
             console.error("storeTweets batch operation failed: ", error);
-            // throw error;
             reject(error);
         });
     });
