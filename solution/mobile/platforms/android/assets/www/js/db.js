@@ -33,83 +33,112 @@ function Database() {
         console.log("db error: ", error);
     });
 
+
+
     // this.storeTweets([1, 2, 3]);
     // this.getTweets([0, "previouSearchTerm0"]);
     var tweetList = [1,2,3];
     var prevSearch = { isOrOperator: 0, playerQuery: "player", teamQuery: "team"};
-    this.storeSearch(prevSearch, tweetList);
-    this.getSearch(prevSearch);
+    var that = this;
+    this.storeSearch(prevSearch).then(function(result) {
+        console.log("then");
+        that.storeSearchTweets(previousSearchId, tweetList);
+    }).catch(function(error) {
+        console.log("error");
+    });
+
+    // this.getSearch(prevSearch);
+
 }
 
 Database.prototype.getSearch = function(searchParams) {
-    var sqlQuery = "SELECT * FROM previousSearches WHERE isOrOperator=? AND playerQuery=? AND teamQuery=?";
+    var that = this;
+    return new Promise(function(resolve, reject) {
+        var sqlQuery = "SELECT * FROM previousSearches WHERE isOrOperator=? AND playerQuery=? AND teamQuery=?";
 
-    this.db.transaction(function(tx) {
-        tx.executeSql(sqlQuery,
-            [searchParams.isOrOperator, searchParams.playerQuery, searchParams.teamQuery],
-            function(tx, rs) {
-                console.log("QUERY success: ", tx);
-                this.getSearchTweets(previousSearchId);
-            },
-            function(tx, error) {
-                console.error("error: ", error);
-            });
+        that.db.transaction(function(tx) {
+            tx.executeSql(sqlQuery,
+                [searchParams.isOrOperator, searchParams.playerQuery, searchParams.teamQuery],
+                function(tx, rs) {
+                    console.log("QUERY success: ", tx);
+                    resolve(that.getSearchTweets(that, previousSearchId));
+                },
+                function(tx, error) {
+                    console.error("error: ", error);
+                    reject(error);
+                });
 
+        });
     });
 };
 
 Database.prototype.getSearchTweets = function(previousSearchId) {
-    var sqlQuery = "SELECT * from tweets WHERE previousSearchId=?";
-    this.db.transaction(sqlQuery, [previousSearchId],
-        function(tx, rs) {
-            console.log("QUERY success: ", tx);
-        },
-        function(tx, error) {
-            console.error("QUERY error: ", error);
-        }
-    );
+    var that = this;
+    return new Promise(function(resolve, reject) {
+        var sqlQuery = "SELECT * from tweets WHERE previousSearchId=?";
+        that.db.transaction(sqlQuery, [previousSearchId],
+            function(tx, rs) {
+                console.log("QUERY success: ", tx);
+                resolve(rs.rows);
+            },
+            function(tx, error) {
+                console.error("QUERY error: ", error);
+                reject(error);
+            }
+        );
+    });    
 };
 
-Database.prototype.storeSearch = function(searchParams, tweetList) {
-    console.log("Attempting to insert search: ", searchParams);
-    var sqlQuery = "INSERT INTO previousSearches (isOrOperator, playerQuery, teamQuery) VALUES \
-        (?, ?, ?);";
+Database.prototype.storeSearch = function(searchParams) {
+    var that = this;
+    return new Promise(function(resolve, reject) {
+        console.log("Attempting to insert search: ", searchParams);
+        var sqlQuery = "INSERT INTO previousSearches (isOrOperator, playerQuery, teamQuery) VALUES \
+            (?, ?, ?);";
+        console.log(that);
 
-        this.db.transaction(function(tx) {
+        that.db.transaction(function(tx) {
             tx.executeSql(sqlQuery, [searchParams.isOrOperator, searchParams.playerQuery, searchParams.teamQuery],
                 function(tx, rs) {
                     console.log("INSERT success: ", tx);
                     var rowId = rs.rows.item(0).id;
-                    this.storeSearchTweets(rowId, tweetList);
+                    resolve(rowId);
                 },
                 function(tx, error) {
                     console.error("INSERT failed: ", tx);
+                    reject(error);
                 });
         });
+    });
 };
 
 Database.prototype.storeSearchTweets = function(previousSearchId, tweetList) {
-    console.log("storeTweets ...");
+    var that = this;
+    return new Promise(function(resolve, reject) {
+        console.log("storeTweets ...");
 
-    var sqlQuery = "INSERT INTO tweets \
-        (userName, tweetId, tweetTimestamp, previousSearchId) \
-        VALUES (?, ?, ?, ?)";
-    var valuesList = [];
-    var batchList = [];
+        var sqlQuery = "INSERT INTO tweets \
+            (userName, tweetId, tweetTimestamp, previousSearchId) \
+            VALUES (?, ?, ?, ?)";
+        var valuesList = [];
+        var batchList = [];
 
-    // Make a list of values
-    for (var i=0; i<tweetList.length; i++) {
-        valuesList.push(["userName"+i, "tweetId"+i, "tweetTimestamp"+i, 0]);
-    }
+        // Make a list of values
+        for (var i=0; i<tweetList.length; i++) {
+            valuesList.push(["userName"+i, "tweetId"+i, "tweetTimestamp"+i, 0]);
+        }
 
-    // Make list of pairs of query string and values, ready for batch operation
-    for (var i=0; i<valuesList.length; i++) {
-        batchList.push([sqlQuery, valuesList[i]]);
-    }
+        // Make list of pairs of query string and values, ready for batch operation
+        for (var i=0; i<valuesList.length; i++) {
+            batchList.push([sqlQuery, valuesList[i]]);
+        }
 
-    this.db.sqlBatch(batchList, function() {
-        console.log("storeTweets (count=", batchList.length.toString(), ") OK");
-    }, function(error) {
-        console.error("storeTweets batch operation failed: ", error);
+        that.db.sqlBatch(batchList, function() {
+            console.log("storeTweets (count=", batchList.length.toString(), ") OK");
+            resolve(batchList.length);
+        }, function(error) {
+            console.error("storeTweets batch operation failed: ", error);
+            reject(error);
+        });
     });
 };

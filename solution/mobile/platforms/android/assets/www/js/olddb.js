@@ -39,15 +39,8 @@ function Database() {
     // this.getTweets([0, "previouSearchTerm0"]);
     var tweetList = [1,2,3];
     var prevSearch = { isOrOperator: 0, playerQuery: "player", teamQuery: "team"};
-    var that = this;
-    this.storeSearch(prevSearch).then(function(result) {
-        console.log("then");
-        that.storeSearchTweets(previousSearchId, tweetList);
-    }).catch(function(error) {
-        console.log("error");
-    });
-
-    // this.getSearch(prevSearch);
+    this.storeSearch(prevSearch, tweetList);
+    this.getSearch(prevSearch);
 
 }
 
@@ -72,8 +65,8 @@ Database.prototype.getSearch = function(searchParams) {
     });
 };
 
-Database.prototype.getSearchTweets = function(previousSearchId) {
-    var that = this;
+Database.prototype.getSearchTweets = function(ctx, previousSearchId) {
+    var that = ctx;
     return new Promise(function(resolve, reject) {
         var sqlQuery = "SELECT * from tweets WHERE previousSearchId=?";
         that.db.transaction(sqlQuery, [previousSearchId],
@@ -89,7 +82,7 @@ Database.prototype.getSearchTweets = function(previousSearchId) {
     });    
 };
 
-Database.prototype.storeSearch = function(searchParams) {
+Database.prototype.storeSearch = function(searchParams, tweetList) {
     var that = this;
     return new Promise(function(resolve, reject) {
         console.log("Attempting to insert search: ", searchParams);
@@ -102,7 +95,7 @@ Database.prototype.storeSearch = function(searchParams) {
                 function(tx, rs) {
                     console.log("INSERT success: ", tx);
                     var rowId = rs.rows.item(0).id;
-                    resolve(rowId);
+                    resolve(that.storeSearchTweets(that, rowId, tweetList));
                 },
                 function(tx, error) {
                     console.error("INSERT failed: ", tx);
@@ -112,8 +105,8 @@ Database.prototype.storeSearch = function(searchParams) {
     });
 };
 
-Database.prototype.storeSearchTweets = function(previousSearchId, tweetList) {
-    var that = this;
+Database.prototype.storeSearchTweets = function(ctx, previousSearchId, tweetList) {
+    var that = ctx;
     return new Promise(function(resolve, reject) {
         console.log("storeTweets ...");
 

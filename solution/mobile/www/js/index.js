@@ -1,6 +1,4 @@
 
-var db;
-
 var app = {
     // Application Constructor
     initialize: function() {
@@ -15,6 +13,7 @@ var app = {
 
     onDeviceReady: function() {
         db = new Database();
+        // initDB();
 
         $("#team-stats-btn").on("click", function() {
             showStatsContent("team");
