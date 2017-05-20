@@ -1,3 +1,7 @@
+// db.js
+// working: storing results and tweets
+// not yet tested: retrieving results and tweets
+
 // var SQLite = window.cordova.require('cordova-sqlite-plugin.SQLite');
 
 function Database() {
@@ -51,8 +55,13 @@ function Database() {
     //     console.log("res: ", res);
     // });
 
+    var that = this;
     this.storeResult(prevSearch, [4,5,6,7]).then(function(result) {
         console.log("done!!!");
+
+        that.getResult(prevSearch).then(function(result) {
+            console.log("get result ", result);
+        });
     }).catch(function(err) {
         console.log("error: ", err);
     });
@@ -61,7 +70,34 @@ function Database() {
 
 }
 
-Database.prototype.getSearch = function(searchParams, callback) {
+Database.prototype.getResult = function(searchParams) {
+    var that = this;
+    return new Promise(function(resolve, reject) {
+        that.getSearch(searchParams).then(function(prevSearchId) {
+            console.log("get search success");
+
+            if (prevSearchId == null) {
+                console.log("no prev searches");
+                resolve(null);
+            }
+            else {
+                that.getSearchTweets(prevSearchId).then(function(tweets) {
+                    console.log("get tweets success");
+                    resolve(tweets);
+                }).catch(function(error) {
+                    console.log("get tweets error ", error);
+                    reject(error);
+                });
+            }
+        }).catch(function(error) {
+            console.log("get search error ", error);
+            reject(error);
+        });
+
+    });
+};
+
+Database.prototype.getSearch = function(searchParams) {
     var that = this;
     return new Promise(function(resolve, reject) {
         var sqlQuery = "SELECT * FROM previousSearches WHERE isOrOperator=? AND playerQuery=? AND teamQuery=?";
@@ -71,13 +107,17 @@ Database.prototype.getSearch = function(searchParams, callback) {
                 [searchParams.isOrOperator, searchParams.playerQuery, searchParams.teamQuery],
                 function(tx, rs) {
                     console.log("QUERY success: ", tx);
-                    callback(previousSearchId);
+                    if (rs.rows.length > 0) {
+                        resolve(rs.rows.item(0));
+                    }
+                    else {
+                        resolve(null);
+                    }
                 },
                 function(tx, error) {
                     console.error("error: ", error);
                     reject(error);
                 });
-
         });
     });
 };
@@ -86,18 +126,27 @@ Database.prototype.getSearchTweets = function(previousSearchId) {
     var that = this;
     return new Promise(function(resolve, reject) {
         var sqlQuery = "SELECT * from tweets WHERE previousSearchId=?";
-        that.db.transaction(sqlQuery, [previousSearchId],
-            function(tx, rs) {
-                console.log("QUERY success: ", tx);
-                resolve(rs.rows);
-            },
-            function(tx, error) {
-                console.error("QUERY error: ", error);
-                reject(error);
-            }
-        );
-    });    
+        that.db.transaction(function(tx) {
+            tx.executeSql(sqlQuery, [previousSearchId],
+                function(tx, rs) {
+                    console.log("QUERY success: ", tx);
+
+                    tweets = [];
+                    for (var i=0; i<rs.rows.length; i++) {
+                        tweets.push(rs.rows.item(i));
+                    }
+                    resolve(tweets);
+                },
+                function(tx, error) {
+                    console.error("QUERY error: ", error);
+                    reject(error);
+                }
+            );
+        });    
+    });
 };
+
+
 
 Database.prototype.storeResult = function(searchParams, tweetList) {
     var that = this;
