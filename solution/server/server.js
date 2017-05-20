@@ -2,6 +2,9 @@
  * server.js
  */
 
+var os = require('os');
+var process = require('process');
+
 var express = require('express');
 var app     = express();
 
@@ -16,6 +19,23 @@ var dbpedia = require('./dbpedia.js');
 var helper  = require('./helper.js');
 
 var port    = process.env.PORT || 3000;
+
+
+function checkPaths() {
+  var cwd = process.cwd();
+  // If windows, split on backslash else on forward slash
+  var paths = os.type() == "Windows_NT" ? cwd.split("\\") : cwd.split("/");
+  return paths[paths.length-1] == "server" && paths[paths.length-2] == "solution";
+}
+
+// Check that the current working directory is correct
+// If this check is not carried out and the working dir is wrong, unhelpful errors will emerge
+// and it will not be immediately obvious these are caused by being in the wrong dir.
+if (! checkPaths()) {
+  helper.error("Working directory must be solution/server");
+  helper.error("Please run server.js from inside its own folder");
+  throw new Error("WorkingDirectoryError");
+}
 
 // specifies which port the server should be hosted on
 server.listen(port, function() {

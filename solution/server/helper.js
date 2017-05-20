@@ -1,6 +1,6 @@
 var flags = {
 	verbose: false
-}
+};
 
 process.argv.forEach(function(arg) {
   if(arg.match(/^-*/) != '') {
