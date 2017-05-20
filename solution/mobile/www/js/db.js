@@ -40,18 +40,28 @@ function Database() {
     var tweetList = [1,2,3];
     var prevSearch = { isOrOperator: 0, playerQuery: "player", teamQuery: "team"};
     var that = this;
-    this.storeSearch(prevSearch).then(function(result) {
-        console.log("then");
-        that.storeSearchTweets(previousSearchId, tweetList);
-    }).catch(function(error) {
-        console.log("error");
+    // this.storeSearch(prevSearch, function(result) {
+    //     console.log("done: ", result);
+    // });
+    // this.storeSearch(prevSearch).then(function(res) {
+    //     console.log("res: ", res);
+    // });
+
+    // this.storeSearchTweets(2, [1,2,3]).then(function(res) {
+    //     console.log("res: ", res);
+    // });
+
+    this.storeResult(prevSearch, [4,5,6,7]).then(function(result) {
+        console.log("done!!!");
+    }).catch(function(err) {
+        console.log("error: ", err);
     });
 
     // this.getSearch(prevSearch);
 
 }
 
-Database.prototype.getSearch = function(searchParams) {
+Database.prototype.getSearch = function(searchParams, callback) {
     var that = this;
     return new Promise(function(resolve, reject) {
         var sqlQuery = "SELECT * FROM previousSearches WHERE isOrOperator=? AND playerQuery=? AND teamQuery=?";
@@ -61,7 +71,7 @@ Database.prototype.getSearch = function(searchParams) {
                 [searchParams.isOrOperator, searchParams.playerQuery, searchParams.teamQuery],
                 function(tx, rs) {
                     console.log("QUERY success: ", tx);
-                    resolve(that.getSearchTweets(that, previousSearchId));
+                    callback(previousSearchId);
                 },
                 function(tx, error) {
                     console.error("error: ", error);
@@ -89,6 +99,25 @@ Database.prototype.getSearchTweets = function(previousSearchId) {
     });    
 };
 
+Database.prototype.storeResult = function(searchParams, tweetList) {
+    var that = this;
+    return new Promise(function(resolve, reject) {
+        that.storeSearch(searchParams).then(function(prevSearchId) {
+            console.log("stored search: ", prevSearchId);
+            that.storeSearchTweets(prevSearchId, tweetList).then(function(result) {
+                console.log("stored tweets, ", result);
+                resolve(result);
+            }).catch(function(error) {
+                console.log("error storing tweets", error);
+                reject(error);
+            });
+        }).catch(function(error) {
+            console.log("error storing search", error);
+            reject(error);
+        });
+    });
+};
+
 Database.prototype.storeSearch = function(searchParams) {
     var that = this;
     return new Promise(function(resolve, reject) {
@@ -101,7 +130,8 @@ Database.prototype.storeSearch = function(searchParams) {
             tx.executeSql(sqlQuery, [searchParams.isOrOperator, searchParams.playerQuery, searchParams.teamQuery],
                 function(tx, rs) {
                     console.log("INSERT success: ", tx);
-                    var rowId = rs.rows.item(0).id;
+                    var rowId = rs.insertId;
+                    console.log(rowId);
                     resolve(rowId);
                 },
                 function(tx, error) {
@@ -138,6 +168,7 @@ Database.prototype.storeSearchTweets = function(previousSearchId, tweetList) {
             resolve(batchList.length);
         }, function(error) {
             console.error("storeTweets batch operation failed: ", error);
+            // throw error;
             reject(error);
         });
     });
