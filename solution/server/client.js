@@ -198,8 +198,22 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
     tweetfreqs.then(function(data) {
       helper.info(tweetfreqs)
       socket.emit('reply_freqs', data);
-    });
+    })
 
+    .catch(function(error) {
+      helper.error("Cannot get tweet frequencies", error)
+    })
+
+    // create socket.io emission to webpage with tweets by author
+    author_tweets = get_timeline(query.author_query);
+    author_tweets.then(function(reply) {
+
+      socket.emit('author_tweets', reply)
+      helper.info("Storing:", reply.data)
+    })
+    .catch(function(error) {
+      helper.error("Cannot get user tweets", error)
+    })
 
     // creates socket.io emission to webpage with tweets
     tweets.then(function(reply) {
