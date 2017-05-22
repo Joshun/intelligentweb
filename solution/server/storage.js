@@ -232,9 +232,11 @@ function getRealNameFromScreenName(nameTable, screenName) {
 						reject("getRealNameFromScreenName failed!");
 					}
 					else if (results.length > 0) {
+						helper.info("getRealNameFromScreenName worked!");
 						resolve(results[0].realName);
 					}
 					else {
+						helper.info("getRealNameFromScreenName nulled!");
 						resolve(null);
 					}
 				}

@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS tweets (
 CREATE TABLE IF NOT EXISTS teams (
     id INT NOT NULL AUTO_INCREMENT,
     screenName VARCHAR(255) UNIQUE,
-    realName VARCHAR(255) UNIQUE,
+    realName VARCHAR(255),
     PRIMARY KEY(id)
 );
 
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS teams (
 CREATE TABLE IF NOT EXISTS players (
     id INT NOT NULL AUTO_INCREMENT,
     screenName VARCHAR(255) UNIQUE,
-    realName VARCHAR(255) UNIQUE,
+    realName VARCHAR(255),
     PRIMARY KEY(id)
 );
 
@@ -48,3 +48,5 @@ INSERT IGNORE INTO teams (screenName, realName) VALUES ('Arsenal', 'Arsenal F.C.
 INSERT IGNORE INTO players (screenName, realName) VALUES ('WayneRooney', 'Wayne Rooney');
 INSERT IGNORE INTO players (screenName, realName) VALUES ('Cristiano', 'Christiano Ronaldo');
 INSERT IGNORE INTO players (screenName, realName) VALUES ('lionel_official', 'Lionel Messi');
+
+INSERT IGNORE INTO players (screenName, realName) VALUES ('#WayneRooney', 'Wayne Rooney');

@@ -1,4 +1,5 @@
 **/config.json
+**/db_commands.txt
 **/node_modules
 **/.vscode
 *.docx
