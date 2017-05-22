@@ -278,7 +278,14 @@ input[type=checkbox]:checked + label, input[type=checkbox]:hover:checked + label
     right: 0px;
 }
 
-.tokenfield  {
+/* Wrapping of tables */
+td {
+    word-wrap: break-word;
+}
+
+
+
+/*.tokenfield  {
     padding-left:  30px;
 }
 
