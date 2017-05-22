@@ -1,9 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.cordova.hellocordova" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>HelloCordova</name>
+<widget id="intelligentweb.footballtweets" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>FootballTweets</name>
     <description>
-        A sample Apache Cordova application that responds to the deviceready event.
+        An app to query tweets related to football players and teams, and display useful
+        additional statistics and information
     </description>
+    <icon src="res/icon.png" />
     <author email="dev@cordova.apache.org" href="http://cordova.io">
         Apache Cordova Team
     </author>
