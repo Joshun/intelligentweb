@@ -15,8 +15,8 @@ function resultToRow(tweet) {
 
   row +=  "<td width=\"10%\"><a href=" + "https://twitter.com/" + tweet["user"].screen_name + ">@" + tweet["user"].screen_name + "</a></td>"
     	+   "<td width=\"50%\">" + tweet["text"] + "</td>"
-    	+   "<td width=\"15%\">" + tweet["created_at"].substring(11,19) + "</td>"
-    	+   "<td width=\"15%\">" + tweet["created_at"].substring(0,10) + "</td>"
+    	+   "<td width=\"15%\">" + tweet["created_at"].substring(11, 19) + "</td>"
+    	+   "<td width=\"15%\">" + tweet["created_at"].substring( 0, 10) + "</td>"
     	+   "<td width=\"10%\"> <a href=" + "https://twitter.com/statuses/" + tweet.id_str + ">link</a></td>"
     	+ "</tr>";
 	return row;
@@ -26,8 +26,8 @@ function resultToRow(tweet) {
 function sortByDate(array, key) {
     return array.sort(function(a, b) {
         var x = a[key]; var y = b[key];
-        if (x<y) return -1;
-        if (x>y) return 1;
+        if (x < y) return -1;
+        if (x > y) return  1;
     });
 }
 
@@ -136,7 +136,7 @@ function initialise() {
 
   // emits query data from the input form to the server
   $('#query_form').submit(function() {
-    document.getElementById('player_modal').disabled = false;
+
 		$("#form_table tbody tr").remove();
     socket.emit('close', "Form Data!");
 
@@ -200,25 +200,28 @@ function initialise() {
 });
 
   socket.on('player_stats', function(stats) {
-    console.log('player stats received');
-    console.log(stats);
+    console.log("Player Stats Received:", stats);
     statsState.player_stats = stats;
-    // updateStatsPanel();
+
+    if (stats.label == "") {
+      $('#player_modal').prop("disabled", true);
+    }
+    else {
+      $('#player_modal').prop("disabled", false);
+    }
   });
 
 
 	socket.on('team_stats', function(stats) {
-		console.log('team stats received');
-		console.log(stats);
+    console.log("Team Stats Received:", stats);
 		statsState.team_stats = stats;
-		// updateStatsPanel();
 	});
 
   $('#player_modal').on('click', statsState, function(stats) {
     var data_name = "No Player Found";
     var data_desc = "No Description Found";
 
-    if (stats.data.player_stats != null) {
+    if (!stats.data.player_stats.label == "") {
       data_name = stats.data.player_stats.label;
       data_desc = stats.data.player_stats.description;
     }

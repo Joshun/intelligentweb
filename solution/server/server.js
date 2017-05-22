@@ -16,6 +16,7 @@ var config  = require('./config.json');
 var client  = require('./client.js');
 var db      = require('./storage.js');
 var dbpedia = require('./dbpedia.js');
+var wkdata  = require('./wikidata.js');
 var helper  = require('./helper.js');
 
 var port    = process.env.PORT || 3000;
@@ -53,6 +54,16 @@ io.of('/').on('connection', function(socket) {
   socket.on('query', function(query) {
     client.stop_tweets();
     client.stop_stream();
+
+    wiki_search = wkdata.search_player("Hello");
+
+    wiki_search.catch(function(error) {
+      helper.error("Wikidata Search Failed:", error);
+    });
+
+    wiki_search.then(function(reply) {
+      helper.info("Wikidata Search Complete:", reply);
+    });
 
     dbpedia.getAndEmitStats(socket, query.player_query, query.team_query);
 

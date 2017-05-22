@@ -170,6 +170,8 @@ body {
 
     width: 75%;
     height: 90vh;
+
+    min-width: 720px;
 }
 
 #form_container {
