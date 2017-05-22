@@ -113,7 +113,7 @@ function storeTweetData(data, logPrimaryKey) {
 				promiseList.push(new Promise(function(resolve, reject) {
 					connection.query(
 						"INSERT INTO tweets(userName, tweetId, tweetText, tweetTimestamp, previousSearchId) VALUES (?, ?, ?, FROM_UNIXTIME(?), ?)",
-						[status.user.screen_name, status.id_str, "[STORED] " + status.text, timestamp, logPrimaryKey],
+						[status.user.screen_name, status.id_str, status.text, timestamp, logPrimaryKey],
 						function(error, results, fields) {
 							if (error) reject(error);
 							else {

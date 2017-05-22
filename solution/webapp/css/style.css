@@ -1,6 +1,6 @@
 @-webkit-keyframes fadein_storage {
     from {
-        background-color: #CCFFCC;
+        background-color: #F29221;
     }
     to {
         background-color: inherit;
@@ -9,7 +9,7 @@
 
 @-webkit-keyframes fadein_twitter {
     from {
-        background-color: #CCCCFF;
+        background-color: #1DA1F2;
     }
     to {
         background-color: inherit;
@@ -18,7 +18,7 @@
 
 @-moz-keyframes fadein_storage {
     from {
-        background-color: #CCFFCC;
+        background-color: #F29221;
     }
     to {
         background-color: inherit;
@@ -27,7 +27,7 @@
 
 @-moz-keyframes fadein_twitter {
     from {
-        background-color: #CCCCFF;
+        background-color: #1DA1F2;
     }
     to {
         background-color: inherit;
@@ -36,7 +36,7 @@
 
 @-ms-keyframes fadein_storage {
     from {
-        background-color: #CCFFCC;
+        background-color: #F29221;
     }
     to {
         background-color: inherit;
@@ -45,7 +45,7 @@
 
 @-ms-keyframes fadein_twitter {
     from {
-        background-color: #CCCCFF;
+        background-color: #1DA1F2;
     }
     to {
         background-color: inherit;
@@ -54,7 +54,7 @@
 
 @-o-keyframes fadein_storage {
     from {
-        background-color: #CCFFCC;
+        background-color: #F29221;
     }
     to {
         background-color: inherit;
@@ -63,7 +63,7 @@
 
 @-o-keyframes fadein_twitter {
     from {
-        background-color: #CCCCFF;
+        background-color: #1DA1F2;
     }
     to {
         background-color: inherit;
@@ -72,7 +72,7 @@
 
 @keyframes fadein_storage {
     from {
-        background-color: #CCFFCC;
+        background-color: #F29221;
     }
     to {
         background-color: inherit;
@@ -81,7 +81,7 @@
 
 @keyframes fadein_twitter {
     from {
-        background-color: #CCCCFF;
+        background-color: #1DA1F2;
     }
     to {
         background-color: inherit;
@@ -283,9 +283,7 @@ td {
     word-wrap: break-word;
 }
 
-
-
-/*.tokenfield  {
+.tokenfield  {
     padding-left:  30px;
 }
 
@@ -297,14 +295,42 @@ div.right-addon > div.tokenfield {
     padding-right: 30px;
 }
 
-/** {
+.table-striped > tbody > .twitter:nth-of-type(odd) {
+    background: -webkit-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #F9F9F9 12px, #F9F9F9 100%);
+    background:    -moz-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #F9F9F9 12px, #F9F9F9 100%);
+    background:      -o-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #F9F9F9 12px, #F9F9F9 100%);
+    background:         repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #F9F9F9 12px, #F9F9F9 100%);
+}
+
+.table-striped > tbody > .twitter:nth-of-type(even) {
+    background: -webkit-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #FFFFFF 12px, #FFFFFF 100%);
+    background:    -moz-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #FFFFFF 12px, #FFFFFF 100%);
+    background:      -o-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #FFFFFF 12px, #FFFFFF 100%);
+    background:         repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #FFFFFF 12px, #FFFFFF 100%);
+}
+
+.table-striped > tbody > .storage:nth-of-type(odd) {
+    background: -webkit-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #F9F9F9 12px, #F9F9F9 100%);
+    background:    -moz-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #F9F9F9 12px, #F9F9F9 100%);
+    background:      -o-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #F9F9F9 12px, #F9F9F9 100%);
+    background:         repeating-linear-gradient(225deg, #F29221, #F29221 12px, #F9F9F9 12px, #F9F9F9 100%);
+}
+
+.table-striped > tbody > .storage:nth-of-type(even) {
+    background: -webkit-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #FFFFFF 12px, #FFFFFF 100%);
+    background:    -moz-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #FFFFFF 12px, #FFFFFF 100%);
+    background:      -o-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #FFFFFF 12px, #FFFFFF 100%);
+    background:         repeating-linear-gradient(225deg, #F29221, #F29221 12px, #FFFFFF 12px, #FFFFFF 100%);
+}
+
+/* {
     margin: 1;
     padding: 1;
     box-sizing: border-box;
 }
 
 body {
-    font: 16px Helvetica, Arial;
+    font: 12px Helvetica, Arial;
 }
 
 
