@@ -45,12 +45,6 @@ var app = {
                 table.append(resultToRow(tweets.statuses[i]));
             }
 
-            // Handle pagination
-            $("#form_table").DataTable({
-                "bFilter": false, // disable quick search / filter
-                "bLengthChange": false // disable length change
-            });
-
             // Hide results loading header
             $("#results-loading-header").addClass("hidden");
             
@@ -62,6 +56,13 @@ var app = {
 
         });
         // END bind socket actions
+
+        // BEGIN set up DataTable library for pagination
+        $("#form_table").DataTable({
+            "bFilter": false, // disable quick search / filter
+            "bLengthChange": false // disable length change
+        });
+        // END set up DataTable library for pagination
     }
    
 };
