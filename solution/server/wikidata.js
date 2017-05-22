@@ -9,11 +9,11 @@ function search_player_by_keyword(terms) {
 
   return new Promise(function(resolve, reject) {
 
-  	// P106 = 'occupation'           , Q937857 = 'association football player'
-  	// P18  = 'image'
-  	// P54  = 'member of sports team',
-  	// P31  = 'instance of'          , Q476028 = 'association football club'
-  	// P582 = 'end time'
+  	// P106  = 'occupation'           , Q937857 = 'association football player'
+  	// P18   = 'image'
+  	// P54   = 'member of sports team',
+  	// P31   = 'instance of'          , Q476028 = 'association football club'
+  	// P582  = 'end time'
   	
   	var url = wkdata.sparqlQuery(
 	  'SELECT DISTINCT ?human ?humanLabel ?team ?teamLabel ?image ?date \
@@ -45,19 +45,44 @@ function search_player_by_keyword(terms) {
 }
 
 function search_player_by_handles(terms) {
-  'SELECT DISTINCT ?human ?humanLabel ?team ?teamLabel ?image ?date \
-   WHERE { \
-     ?human wdt:P106 wd:Q937857; \
-            wdt:P2002 "' + terms.substring(1) + '"; \
-            wdt:P18 ?image; \
-            p:P54 ?list. \
-     ?list  ps:P54 ?team. \
-     ?team  wdt:P31 wd:Q476028. \
-     OPTIONAL{?list pq:P582 ?date} \
-     FILTER(!BOUND(?date)) \
-     SERVICE wikibase:label { bd:serviceParam wikibase:language "en" } \
-   } \
-   LIMIT 1'
+  var data;
+
+  return new Promise(function(resolve, reject) {
+    
+    // P106  = 'occupation'           , Q937857 = 'association football player'
+    // P2002 = 'twitter handle'
+    // P18   = 'image'
+    // P54   = 'member of sports team',
+    // P31   = 'instance of'          , Q476028 = 'association football club'
+    // P582  = 'end time'
+    
+    var url = wkdata.sparqlQuery(
+    'SELECT DISTINCT ?human ?humanLabel ?team ?teamLabel ?image ?date \
+     WHERE { \
+       ?human wdt:P106 wd:Q937857; \
+              wdt:P2002 "' + terms.substring(1) + '"; \
+              wdt:P18 ?image; \
+              p:P54 ?list. \
+       ?list  ps:P54 ?team. \
+       ?team  wdt:P31 wd:Q476028. \
+       OPTIONAL{?list pq:P582 ?date} \
+       FILTER(!BOUND(?date)) \
+       SERVICE wikibase:label { bd:serviceParam wikibase:language "en" } \
+     } \
+     LIMIT 1'
+     );
+
+    data = request(url);
+
+    data.catch(function(error) {
+      reject(error);
+    });
+
+    data.then(function(reply) {
+      helper.debug("Wikidata Results:\n", reply)
+      resolve(JSON.parse(reply).results.bindings[0]);
+    });
+  });
 }
 
 function tokenise_player(query) {
