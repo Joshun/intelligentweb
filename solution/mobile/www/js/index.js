@@ -51,6 +51,9 @@ var app = {
             // Unhide results table header
             $("#results-table-header").removeClass("hidden");
 
+            // Unhide results bottom back button
+            $("#results-bottom-back-btn").removeClass("hidden");
+
         });
         // END bind socket actions
     }
@@ -61,8 +64,8 @@ app.initialize();
 
 // address of server (emulator host)
 // as per https://developer.android.com/studio/run/emulator-networking.html
-var serverIP = "10.0.2.2";
-// var serverIP = "143.167.119.16";
+// var serverIP = "10.0.2.2";
+var serverIP = "143.167.119.16";
 var serverPort = 3000;
 var serverAddress = "http://" + serverIP + ":" + serverPort;
 
@@ -95,8 +98,8 @@ function resultToRow(tweet) {
   row +=  "<td width=\"10%\"><a href=" + "https://twitter.com/" + tweet["user"].screen_name + ">@" + tweet["user"].screen_name + "</a></td>"
     	+   "<td width=\"50%\">" + tweet["text"] + "</td>"
     	+   "<td width=\"15%\">" + tweet["created_at"].substring(11,19) + "</td>"
-    	+   "<td width=\"15%\">" + tweet["created_at"].substring(0,10) + "</td>"
-    	+   "<td width=\"10%\"> <a href=" + "https://twitter.com/statuses/" + tweet.id_str + ">link</a></td>"
+    	// +   "<td width=\"15%\">" + tweet["created_at"].substring(0,10) + "</td>"
+    	// +   "<td width=\"10%\"> <a href=" + "https://twitter.com/statuses/" + tweet.id_str + ">link</a></td>"
     	+ "</tr>";
 	return row;
 }
@@ -124,8 +127,17 @@ function showStatsContent(statType) {
 
 function showResultsContent() {
     // Need some check to see if we have results...
+
+    // Remove any existing results
+    $("#form_table tbody tr").remove();
+
+    // Show results-content container
     $("#results-content").removeClass("hidden");
+
+    // Hide main-content container
     $("#main-content").addClass("hidden");
+
+    // Send request to server to get tweets
     sendGetTweetsRequest();
 }
 
@@ -136,6 +148,10 @@ function showMainContent() {
 
     // Unhide results loading header
     $("#results-loading-header").removeClass("hidden");
+
     // Hide results table header (show only when loaded)
     $("#results-table-header").addClass("hidden");
+
+    // Hide results bottom back button
+    $("#results-bottom-back-btn").addClass("hidden");
 }

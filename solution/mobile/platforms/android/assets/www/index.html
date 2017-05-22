@@ -44,24 +44,29 @@
             </div>
           </div>
 
-          <div class="row">
-            <div class="col-xs-12">
-              <input type="text" id="team_query" name="team_query" class="form-control" placeholder="team">
-            </div>
-          </div>
+          <!-- player search box -->
           <div class="row">
             <div class="col-xs-12">
               <input type="text" id="player_query" name="player_query" class="form-control" placeholder="player">
             </div>
           </div>
 
+          <!-- team search box -->
+          <div class="row">
+            <div class="col-xs-12">
+              <input type="text" id="team_query" name="team_query" class="form-control" placeholder="team">
+            </div>
+          </div>
+         
           <div class="row">
             <div class="col-xs-12">
               <div id="search-buttons" class="btn-group-justified" role="group" aria-label="...">
+                <!-- OR / AND toggle button -->
                 <div class="btn-group" role="group" aria-label="...">
                   <input type="checkbox" class="hidden" id="or_operator" name="or_operator"> 
                   <label for="or_operator" class="btn btn-default"></label>
                 </div>
+                <!-- submit button -->
                 <div class="btn-group" role="group" aria-label="...">
                   <input type="submit" id="submit-btn" class="btn btn-default btn-primary">
                 </div>
@@ -104,6 +109,8 @@
 
   <div id="results-content" class="hidden">
     <!-- begin results section -->
+
+    <!-- results section heading -->
     <div class="row">
       <div class="col-xs-12">
         <div class="row">
@@ -114,12 +121,25 @@
       </div>
     </div>
 
+    <!-- top back button -->
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="btn-group-justified" role="group">
+          <div class="btn-group" role="group">
+            <button class="back-to-main-content btn btn-default btn-primary">Back</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- loading banner, shown when results have not yet appeared and then hidden -->
     <div class="row" id="results-loading-header">
       <div class="col-xs-12">
         <p>Loading, please wait...</p>
       </div>
     </div>
 
+    <!-- results headings -->
     <div class="row" id="results-table-headers">
       <div class="col-xs-12 hidden" id="form_div">
         <table class="table table-striped">
@@ -127,29 +147,36 @@
             <tr>
               <th width="10%">Author</th>
               <th width="50%">Text</th>
-              <th width="15%">Time</th>
+              <!--<th width="15%">Time</th>-->
               <th width="15%">Date</th>
-              <th width="10%">Link</th>
+              <!--<th width="10%">Link</th>-->
             </tr>
           </thead>
         </table>
       </div>
     </div>
 
+    <!-- the actual results -->
     <div class="row">
       <div class="col-xs-12" id="post_div">
-        <table id="form_table" class="table table-striped">
+        <table id="form_table" class="table table-striped table-condensed">
           <tbody>
           </tbody>
         </table>
       </div>
     </div>
 
+    <!-- back button at bottom of results table; only shown when there are results -->
     <div class="row">
       <div class="col-xs-12">
-        <button class="back-to-main-content btn btn-default btn-primary">Back</button>
+        <div class="btn-group-justified" role="group">
+          <div class="btn-group" role="group">
+            <button class="back-to-main-content btn btn-default btn-primary hidden" id="results-bottom-back-btn">Back</button>
+          </div>
+        </div>
       </div>
     </div>
+    
   </div>
     <!-- end results section -->
 
@@ -163,9 +190,14 @@
         </div>
       </div>
     </div>
+
     <div class="row">
       <div class="col-xs-12">
-        <button class="back-to-main-content btn btn-default btn-primary">Back</button>
+        <div class="btn-group-justified" role="group">
+          <div class="btn-group" role="group">
+            <button class="back-to-main-content btn btn-default btn-primary">Back</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
