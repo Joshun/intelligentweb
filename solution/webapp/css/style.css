@@ -278,15 +278,3 @@ input[type=checkbox]:checked + label, input[type=checkbox]:hover:checked + label
     right: 0px;
 }
 
- Wrapping of tables 
-#form_table {
-    /*display: block;*/
-    word-wrap: break-word;
-    /*max-width: 100px;*/
-    table-layout: fixed;
-    width: 100%;
-}
-
-/*.row_element {*/
-    /*max-width: 10px;*/
-/*}*/

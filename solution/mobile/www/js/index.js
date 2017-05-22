@@ -45,11 +45,17 @@ var app = {
                 table.append(resultToRow(tweets.statuses[i]));
             }
 
+            // Handle pagination
+            $("#form_table").DataTable({
+                "bFilter": false, // disable quick search / filter
+                "bLengthChange": false // disable length change
+            });
+
             // Hide results loading header
             $("#results-loading-header").addClass("hidden");
             
-            // Unhide results table header
-            $("#results-table-header").removeClass("hidden");
+            // Unhide results table
+            $("#form_table").removeClass("hidden");
 
             // Unhide results bottom back button
             $("#results-bottom-back-btn").removeClass("hidden");
@@ -129,7 +135,8 @@ function showResultsContent() {
     // Need some check to see if we have results...
 
     // Remove any existing results
-    $("#form_table tbody tr").remove();
+    // $("#form_table tbody tr").remove();
+    $("#form_table tbody").remove();
 
     // Show results-content container
     $("#results-content").removeClass("hidden");
@@ -149,8 +156,8 @@ function showMainContent() {
     // Unhide results loading header
     $("#results-loading-header").removeClass("hidden");
 
-    // Hide results table header (show only when loaded)
-    $("#results-table-header").addClass("hidden");
+    // Hide results table (show only when loaded)
+    $("#form_table").addClass("hidden");
 
     // Hide results bottom back button
     $("#results-bottom-back-btn").addClass("hidden");

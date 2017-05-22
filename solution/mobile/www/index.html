@@ -13,6 +13,7 @@
     <link href="dist/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="dist/bootstrap-tokenfield-0.12.0-dist/css/bootstrap-tokenfield.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="dist/jquery/jquery-1.5.0.mobile.min.css">
+    <link rel="stylesheet" href="dist/datatables/datatables.css"></link>
 
     <!-- css for the app -->
     <link href="css/style.css" rel="stylesheet">
@@ -20,8 +21,11 @@
     <!-- libraries -->
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="dist/jquery/jquery-1.11.1.min.js" id="cordova-jquery"></script>
+    <script type="text/javascript" src="dist/datatables/jquery.dataTables.min.js"></script>
+    <!--<script type="text/javascript" src="dist/datatables/datatables.min.js"></script>-->
+    <script type="text/javascript" src="dist/datatables/dataTables.bootstrap.min.js"></script>
     <script src="dist/socket.io-2.0.1/socket.io.js"></script>
-    <script src="dist/promisejs-7.0.4/promise-7.0.4.min.js"
+    <script src="dist/promisejs-7.0.4/promise-7.0.4.min.js"></script>
     <script src="dist/chart.js-2.1.4/Chart.min.js"></script>
 
     <!-- scripts for the app -->
@@ -81,7 +85,7 @@
     <!-- end search section -->
 
     <!-- begin stats section -->
-    <div class="row">
+    <!--<div class="row">
       <div class="col-xs-12">
         <div class="row">
           <div class="col-xs-12">
@@ -102,9 +106,8 @@
           </div>
         </div>
       </div>
-    </div>
+    </div>-->
     <!-- end stats section -->
-
   </div>
 
   <div id="results-content" class="hidden">
@@ -139,11 +142,11 @@
       </div>
     </div>
 
-    <!-- results headings -->
-    <div class="row" id="results-table-headers">
-      <div class="col-xs-12 hidden" id="form_div">
+    <!-- the actual results -->
+    <div class="row">
+      <div class="col-xs-12" id="post_div">
         <div class="table-responsive">
-          <table class="table table-striped">
+          <table id="form_table" class="table table-striped hidden">
             <thead>
               <tr>
                 <th width="10%">Author</th>
@@ -152,17 +155,6 @@
                 <th width="15%">Date</th>
                 <!--<th width="10%">Link</th>-->
               </tr>
-            </thead>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- the actual results -->
-    <div class="row">
-      <div class="col-xs-12" id="post_div">
-        <div class="table-responsive">
-          <table id="form_table" class="table table-striped">
             <tbody>
             </tbody>
           </table>
@@ -184,7 +176,7 @@
   </div>
     <!-- end results section -->
 
-  <div id="stats-content" class="hidden">
+  <!--<div id="stats-content" class="hidden">
     <h2 id="team-stats-header">Team stats</h2>
     <h2 id="player-stats-header">Player Stats</h2>
     <div class="row">
@@ -193,9 +185,9 @@
             <canvas id="myChart" class="modal-body"></canvas>
         </div>
       </div>
-    </div>
+    </div>-->
 
-    <div class="row">
+    <!--<div class="row">
       <div class="col-xs-12">
         <div class="btn-group-justified" role="group">
           <div class="btn-group" role="group">
@@ -203,8 +195,7 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
-
+    </div>-->
+  <!--</div>-->
 </body>
 </html>
