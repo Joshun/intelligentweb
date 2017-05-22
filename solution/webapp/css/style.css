@@ -278,69 +278,15 @@ input[type=checkbox]:checked + label, input[type=checkbox]:hover:checked + label
     right: 0px;
 }
 
-/* Wrapping of tables */
-td {
+ Wrapping of tables 
+#form_table {
+    /*display: block;*/
     word-wrap: break-word;
-}
-
-
-
-/*.tokenfield  {
-    padding-left:  30px;
-}
-
-div.left-addon > div.tokenfield {
-    padding-left: 30px;
-}
-
-div.right-addon > div.tokenfield {
-    padding-right: 30px;
-}
-
-/** {
-    margin: 1;
-    padding: 1;
-    box-sizing: border-box;
-}
-
-body {
-    font: 16px Helvetica, Arial;
-}
-
-
-form {
-    border: 3;
-    background: white;
-    padding: 0px;
-    position: fixed;
-    bottom: 0;
-    left:0;
+    /*max-width: 100px;*/
+    table-layout: fixed;
     width: 100%;
 }
 
-form input {
-    padding: 9px;
-    float:left;
-    width: 90%;
-}
-
-form button {
-    width: 10%;
-    background: lightblue;
-    border: none;
-    padding: 11px;
-}
-
-.messages {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-.messages li {
-    padding: 5px 10px;
-}
-
-.messages li:nth-child(odd) {
-    background: #eee;
-}*/
+/*.row_element {*/
+    /*max-width: 10px;*/
+/*}*/
