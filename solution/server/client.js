@@ -242,9 +242,9 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
 
 function stream_reply(socket, query) {
   // creates connection to twitter stream, and listens for tweets
-
   var tweet_p = query.player_query.split(", ");
   var tweet_t = query.team_query.split(", ");
+
   var tweet   = [];
 
   if (query.or_operator) {

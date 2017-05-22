@@ -234,4 +234,8 @@ function initialise() {
     // $('#head_div h4.modal-title').html(stats.data.team_stats.name);
     $('#head_div h4.modal-title').html(stats.data.tean_stats.description);
   });
+
+  socket.on('player_wk', function(stats) {
+    console.log()
+  });
 }
