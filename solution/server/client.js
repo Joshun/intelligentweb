@@ -38,8 +38,6 @@ function get_tweets_helper(query, index, max_id) {
   var nested;
 
   return new Promise(function(resolve, reject) {
-
-    helper.error("Search Term:", query + max_id)
     tweets = T.get('search/tweets', { q: query + max_id, count: tweet_limit });
 
     tweets.then(function(reply) {
@@ -102,8 +100,12 @@ function stop_stream() {
     if (stream) stream.stop();
 }
 
-function get_timeline(user){
-  return T.get('statuses/user_timeline', {screen_name: user, count:this.TWEET_LIMIT});
+function get_timeline(query){
+  return T.get('statuses/user_timeline', { screen_name: query, count: tweet_limit });
+}
+
+function get_users(query) {
+  return T.get('users/show', { screen_name: query })
 }
 
 function get_frequency_weekly(query) {
@@ -209,15 +211,15 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
     author_tweets.then(function(reply) {
 
       socket.emit('author_tweets', reply)
-      helper.info("Storing:", reply.data)
+      helper.info("Storing:", reply.length)
     })
     .catch(function(error) {
-      helper.error("Cannot get user tweets", error)
+      helper.error("Cannot get user tweets:", error)
     })
 
     // creates socket.io emission to webpage with tweets
     tweets.then(function(reply) {
-      helper.info("Tweets Retrieved from Twitter: " + reply.data.statuses.length);
+      helper.info("Tweets Retrieved from Twitter:", reply.data.statuses.length);
 
       socket.emit('reply_tweets', { statuses: reply.data.statuses.concat(prev_tweetlist) });
 
@@ -313,6 +315,7 @@ module.exports = {
   stop_stream:              stop_stream,
   get_frequency_weekly:     get_frequency_weekly,
   get_frequency:            get_frequency,
+  get_users:                get_users,
 
   tweet_reply:              tweet_reply,
   tweet_error:              tweet_error
