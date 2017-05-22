@@ -187,14 +187,14 @@ function initialise() {
 
   socket.on('reply_freqs', function(freqs) {
     data = new Array();
-    sortByDate(freqs, 'date')
+    sortByDate(freqs, 'date');
     freqs.forEach(function(length){
-      data = freqs.map(function(x) {return x.frequency;})
+      data = freqs.map(function(x) {return x.frequency;});
     });
 
     // add sorted frequency results to chart and update
     myChart.data.datasets[0].data = data;
-    myChart.data.labels = freqs.map(function(x) {return x.date})
+    myChart.data.labels = freqs.map(function(x) {return x.date; });
     myChart.update();
 
 });
