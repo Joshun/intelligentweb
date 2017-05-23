@@ -38,17 +38,17 @@ function Database() {
     var tweetList = [1,2,3];
     var prevSearch = { isOrOperator: 0, playerQuery: "player", teamQuery: "team"};
 
-    var that = this;
+    // var that = this;
 
-    this.storeResult(prevSearch, [4,5,6,7]).then(function(result) {
-        console.log("done!!!");
+    // this.storeResult(prevSearch, [4,5,6,7]).then(function(result) {
+    //     console.log("done!!!");
 
-        that.getResult(prevSearch).then(function(result) {
-            console.log("get result ", result);
-        });
-    }).catch(function(err) {
-        console.log("error: ", err);
-    });
+    //     that.getResult(prevSearch).then(function(result) {
+    //         console.log("get result ", result);
+    //     });
+    // }).catch(function(err) {
+    //     console.log("error: ", err);
+    // });
 
 }
 
@@ -97,7 +97,7 @@ Database.prototype.getResult = function(searchParams) {
 
             if (prevSearchId == null) {
                 console.log("no prev searches");
-                resolve(null);
+                resolve([]);
             }
             else {
                 that.getSearchTweets(prevSearchId).then(function(tweets) {
@@ -121,7 +121,7 @@ Database.prototype.getSearch = function(searchParams) {
     var that = this;
     return new Promise(function(resolve, reject) {
         // var sqlQuery = "SELECT * FROM previousSearches WHERE isOrOperator=? AND playerQuery=? AND teamQuery=?";
-        var sqlQuery = "SELECT * FROM previousSearches WHERE isOrOperator=? AND playerQuery=? AND teamQuery=? ORDER BY date(tweetTimestamp)";
+        var sqlQuery = "SELECT * FROM previousSearches WHERE isOrOperator=? AND playerQuery=? AND teamQuery=? ORDER BY date(searchTimestamp)";
 
         that.db.transaction(function(tx) {
             tx.executeSql(sqlQuery,

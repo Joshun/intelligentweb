@@ -15,16 +15,6 @@ var app = {
 
     onDeviceReady: function() {
         db = new Database();
-        // initDB();
-
-        // BEGIN bind button actions
-        $("#team-stats-btn").on("click", function() {
-            showStatsContent("team");
-        });
-
-        $("#player-stats-btn").on("click", function() {
-            showStatsContent("player");
-        });
 
         $(".back-to-main-content").on("click", showMainContent);
         // END bind button actions
@@ -39,22 +29,38 @@ var app = {
 
         // BEGIN bind socket actions
         socket.on('reply_tweets', function(tweets) {
-            // write results into table
-            console.log(tweets);
+            console.log(" 3. request received  (length=", tweets.statuses.length, ") getting local tweets...");
+            var searchParams = {
+                team_query: $("#team_query").val(),
+                player_query: $("#player_query").val(),
+                or_operator: $("#or_operator").is(":checked")
+            };
 
-            table = $('#form_table');
-            for (var i = 0; i < tweets.statuses.length; i++) {
-                table.append(resultToRow(tweets.statuses[i]));
-            }
+            db.getResult(searchParams).then(function(storedTweets) {
+                console.log(" 4. stored tweets retrieved, combining and displaying...");
+                console.log("   lengths: storedTweets=", storedTweets.length, " receivedTweets=", tweets.statuses.length);
 
-            // Hide results loading header
-            $("#results-loading-header").addClass("hidden");
-            
-            // Unhide results table
-            $("#form_table").removeClass("hidden");
+                // concat stored tweets with received tweets
+                tweets.statuses = tweets.statuses.concat(tweets.statuses);
 
-            // Unhide results bottom back button
-            $("#results-bottom-back-btn").removeClass("hidden");
+                // write results into table
+
+                table = $('#form_table');
+                for (var i = 0; i < tweets.statuses.length; i++) {
+                    table.append(resultToRow(tweets.statuses[i]));
+                }
+
+                console.log("DONE");
+
+                // Hide results loading header
+                $("#results-loading-header").addClass("hidden");
+                
+                // Unhide results table
+                $("#form_table").removeClass("hidden");
+
+                // Unhide results bottom back button
+                $("#results-bottom-back-btn").removeClass("hidden");
+            });
 
         });
         // END bind socket actions
@@ -94,22 +100,38 @@ function sendGetTweetsRequest() {
     // socket.emit('query', requestObj);
     console.log("sendGetTweetsRequest");
 
+    // console.log(" 1. getting previous search tweets...");
+
+    // db.getResult(requestObj).then(function(prevTweets) {
+    //      console.log(" 2. finding out the most recent timestamp we have...");
+    //     db.getLastTimestamp().then(function(lastTimestamp) {
+    //         console.log("  lastTimestamp=", lastTimestamp);
+    //         console.log(" 3. sending request: ", requestObj);
+    //         socket.emit('query', requestObj);
+
+    //     }).catch(function(error) {
+    //         console.error("sendGetTweetsRequest: error occurred: ", error);
+    //     });
+    // });
+
     console.log(" 1. finding out the most recent timestamp we have...");
     db.getLastTimestamp().then(function(lastTimestamp) {
         console.log("  lastTimestamp=", lastTimestamp);
-        var requestObj =  {
-            team_query: $("#team_query").val(),
-            player_query: $("#player_query").val(),
-            or_operator: $("#or_operator").is(":checked"),
-            moile_timestamp: lastTimestamp
-        };
+
+    // Construct object which will be emitted to make request
+    var requestObj =  {
+        team_query: $("#team_query").val(),
+        player_query: $("#player_query").val(),
+        or_operator: $("#or_operator").is(":checked"),
+        mobile_timestamp: lastTimestamp
+    };
 
         console.log(" 2. sending request: ", requestObj);
         socket.emit('query', requestObj);
 
     }).catch(function(error) {
         console.error("sendGetTweetsRequest: error occurred: ", error);
-    });
+    }); 
 }
 
 function resultToRow(tweet) {
@@ -131,28 +153,8 @@ function resultToRow(tweet) {
 	return row;
 }
 
-function showStatsContent(statType) {
-    console.log("showStatsContent: ", statType);
-
-    if (statType != "team" && statType != "player") {
-        console.log("invalid statType");
-        return;
-    }
-
-    $("#main-content").addClass("hidden");
-    $("#stats-content").removeClass("hidden");
-
-    if (statType == "team") {
-        $("#team-stats-header").removeClass("hidden");
-        $("#player-stats-header").addClass("hidden");
-    }
-    else if (statType == "player") {
-        $("#team-stats-header").addClass("hidden");
-        $("#player-stats-header").removeClass("hidden");
-    }
-}
-
 function showResultsContent() {
+    console.log("---showResultsContent---");
     // Need some check to see if we have results...
 
     // Remove any existing results
@@ -170,6 +172,7 @@ function showResultsContent() {
 }
 
 function showMainContent() {
+    console.log("---showMainContent---");
     $("#main-content").removeClass("hidden");
     $("#stats-content").addClass("hidden");
     $("#results-content").addClass("hidden");
