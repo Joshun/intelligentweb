@@ -196,7 +196,8 @@ Database.prototype.storeSearch = function(searchParams) {
                 console.log(" no previous search exists, inserting fresh entry");
                 var sqlQuery = "INSERT INTO previousSearches (isOrOperator, playerQuery, teamQuery) VALUES (?,?,?)";
                 that.db.transaction(function(tx) {
-                    tx.executeSql(sql, [searchParams.isOrOperator, searchParams.playerQuery, searchParams.teamQuery],
+                    console.log("transaction");
+                    tx.executeSql(sqlQuery, [searchParams.isOrOperator, searchParams.playerQuery, searchParams.teamQuery],
                         function(tx, rs) {
                             console.log("insert previous search OK");
                             resolve(rs);
