@@ -183,26 +183,76 @@ Database.prototype.storeResult = function(searchParams, tweetList) {
 // Given search params, log a previous search result
 Database.prototype.storeSearch = function(searchParams) {
     var that = this;
-    return new Promise(function(resolve, reject) {
-        console.log("Attempting to insert search: ", searchParams);
-        var sqlQuery = "INSERT INTO previousSearches (isOrOperator, playerQuery, teamQuery) VALUES \
-            (?, ?, ?);";
-        console.log(that);
 
-        that.db.transaction(function(tx) {
-            tx.executeSql(sqlQuery, [searchParams.isOrOperator, searchParams.playerQuery, searchParams.teamQuery],
-                function(tx, rs) {
-                    console.log("INSERT success: ", tx);
-                    var rowId = rs.insertId;
-                    console.log(rowId);
-                    resolve(rowId);
-                },
-                function(tx, error) {
-                    console.error("INSERT failed: ", tx);
-                    reject(error);
+    return new Promise(function(resolve, reject) {
+        // Check if previous search exists
+        // If it exists, get its id and do UPDATE operation
+
+        // Else, do insert operation
+        console.log(" performing check of previous searches...");
+        that.getSearch(searchParams).then(function(prevSearch) {
+            // No previous search exists, insert new entry
+            if (prevSearch == null) {
+                console.log(" no previous search exists, inserting fresh entry");
+                var sqlQuery = "INSERT INTO previousSearches (isOrOperator, playerQuery, teamQuery) VALUES (?,?,?)";
+                that.db.transaction(function(tx) {
+                    tx.executeSql(sql, [searchParams.isOrOperator, searchParams.playerQuery, searchParams.teamQuery],
+                        function(tx, rs) {
+                            console.log("insert previous search OK");
+                            resolve(rs);
+                        },
+                        function(tx, error) {
+                            console.error("error inserting search record", error);
+                            reject(error);
+                        });
                 });
+
+            }
+            // Previous search exists, update timestamp
+            else {
+                console.log(" previous search exists, updating to current timestamp");
+                var prevSearchId = prevSearch.id;
+                var sqlQuery = "UPDATE previousSearches SET searchTimestamp = date('now') \
+                    WHERE playerQuery = ? AND teamQuery = ? AND isOrOperator = ?";
+                that.db.transaction(function(tx) {
+                    tx.executeSql(sqlQuery, [searchParams,playerQuery, searchParams.teamQuery, searchParams.isOrOperator],
+                    function(tx, rs) {
+                        console.log("update search record OK");
+                        resolve(rs);
+                    },
+                    function(tx, error) {
+                        console.error("error updating prev search timestamp", error);
+                        reject(error);
+                    });
+
+                } );
+            }
+
+        }).catch(function(error) {
+            console.error("errr checking getting prev search", error);
         });
     });
+
+    // return new Promise(function(resolve, reject) {
+    //     console.log("Attempting to insert search: ", searchParams);
+    //     var sqlQuery = "INSERT INTO previousSearches (isOrOperator, playerQuery, teamQuery) VALUES \
+    //         (?, ?, ?);";
+    //     console.log(that);
+
+    //     that.db.transaction(function(tx) {
+    //         tx.executeSql(sqlQuery, [searchParams.isOrOperator, searchParams.playerQuery, searchParams.teamQuery],
+    //             function(tx, rs) {
+    //                 console.log("INSERT success: ", tx);
+    //                 var rowId = rs.insertId;
+    //                 console.log(rowId);
+    //                 resolve(rowId);
+    //             },
+    //             function(tx, error) {
+    //                 console.error("INSERT failed: ", tx);
+    //                 reject(error);
+    //             });
+    //     });
+    // });
 };
 
 // Given a previousSearchId and list of tweets, store tweets
