@@ -41,13 +41,14 @@ var app = {
                 console.log("   lengths: storedTweets=", storedTweets.length, " receivedTweets=", tweets.statuses.length);
 
                 // concat stored tweets with received tweets
-                tweets.statuses = tweets.statuses.concat(tweets.statuses);
+                // tweets.statuses = tweets.statuses.concat(tweets.statuses);
+                var combinedTweets = storedTweets.concat(tweets.statuses);
 
                 // write results into table
 
                 table = $('#form_table');
-                for (var i = 0; i < tweets.statuses.length; i++) {
-                    table.append(resultToRow(tweets.statuses[i]));
+                for (var i = 0; i < combinedTweets.length; i++) {
+                    table.append(resultToRow(combinedTweets[i]));
                 }
 
                 console.log("DONE");
@@ -60,6 +61,16 @@ var app = {
 
                 // Unhide results bottom back button
                 $("#results-bottom-back-btn").removeClass("hidden");
+
+                console.log("Storing tweets...");
+                db.storeResult(searchParams, tweets.statuses).then(function(result) {
+                    console.log("DONE");
+                }).catch(function(error) {
+                    console.error("error storing tweets: ", error);
+                });
+                
+            }).catch(function(error) {
+                console.error("error checking latest timestamp: ", error);
             });
 
         });
