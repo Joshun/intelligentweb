@@ -166,6 +166,7 @@ function getPreviousTweets(prevSearchId) {
 	return new Promise(function(resolve, reject) {
 		db.getConnection(function(err, connection) {
 			if (err) reject(err);
+
 			connection.query(
 				"SELECT * from tweets WHERE previousSearchId = ? ORDER BY tweetId DESC",
 				[prevSearchId],
@@ -252,13 +253,6 @@ function getTeamFromScreenName(screenName) {
 function getPlayerFromScreenName(screenName) {
 	return getRealNameFromScreenName('players', screenName);
 }
-
-function getSearchTweetsSince(searchParams, timestamp) {
-	getPreviousSearches(searchParams).then(function(prevSearches) {
-		
-	});
-}
-
 
 // init
 createTable();
