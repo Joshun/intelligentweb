@@ -15,20 +15,11 @@ function Database() {
         previousSearchId INTEGER );",
 
         "CREATE TABLE IF NOT EXISTS previousSearches ( \
+        id INTEGER PRIMARY KEY AUTOINCREMENT, \
         isOrOperator INTEGER, \
         playerQuery TEXT, \
         teamQuery TEXT,  \
         searchTimestamp TEXT DEFAULT CURRENT_DATETIME);",
-
-        "CREATE TABLE IF NOT EXISTS teams ( \
-        id INTEGER PRIMARY KEY AUTOINCREMENT, \
-        screenName TEXT UNIQUE, \
-        realName TEXT UNIQUE );",
-
-        "CREATE TABLE IF NOT EXISTS players ( \
-        id INTEGER PRIMARY KEY AUTOINCREMENT, \
-        screenName TEXT UNIQUE, \
-        realName TEXT UNIQUE );"
     ], function() {
         console.log("db OK");
     }, function(error) {
