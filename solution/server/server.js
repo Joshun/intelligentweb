@@ -86,7 +86,7 @@ io.of('/').on('connection', function(socket) {
       }
     })
     .then(function(prev_tweets) {
-          
+
     // Previous search term existed, and tweets were stored
       if (prev_tweets.length > 0) {
 
@@ -116,7 +116,7 @@ io.of('/').on('connection', function(socket) {
         client.tweet_reply(socket, query, null, []);
       }
     })
-    
+
     .catch(function(error) {
       helper.error("Cannot Retrieve Tweets:", error);
     });
@@ -126,7 +126,13 @@ io.of('/').on('connection', function(socket) {
       throw error;
     });
   });
-  
+
+  socket.on('author_query', function(author_query) {
+    client.stop_tweets();
+    client.stop_stream();
+    client.tweet_author(socket,author_query);
+  });
+
   // terminates socket.io session if an error is encountered
   socket.on('connect', function() {
     helper.info("Connection Created");
@@ -148,7 +154,7 @@ io.of('/').on('connection', function(socket) {
     helper.info("Sync request received");
     var lastTimestamp = query.lastTimestamp;
     var searchParams = query.searchParams;
-    
+
   });
 });
 

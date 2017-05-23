@@ -18,10 +18,15 @@
 </head>
 
 <body onload="initialise();">
-
+<div class = "tabs">
+  <button id="form_tab">Player | Team</button>
+  <button id="author_form_tab">Author</button>
+</div>
   <div id="page_container">
-    <div id="form_container">
+
+    <div id="form_container" class = "tabcontent">
       <h1>Twitter Web Interface</h1>
+
       <form id="query_form" class="form-group" action = "">
 
         <label for="player_query">Enter a Player Name:</label>
@@ -58,8 +63,8 @@
 
         <input type="submit" class="btn btn-default" />
 
-        <input type="checkbox" class="hidden" id="database_only" name="database_only" />
-        <label for="database_only" class="btn btn-default">Just From Database</label>
+        <!-- <input type="checkbox" class="hidden" id="database_only" name="database_only" />
+        <label for="database_only" class="btn btn-default">Just From Database</label> -->
         <!-- <div class="form-check">
           <label for="queryteam" class="form-check-label">Team</label>
           <input type="checkbox" class="form-check-input" name="queryteam" id="queryteam" value="true">
@@ -74,6 +79,28 @@
         </div> -->
       </form>
     </div>
+
+  <div id="author_form_container" class = "tabcontent">
+    <h1>Twitter Web Interface</h1>
+    <form id="author_query_form" class="form-group" action = "">
+
+  <label for="author_query"> Enter an Author Name:</label>
+   <div class="inner-addon left-addon">
+     <input type="text" class="form-control" name="author_query" id="author_query" placeholder="e.g. @bbcfoot" />
+     <i class="glyphicon glyphicon-search"></i>
+     <!-- <span class="input-group-btn">
+       <input type="checkbox" class="hidden" id="handles_team" name="handles_team" checked>
+       <label for="handles_team" class="btn btn-default">@</label>
+       <input type="checkbox" class="hidden" id="hashtag_team" name="hashtag_team" checked>
+       <label for="hashtag_team" class="btn btn-default">#</label>
+       <input type="checkbox" class="hidden" id="keyword_team" name="keyword_team" checked>
+       <label for="keyword_team" class="btn btn-default">?</label>
+     </span> -->
+   </div>
+
+    <input type="submit" class="btn btn-default" />
+  </form>
+  </div>
 
     <div id="post_container">
 

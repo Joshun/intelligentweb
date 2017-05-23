@@ -175,6 +175,20 @@ function get_date_padded(date, size) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+function tweet_author(socket, query) {
+  // create socket.io emission to webpage with tweets by author
+  author_tweets = get_timeline(query.author_query);
+  author_tweets.then(function(reply) {
+
+    socket.emit('author_tweets', reply)
+    helper.info("Storing:", reply.length)
+  })
+
+  .catch(function(error) {
+    helper.error("Cannot get user tweets:", error)
+  })
+};
+
 // callback function, stored here to preserve scope
 function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
     helper.info("Tweets Update Received, Processing...");
@@ -204,17 +218,6 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
 
     .catch(function(error) {
       helper.error("Cannot get tweet frequencies", error)
-    })
-
-    // create socket.io emission to webpage with tweets by author
-    author_tweets = get_timeline(query.author_query);
-    author_tweets.then(function(reply) {
-
-      socket.emit('author_tweets', reply)
-      helper.info("Storing:", reply.length)
-    })
-    .catch(function(error) {
-      helper.error("Cannot get user tweets:", error)
     })
 
     // creates socket.io emission to webpage with tweets
@@ -318,5 +321,6 @@ module.exports = {
   get_users:                get_users,
 
   tweet_reply:              tweet_reply,
-  tweet_error:              tweet_error
+  tweet_error:              tweet_error,
+  tweet_author:             tweet_author
 };
