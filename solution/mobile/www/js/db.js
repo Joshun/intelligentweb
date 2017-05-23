@@ -216,7 +216,7 @@ Database.prototype.storeSearch = function(searchParams) {
                 var sqlQuery = "UPDATE previousSearches SET searchTimestamp = date('now') \
                     WHERE playerQuery = ? AND teamQuery = ? AND isOrOperator = ?";
                 that.db.transaction(function(tx) {
-                    tx.executeSql(sqlQuery, [searchParams,playerQuery, searchParams.teamQuery, searchParams.isOrOperator],
+                    tx.executeSql(sqlQuery, [searchParams.playerQuery, searchParams.teamQuery, searchParams.isOrOperator],
                     function(tx, rs) {
                         console.log("update search record OK");
                         resolve(rs);
