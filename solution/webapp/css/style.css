@@ -323,6 +323,11 @@ div.right-addon > div.tokenfield {
     background:         repeating-linear-gradient(225deg, #F29221, #F29221 12px, #FFFFFF 12px, #FFFFFF 100%);
 }
 
+#player_modal {
+    width: 100%;
+    border-radius: 0px;
+}
+
 /* {
     margin: 1;
     padding: 1;

@@ -22,11 +22,12 @@ function createTable() {
 		db.getConnection(function(err, connection) {
 			if (err) throw err;
 			connection.query(data, function(error, results, fields) {
+				connection.release();
+				
 				if (error) throw err;
 				helper.debug("CREATE QUERY EXECUTED");
 				helper.debug(results);
 
-				connection.release();
 			});
 		});
 	});
@@ -61,6 +62,7 @@ function logSearch(query, reply) {
 							[playerQuery, teamQuery, isOrOperator],
 							function(error, data, fields) {
 								connection.release();
+
 								if (error) reject(error);
 								else {
 									helper.debug("Log Complete!");
@@ -74,6 +76,7 @@ function logSearch(query, reply) {
 							[playerQuery, teamQuery, isOrOperator],
 							function(error, data, fields) {
 								connection.release();
+
 								if (error) reject(error);
 								else {
 									helper.debug("Log Complete!");
@@ -124,13 +127,15 @@ function storeTweetData(data, logPrimaryKey) {
 			}
 			Promise.all(promiseList)
 			.catch(function(error) {
+				connection.release();
+
 				helper.warn("Storing tweets failed.");
 				helper.debug(error);
-				connection.release();
 				reject(error);
 			})
 			.then(function(data) {
 				connection.release();
+
 				resolve(data);
 			});
 
@@ -154,6 +159,7 @@ function getPreviousSearches(query) {
 				[playerQuery, teamQuery, isOrOperator],
 				function(error, results, fields) {
 					connection.release();
+
 					if (error) reject(error);
 					resolve(results);
 				});
@@ -171,6 +177,8 @@ function getPreviousTweets(prevSearchId) {
 				"SELECT * from tweets WHERE previousSearchId = ? ORDER BY tweetId DESC",
 				[prevSearchId],
 				function(error, results, fields) {
+					connection.release();
+
 					if (error) reject(error);
 					else resolve(results);
 				}
@@ -229,6 +237,8 @@ function getRealNameFromScreenName(nameTable, screenName) {
 				helper.debug('query done');
 				if (error) reject(error);
 				else {
+					connection.release();
+
 					if (results == null) {
 						reject("getRealNameFromScreenName failed!");
 					}

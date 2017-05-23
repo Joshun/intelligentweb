@@ -31,7 +31,7 @@ function sortByDate(array, key) {
     });
 }
 
-var statsState = { 'team_stats': null, 'player_stats': null };
+var stats_state = { 'player_stats': null, 'team_stats': null };
 
 // function displayNoStats() {
 // 	var statsContainer = $("#stats_container");
@@ -198,41 +198,52 @@ function initialise() {
 
   socket.on('player_stats', function(stats) {
     console.log("Player Stats Received:", stats);
-    statsState.player_stats = stats;
+    // player_stats = stats;
 
-    if (stats.label == "") {
-      $('#player_modal').prop("disabled", true);
-    }
-    else {
-      $('#player_modal').prop("disabled", false);
-    }
+    // if (stats.data.name == "") {
+    //   $('#player_modal').prop("disabled", true);
+    // }
+    // else {
+    //   $('#player_modal').prop("disabled", false);
+    // }
   });
 
 
 	socket.on('team_stats', function(stats) {
     console.log("Team Stats Received:", stats);
-		statsState.team_stats = stats;
+		// team_stats = stats;
 	});
 
-  $('#player_modal').on('click', statsState, function(stats) {
+  $('#player_modal').on('click', stats_state, function(stats) {
     var data_name = "No Player Found";
     var data_desc = "No Description Found";
 
-    if (!stats.data.player_stats.label == "") {
-      data_name = stats.data.player_stats.label;
-      data_desc = stats.data.player_stats.description;
+    if (!stats.data.player_stats.name == "") {
+      data_name = stats.data.player_stats.name;
+      data_desc = stats.data.player_stats.team;
     }
 
     $('#head_div h4.modal-title').html(data_name);
     $('#body_div').html("<p>" + data_desc + "</p>");
   });
 
-  $('#team_modal').on('click', statsState, function(stats) {
+  $('#team_modal').on('click', stats_state, function(stats) {
     // $('#head_div h4.modal-title').html(stats.data.team_stats.name);
-    $('#head_div h4.modal-title').html(stats.data.tean_stats.description);
+    $('#head_div h4.modal-title').html(stats.description);
   });
 
   socket.on('player_wk', function(stats) {
-    console.log()
+    console.log("Player Stats Received:", stats);
+
+    if (stats == null) {
+      $('#player_modal').prop("disabled", true);
+      $('#player_modal').html("UNKNOWN");
+    }
+    else {
+      $('#player_modal').prop("disabled", false);
+      $('#player_modal').html(stats.name);
+    }
+
+    stats_state.player_stats = stats;
   });
 }

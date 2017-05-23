@@ -25,20 +25,23 @@ function search_player_by_keyword(terms) {
   	// P582  = 'end time'
   	
   	var url = wkdata.sparqlQuery(
-	  'SELECT DISTINCT ?human ?humanLabel ?team ?teamLabel ?image ?date \
-	   WHERE { \
-		   ?human wdt:P106 wd:Q937857; \
-				      rdfs:label "' + terms + '"@en; \
-				      wdt:P18 ?image; \
-				      p:P54 ?list. \
-		   ?list  ps:P54 ?team. \
-		   ?team  wdt:P31 wd:Q476028. \
-		   OPTIONAL{?list pq:P582 ?date} \
-		   FILTER(?date > NOW() || !BOUND(?date)) \
-		   SERVICE wikibase:label { bd:serviceParam wikibase:language "en" } \
-	   } \
-	   LIMIT 1'
-  	);
+    'SELECT DISTINCT ?human ?team ?image ?age ?pos ?humanLabel ?teamLabel ?posLabel \
+     WHERE { \
+       ?human wdt:P106 wd:Q937857; \
+              rdfs:label "' + terms + '"@en; \
+              wdt:P18    ?image; \
+              wdt:P569   ?age; \
+              p:P413     ?spec; \
+              p:P54      ?list. \
+       ?list  ps:P54     ?team. \
+       ?team  wdt:P31    wd:Q476028. \
+       ?spec  ps:P413    ?pos. \
+       OPTIONAL{?list pq:P582 ?date} \
+       FILTER(?date > NOW() || !BOUND(?date)) \
+       SERVICE wikibase:label { bd:serviceParam wikibase:language "en" } \
+     } \
+     LIMIT 50'
+    );
 
     data = request(url);
 
@@ -48,7 +51,7 @@ function search_player_by_keyword(terms) {
 
   	data.then(function(reply) {
       helper.debug("Wikidata Results:\n", reply);
-  		resolve(JSON.parse(reply).results.bindings[0]);
+  		resolve(JSON.parse(reply).results.bindings);
   	});
   });
 }
@@ -77,19 +80,22 @@ function search_player_by_handles(terms) {
       // P582  = 'end time'
       
       var url = wkdata.sparqlQuery(
-      'SELECT DISTINCT ?human ?humanLabel ?team ?teamLabel ?image ?date \
+      'SELECT DISTINCT ?human ?team ?image ?age ?pos ?humanLabel ?teamLabel ?posLabel \
        WHERE { \
-         ?human wdt:P106 wd:Q937857; \
+         ?human wdt:P106   wd:Q937857; \
                 wdt:P2002 "' + reply.data.screen_name + '"; \
-                wdt:P18 ?image; \
-                p:P54 ?list. \
-         ?list  ps:P54 ?team. \
-         ?team  wdt:P31 wd:Q476028. \
+                wdt:P18    ?image; \
+                wdt:P569   ?age; \
+                p:P413     ?spec; \
+                p:P54      ?list. \
+         ?list  ps:P54     ?team. \
+         ?team  wdt:P31    wd:Q476028. \
+         ?spec  ps:P413    ?pos. \
          OPTIONAL{?list pq:P582 ?date} \
          FILTER(?date > NOW() || !BOUND(?date)) \
          SERVICE wikibase:label { bd:serviceParam wikibase:language "en" } \
        } \
-       LIMIT 1'
+       LIMIT 50'
        );
 
       data = request(url);
@@ -100,7 +106,7 @@ function search_player_by_handles(terms) {
 
       data.then(function(reply) {
         helper.debug("Wikidata Results:\n", reply);
-        resolve(JSON.parse(reply).results.bindings[0]);
+        resolve(JSON.parse(reply).results.bindings);
       });
     });
   });
@@ -128,10 +134,19 @@ function tokenise_player(query) {
           reject(null);
         }
         else {
+          var positions = [];
+
+          for (var i = 0; i < reply.length; i++) {
+            positions.push(reply[i].posLabel.value);
+          }
+
           var stats = {
-            name: reply.humanLabel.value,
-            team: reply.teamLabel.value
+            name:     reply[0].humanLabel.value,
+            team:     reply[0].teamLabel.value,
+            age:      reply[0].age.value,
+            position: positions
           };
+
           resolve(stats);
         }
       });
@@ -162,10 +177,19 @@ function tokenise_player(query) {
           reject(null);
         }
         else {
+          var positions = [];
+
+          for (var i = 0; i < reply.length; i++) {
+            positions.push(reply[i].posLabel.value);
+          }
+
           var stats = {
-            name: reply.humanLabel.value,
-            team: reply.teamLabel.value
+            name:     reply[0].humanLabel.value,
+            team:     reply[0].teamLabel.value,
+            age:      reply[0].age.value,
+            position: positions
           };
+          
           resolve(stats);
         }
       });
@@ -193,6 +217,7 @@ function emit_stats(socket, query) {
 
   .catch(function(error) {
     helper.error("Wikidata Search Failed:", error);
+    socket.emit('player_wk', error);
   })
 
   .then(function(reply) {
