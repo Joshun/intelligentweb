@@ -131,7 +131,7 @@ function tokenise_player(query) {
           var stats = {
             name: reply.humanLabel.value,
             team: reply.teamLabel.value
-          }
+          };
           resolve(stats);
         }
       });
@@ -139,7 +139,7 @@ function tokenise_player(query) {
     else {
       helper.info("Keyword Detected!", query[0]);
 
-      storage.getPlayerFromScreenName(query[0]);
+      storage.getPlayerFromScreenName(query[0])
 
       .catch(function(error) {
         helper.error("Storage Retrieval Failed:", error);
@@ -165,7 +165,7 @@ function tokenise_player(query) {
           var stats = {
             name: reply.humanLabel.value,
             team: reply.teamLabel.value
-          }
+          };
           resolve(stats);
         }
       });
@@ -203,4 +203,4 @@ function emit_stats(socket, query) {
 
 module.exports = {
   emit_stats   : emit_stats
-}
+};
