@@ -78,6 +78,26 @@ function get_id_format(value) {
     return get_id_padded(rest + (parseInt(last, 10) - 1).toString(), "0"); // reduces last digit by 1, and trims result
 }
 
+function get_id_larger(num1, num2) {
+  var value1 = num1;
+  var value2 = num2;
+
+  if (value1.length > value2.length) {
+    return value1;
+  }
+
+  if (value2.length > value1.length) {
+    return value2;
+  }
+
+  for(var i = 0; i < value1.length; i++) {
+    if (value1[i] > value2[i]) return value1;
+    if (value1[i] < value2[i]) return value2;
+  }
+
+  return null;
+}
+
 function get_id_padded(value, pad) {
   var i = 0;
 
@@ -176,24 +196,31 @@ function get_date_padded(date, size) {
 ///////////////////////////////////////////////////////////////////////////////
 
 // callback function, stored here to preserve scope
-function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
+function tweet_reply(socket, query, prev_timestamp, prev_tweetlist, mobile_timestamp) {
     helper.info("Tweets Update Received, Processing...");
-    helper.info("Tweets Update Complete");
 
     // creates connection to twitter search, and retrieves tweets
-    if (prev_timestamp != null) {
+    if (prev_timestamp == null) {
+      if (mobile_timestamp == null) {
+        helper.info("Complete Tweets String (Server):", db.generate_query(query) + " -filter:retweets");
+        tweets = get_tweets(db.generate_query(query) + " -filter:retweets");
+      }
+      else {
+        helper.info("Complete Tweets String (Mobile):", db.generate_query(query) + " since_id:" + mobile_timestamp + " -filter:retweets");
+        tweets = get_tweets(db.generate_query(query) + " since_id:" + mobile_timestamp + " -filter:retweets");
+      }
+    }
+    else {
       helper.info("prev_timestamp: ", prev_timestamp);
 
       // convert timestamp into compatible database format
       var formatted_prev_timestamp = get_date_format(new Date(prev_timestamp));
 
-      helper.info("Complete Tweets String:", (db.generate_query(query) + " since_id:" + prev_tweetlist[0].id_str));
-      tweets = get_tweets(db.generate_query(query) + " since_id:" + prev_tweetlist[0].id_str);
+      helper.info("Complete Tweets String (Server):", db.generate_query(query) + " since_id:" + prev_tweetlist[0].id_str + " -filter:retweets");
+      tweets = get_tweets(db.generate_query(query) + " since_id:" + prev_tweetlist[0].id_str + " -filter:retweets");
     }
-    else {
-      helper.info("Complete Tweets String:", db.generate_query(query));
-      tweets = get_tweets(db.generate_query(query));
-    }
+
+    helper.info("Tweets Update Complete");
 
     // create socket.io emission to webpage with frequencies
     tweetfreqs = get_frequency_weekly(db.generate_query(query));
@@ -221,7 +248,15 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
     tweets.then(function(reply) {
       helper.info("Tweets Retrieved from Twitter:", reply.data.statuses.length);
 
+      // if (mobile_timestamp != null) {
+      //   prev_tweetlist = prev_tweetlist.filter(function(status) {
+      //     status.id_str === get_id_larger(status.id_str, mobile_timestamp);
+      //   })
+      // }
+
       socket.emit('reply_tweets', { statuses: reply.data.statuses.concat(prev_tweetlist) });
+
+      // TODO emit reply to mobile with replies and susbet of previous tweets
 
       stream_reply(socket, query);
 
@@ -236,8 +271,6 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist) {
 
 
     .then(function(reply) {
-      helper.info("Storing:", reply[1].data.statuses.length);
-
       return db.storeTweetData(reply[1].data, reply[0]);
     })
 
@@ -281,8 +314,8 @@ function stream_reply(socket, query) {
   // creates socket.io emission to webpage with live tweets
   stream.on('tweet', function(reply) {
     // helper.debug("Stream Update Received, Processing...");
-
-    socket.emit('reply_stream', reply);
+    if (!is_reply(reply))
+      socket.emit('reply_stream', reply);
     // helper.debug("Stream Update Complete");
   });
 
@@ -290,12 +323,6 @@ function stream_reply(socket, query) {
     helper.warn("Multiple Streams Detected, Closing...");
     stream.stop();
   });
-
-  // returns an error if the query is invalid
-  // stream.catch(function(error) {
-  //   helper.error("Invalid Query");
-  //   throw error;
-  // });
 }
 
 // callback function, stored here to preserve scope
@@ -303,6 +330,16 @@ function tweet_error(socket, error) {
     helper.error("Invalid Query");
     throw error;
 };
+
+function is_reply(tweet) {
+  if (tweet.retweeted_status
+  || tweet.in_reply_to_status_id
+  || tweet.in_reply_to_status_id_str
+  || tweet.in_reply_to_user_id
+  || tweet.in_reply_to_user_id_str
+  || tweet.in_reply_to_screen_name )
+    return true
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -316,6 +353,8 @@ module.exports = {
   get_frequency_weekly:     get_frequency_weekly,
   get_frequency:            get_frequency,
   get_users:                get_users,
+
+  get_id_larger:            get_id_larger,
 
   tweet_reply:              tweet_reply,
   tweet_error:              tweet_error

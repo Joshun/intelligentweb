@@ -52,6 +52,7 @@ io.of('/').on('connection', function(socket) {
 
   // callback function, stored here to preserve scope
   socket.on('query', function(query) {
+
     client.stop_tweets();
     client.stop_stream();
 
@@ -81,7 +82,7 @@ io.of('/').on('connection', function(socket) {
         return db.getPreviousTweets(results[0].id);
       }
       else {
-        client.tweet_reply(socket, query, null, []);
+        client.tweet_reply(socket, query, null, [], query.mobile_timestamp);
         return Promise.reject(new Error("No Tweets Found"));
       }
     })
@@ -98,22 +99,29 @@ io.of('/').on('connection', function(socket) {
         var prev_tweetlist = [];
 
         for (var i = 0; i < prev_tweets.length; i++) {
-          prev_tweetlist.push(db.savedTweetToWeb(prev_tweets[i]));
+          var web_tweet = db.savedTweetToWeb(prev_tweets[i]);
+
+          if (query.mobile_timestamp == null
+          || web_tweet.id_str == client.get_id_larger(web_tweet.id_str, query.mobile_timestamp)) {
+            prev_tweetlist.push(web_tweet);
+            prev_timestamp = prev_tweets[i].tweetTimestamp;
+          }
         }
+
+        helper.info("Previous Tweets Retained:", prev_tweetlist.length);
 
         for (var i = 0; i < prev_tweetlist.length; i++) {
           prev_tweetlist[i].db_state = true;
         }
 
-        prev_timestamp = prev_tweets[prev_tweets.length - 1].tweetTimestamp;
-
-        client.tweet_reply(socket, query, prev_timestamp, prev_tweetlist);
+        client.tweet_reply(socket, query, prev_timestamp, prev_tweetlist, query.mobile_timestamp);
       }
 
       // Previous search term existed, however there were no tweets stored
       else {
         helper.warn("Cannot Find Tweets, Invoking Alternative...");
-        client.tweet_reply(socket, query, null, []);
+
+        client.tweet_reply(socket, query, null, [], query.mobile_timestamp);
       }
     })
     
@@ -144,12 +152,11 @@ io.of('/').on('connection', function(socket) {
     // if (stream) stream.stop();
   });
 
-  socket.on("sync", function(query) {
-    helper.info("Sync request received");
-    var lastTimestamp = query.lastTimestamp;
-    var searchParams = query.searchParams;
-    
-  });
+  // socket.on("sync", function(query) {
+  //   helper.info("Sync request received");
+  //   var lastTimestamp = query.lastTimestamp;
+  //   var searchParams = query.searchParams;
+  // });
 });
 
 // retrieves the relevant file to render, or returns a 404 error if none exists

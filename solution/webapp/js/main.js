@@ -141,13 +141,10 @@ function initialise() {
     socket.emit('close', "Form Data!");
 
   	socket.emit('query', {
-  		player_query:   $('#player_query').val(), // input for player name (string)
-
-  		team_query:     $('#team_query').val(), // input for team name (string)
-
-      database_only:  $('#database_only').is(':checked'),
-      or_operator:    $('#or_operator').is(':checked') // checkbox for searching player OR team
-
+  		player_query:     $('#player_query').val(), // input for player name (string)
+  		team_query:       $('#team_query').val(), // input for team name (string)
+      or_operator:      $('#or_operator').is(':checked'), // checkbox for searching player OR team
+      mobile_timestamp: null // mobile timestamp, set to null for server requests
   	});
 
   	return false; // stops page from refreshing
@@ -158,7 +155,7 @@ function initialise() {
     console.log(tweets);
 
     table = $('#form_table');
-    for (var i = 0; i < tweets.statuses.length; i++) {
+    for (var i = 0; i < tweets.statuses.length && i < 300; i++) {
       table.append(resultToRow(tweets.statuses[i]));
     }
   });
