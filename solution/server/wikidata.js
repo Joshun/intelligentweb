@@ -115,7 +115,7 @@ function tokenise_player(query) {
     if (query[0][0] == "@") {
       helper.info("Handler Detected!", query[0]);
       
-      search_player_by_handles(query[0]);
+      search_player_by_handles(query[0])
 
       .catch(function(error) {
         helper.error("Search Retrieval Failed:", error);
