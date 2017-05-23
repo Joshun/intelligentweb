@@ -31,9 +31,9 @@ var app = {
         socket.on('reply_tweets', function(tweets) {
             console.log(" 3. request received  (length=", tweets.statuses.length, ") getting local tweets...");
             var searchParams = {
-                team_query: $("#team_query").val(),
-                player_query: $("#player_query").val(),
-                or_operator: $("#or_operator").is(":checked")
+                teamQuery: $("#team_query").val(),
+                playerQuery: $("#player_query").val(),
+                isOrOperator: $("#or_operator").is(":checked")
             };
 
             db.getResult(searchParams).then(function(storedTweets) {
