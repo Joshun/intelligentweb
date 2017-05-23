@@ -22,7 +22,7 @@ function createTable() {
 		db.getConnection(function(err, connection) {
 			if (err) throw err; // At this stage, MySQL errors are critical
 			connection.query(data, function(error, results, fields) {
-				if (error) throw err;
+				if (error) throw error;
 				helper.debug("CREATE QUERY EXECUTED");
 				helper.debug(results);
 
@@ -44,7 +44,7 @@ function logSearch(query, reply) {
 		var isOrOperator = query.or_operator;
 
 		db.getConnection(function(err, connection) {
-			if (err) reject(error);
+			if (err) reject(err);
 			connection.query(
 				"SELECT * FROM previousSearches \
 					WHERE playerQuery = ? \
@@ -147,7 +147,7 @@ function getPreviousSearches(query) {
 		var isOrOperator = query.or_operator;
 
 		db.getConnection(function(err, connection) {
-			if (err) reject(error);
+			if (err) reject(err);
 			connection.query(
 				// Query gets all previousSearches that match the parameters of the previous query and are recent enough
 				"SELECT * FROM previousSearches WHERE playerQuery=? AND teamQuery=? AND isOrOperator=? ORDER BY queryTimestamp DESC",
