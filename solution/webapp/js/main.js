@@ -139,9 +139,10 @@ function initialise() {
 
     stats_state.player_stats = null;
     stats_state.team_state = null;
-    
+
     $('#player_modal').prop("disabled", true);
     $('#player_modal').html("UNKNOWN");
+    $("#player_image").css("background-image", "");
 
 		$("#form_table tbody tr").remove();
     socket.emit('close', "Form Data!");
@@ -244,10 +245,12 @@ function initialise() {
     if (stats == null) {
       $('#player_modal').prop("disabled", true);
       $('#player_modal').html("UNKNOWN");
+      $("#player_image").css("background-image", "");
     }
     else {
       $('#player_modal').prop("disabled", false);
       $('#player_modal').html(stats.name);
+      $("#player_image").css("background-image", "url(" + stats.image + ")");
     }
 
     stats_state.player_stats = stats;

@@ -328,6 +328,13 @@ div.right-addon > div.tokenfield {
     border-radius: 0px;
 }
 
+#player_image {
+    width: 100%;
+    height: 200px;
+
+    background-size: cover;
+}
+
 /* {
     margin: 1;
     padding: 1;
