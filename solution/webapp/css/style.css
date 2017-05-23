@@ -1,3 +1,44 @@
+div.tabs {
+    z-index: 1;
+    width: 75%;
+    /*padding-bottom: 40px;*/
+    float: left;
+    top:     0.0px;
+    bottom:  0.0px;
+    left:   -2.5px;
+    right:   0.0px;
+    padding: 5px 5px 0px 10px;
+
+}
+
+div.tabs button {
+    background-color: white;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    display: block;
+    float: right;
+}
+
+div#button_style_div {
+  margin-left: 75%;
+  height: 20px;
+  top:     0.0px;
+  bottom:  0.0px;
+  right:  -2.5px;
+}
+
+#button_container {
+  width: 75%;
+  margin: 5vh auto 5vh auto;
+  margin-bottom: 0px;
+
+}
+
+.tabcontent {
+    display: none;
+}
+
 @-webkit-keyframes fadein_storage {
     from {
         background-color: #F29221;
@@ -177,7 +218,21 @@ body {
 #form_container {
     width: 75%;
     max-height: 230px;
+    display: block;
 
+    margin: 0px 0px 0px 0px;
+
+    top:     0.0px;
+    bottom:  0.0px;
+    left:   -2.5px;
+    right:   0.0px;
+}
+
+#author_form_container {
+    width: 75%;
+    max-height: 230px;
+
+    position: relative;
     margin: 0px 0px 0px 0px;
 
     top:     0.0px;
@@ -220,7 +275,7 @@ body {
     margin: 5px 5px 0px 0px;
 }
 
-#form_container, #stat_container, #post_container {
+#form_container, #stat_container, #post_container, #author_form_container {
     position: absolute;
 
     padding: 5px 10px 5px 10px;
@@ -259,7 +314,7 @@ input[type=checkbox]:checked + label, input[type=checkbox]:hover:checked + label
     width: 64px;
 }
 
-.inner-addon { 
+.inner-addon {
     position: relative;
 }
 

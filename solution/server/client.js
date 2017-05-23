@@ -163,7 +163,7 @@ function get_frequency(query, prev, curr) {
   return new Promise(function(resolve,reject) {
   var prev_date = get_date_format(prev);
   var curr_date = get_date_format(curr);
-  var query_string = query + " since:" + prev_date + " until:" + curr_date;
+  var query_string = query + " since:" + prev_date + " until:" + curr_date  + " " + " -filter:retweets AND -filter:replies";
 
   var pair = {};
     get_tweets(query_string).then(function(tweets) {
@@ -194,6 +194,19 @@ function get_date_padded(date, size) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+function tweet_author(socket, query) {
+  // create socket.io emission to webpage with tweets by author
+  author_tweets = get_timeline(query.author_query);
+  author_tweets.then(function(reply) {
+
+    socket.emit('author_tweets', reply)
+  })
+
+  .catch(function(error) {
+    helper.error("Cannot get user tweets:", error)
+  })
+};
 
 // callback function, stored here to preserve scope
 function tweet_reply(socket, query, prev_timestamp, prev_tweetlist, mobile_timestamp) {
@@ -231,17 +244,6 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist, mobile_times
 
     .catch(function(error) {
       helper.error("Cannot get tweet frequencies", error)
-    })
-
-    // create socket.io emission to webpage with tweets by author
-    author_tweets = get_timeline(query.author_query);
-    author_tweets.then(function(reply) {
-
-      socket.emit('author_tweets', reply)
-      helper.info("Storing:", reply.length)
-    })
-    .catch(function(error) {
-      helper.error("Cannot get user tweets:", error)
     })
 
     // creates socket.io emission to webpage with tweets
@@ -357,5 +359,6 @@ module.exports = {
   get_id_larger:            get_id_larger,
 
   tweet_reply:              tweet_reply,
-  tweet_error:              tweet_error
+  tweet_error:              tweet_error,
+  tweet_author:             tweet_author
 };

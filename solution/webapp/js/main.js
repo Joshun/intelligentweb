@@ -131,8 +131,29 @@ function initialise() {
       options: options
   });
 
+  $("#form_tab").click(function() {
+    console.log('clicked')
+    $('#author_form_tab').removeClass('Active');
+
+    $("#form_tab").addClass('Active');
+    $('#author_form_container').hide();
+    $('#form_container').show();
+
+  })
+
+  $("#author_form_tab").click(function() {
+    $('#form_tab').removeClass('Active');
+
+    $("#author_form_tab").addClass('Active');
+    $('#form_container').hide();
+    $('#author_form_container').show();
+
+
+  })
+
   $('#player_query').tokenfield({ delimiter: "," });
   $('#team_query').tokenfield({ delimiter: "," });
+  $('#author_query').tokenfield({ delimiter: "," });
 
   // emits query data from the input form to the server
   $('#query_form').submit(function() {
@@ -148,6 +169,18 @@ function initialise() {
   	});
 
   	return false; // stops page from refreshing
+  });
+
+  $('#author_query_form').submit(function() {
+    $("#form_table tbody tr").remove();
+
+    socket.emit('close', 'Form Data!');
+
+    socket.emit('author_query', {
+      author_query:     $('#author_query').val()
+    });
+
+    return false;
   });
 
   socket.on('reply_tweets', function(tweets) {
@@ -195,6 +228,17 @@ function initialise() {
     myChart.update();
 
 });
+
+socket.on('author_tweets', function(timeline) {
+  $('#player_modal').prop("disabled", true);
+    console.log(timeline);
+
+    table = $('#form_table');
+    for (var i = 0; i < timeline.data.length; i++) {
+      table.append(resultToRow(timeline.data[i]));
+    }
+
+  });
 
   socket.on('player_stats', function(stats) {
     console.log("Player Stats Received:", stats);
