@@ -137,6 +137,12 @@ function initialise() {
   // emits query data from the input form to the server
   $('#query_form').submit(function() {
 
+    stats_state.player_stats = null;
+    stats_state.team_state = null;
+    
+    $('#player_modal').prop("disabled", true);
+    $('#player_modal').html("UNKNOWN");
+
 		$("#form_table tbody tr").remove();
     socket.emit('close', "Form Data!");
 

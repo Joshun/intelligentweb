@@ -29,13 +29,13 @@ function search_player_by_keyword(terms) {
      WHERE { \
        ?human wdt:P106 wd:Q937857; \
               rdfs:label "' + terms + '"@en; \
-              wdt:P18    ?image; \
               wdt:P569   ?age; \
               p:P413     ?spec; \
               p:P54      ?list. \
        ?list  ps:P54     ?team. \
        ?team  wdt:P31    wd:Q476028. \
        ?spec  ps:P413    ?pos. \
+       OPTIONAL{?human wdt:P18 ?image} \
        OPTIONAL{?list pq:P582 ?date} \
        FILTER(?date > NOW() || !BOUND(?date)) \
        SERVICE wikibase:label { bd:serviceParam wikibase:language "en" } \
@@ -84,13 +84,13 @@ function search_player_by_handles(terms) {
        WHERE { \
          ?human wdt:P106   wd:Q937857; \
                 wdt:P2002 "' + reply.data.screen_name + '"; \
-                wdt:P18    ?image; \
                 wdt:P569   ?age; \
                 p:P413     ?spec; \
                 p:P54      ?list. \
          ?list  ps:P54     ?team. \
          ?team  wdt:P31    wd:Q476028. \
          ?spec  ps:P413    ?pos. \
+         OPTIONAL{?human wdt:P18 ?image} \
          OPTIONAL{?list pq:P582 ?date} \
          FILTER(?date > NOW() || !BOUND(?date)) \
          SERVICE wikibase:label { bd:serviceParam wikibase:language "en" } \
@@ -137,14 +137,16 @@ function tokenise_player(query) {
           var positions = [];
 
           for (var i = 0; i < reply.length; i++) {
-            positions.push(reply[i].posLabel.value);
+            if (positions.indexOf(reply[i].posLabel.value) === -1)
+              positions.push(reply[i].posLabel.value);
           }
 
           var stats = {
             name:     reply[0].humanLabel.value,
             team:     reply[0].teamLabel.value,
             age:      reply[0].age.value,
-            position: positions
+            position: positions,
+            image:    reply[0].image ? reply[0].image.value : null
           };
 
           resolve(stats);
@@ -180,14 +182,16 @@ function tokenise_player(query) {
           var positions = [];
 
           for (var i = 0; i < reply.length; i++) {
-            positions.push(reply[i].posLabel.value);
+            if (positions.indexOf(reply[i].posLabel.value) === -1)
+              positions.push(reply[i].posLabel.value);
           }
 
           var stats = {
             name:     reply[0].humanLabel.value,
             team:     reply[0].teamLabel.value,
             age:      reply[0].age.value,
-            position: positions
+            position: positions,
+            image:    reply[0].image ? reply[0].image.value : null
           };
           
           resolve(stats);
