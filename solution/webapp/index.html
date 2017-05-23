@@ -18,13 +18,19 @@
 </head>
 
 <body onload="initialise();">
-<div class = "tabs">
-  <button id="form_tab">Player | Team</button>
-  <button id="author_form_tab">Author</button>
+  <div id="button_container">
+  <div class = "tabs">
+    <button id="form_tab" class="btn btn-default">Player | Team</button>
+    <button id="author_form_tab" class="btn btn-default">Author</button>
+  </div>
+  <div id="button_style_div"></div>
 </div>
+
   <div id="page_container">
 
+
     <div id="form_container" class = "tabcontent">
+
       <h1>Twitter Web Interface</h1>
 
       <form id="query_form" class="form-group" action = "">
@@ -81,6 +87,7 @@
     </div>
 
   <div id="author_form_container" class = "tabcontent">
+
     <h1>Twitter Web Interface</h1>
     <form id="author_query_form" class="form-group" action = "">
 

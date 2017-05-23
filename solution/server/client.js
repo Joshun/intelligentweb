@@ -181,7 +181,6 @@ function tweet_author(socket, query) {
   author_tweets.then(function(reply) {
 
     socket.emit('author_tweets', reply)
-    helper.info("Storing:", reply.length)
   })
 
   .catch(function(error) {

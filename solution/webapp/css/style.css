@@ -1,38 +1,43 @@
-div.tab {
-    overflow: hidden;
-    border: 1px solid #ccc;
-    background-color: #f1f1f1;
+div.tabs {
+    z-index: 1;
+    width: 75%;
+    /*padding-bottom: 40px;*/
+    float: left;
+    top:     0.0px;
+    bottom:  0.0px;
+    left:   -2.5px;
+    right:   0.0px;
+    padding: 5px 5px 0px 10px;
+
 }
 
-/* Style the buttons inside the tab */
-div.tab button {
-    background-color: inherit;
-    float: left;
-    border: none;
+div.tabs button {
+    background-color: white;
     outline: none;
     cursor: pointer;
     padding: 14px 16px;
-    transition: 0.3s;
+    display: block;
+    float: right;
 }
 
-/* Change background color of buttons on hover */
-div.tab button:hover {
-    background-color: #ddd;
+div#button_style_div {
+  margin-left: 75%;
+  height: 20px;
+  top:     0.0px;
+  bottom:  0.0px;
+  right:  -2.5px;
 }
 
-/* Create an active/current tablink class */
-div.tab button.active {
-    background-color: #ccc;
+#button_container {
+  width: 75%;
+  margin: 5vh auto 5vh auto;
+  margin-bottom: 0px;
+
 }
 
-/* Style the tab content */
 .tabcontent {
     display: none;
-    padding: 6px 12px;
-    border: 1px solid #ccc;
-    border-top: none;
 }
-
 
 @-webkit-keyframes fadein_storage {
     from {
@@ -202,7 +207,8 @@ body {
 #page_container {
     position: relative;
     margin: 5vh auto 5vh auto;
-    padding: 5px 5px 5px 10px;
+    /*margin-top: 0px;*/
+    padding: 0px 5px 5px 10px;
 
     width: 75%;
     height: 90vh;
@@ -214,6 +220,7 @@ body {
     width: 75%;
     max-height: 230px;
     display: block;
+    position: relative;
     margin: 0px 0px 0px 0px;
 
     top:     0.0px;
@@ -225,7 +232,7 @@ body {
 #author_form_container {
     width: 75%;
     max-height: 230px;
-
+    position: relative;
     margin: 0px 0px 0px 0px;
 
     top:     0.0px;
