@@ -52,6 +52,18 @@ function Database() {
 
 }
 
+Database.prototype.getLastTimestamp = function(searchParams) {
+    var that = this;
+    this.getResult(searchParams).then(function(results) {
+        var mostRecent = results[0];
+        var mostRecentTimestamp = mostRecent.tweetTimestamp;
+        var reqObj = {
+            lastTweetTimestamp: mostRecentTimestamp,
+            searchParams: searchParams
+        };
+    });
+};
+
 // Given searchParams, retrieve previous tweet results
 Database.prototype.getResult = function(searchParams) {
     var that = this;
@@ -84,7 +96,8 @@ Database.prototype.getResult = function(searchParams) {
 Database.prototype.getSearch = function(searchParams) {
     var that = this;
     return new Promise(function(resolve, reject) {
-        var sqlQuery = "SELECT * FROM previousSearches WHERE isOrOperator=? AND playerQuery=? AND teamQuery=?";
+        // var sqlQuery = "SELECT * FROM previousSearches WHERE isOrOperator=? AND playerQuery=? AND teamQuery=?";
+        var sqlQuery = "SELECT * FROM previousSearches WHERE isOrOperator=? AND playerQuery=? AND teamQuery=? ORDER BY date(tweetTimestamp)";
 
         that.db.transaction(function(tx) {
             tx.executeSql(sqlQuery,

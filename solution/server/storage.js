@@ -253,6 +253,12 @@ function getPlayerFromScreenName(screenName) {
 	return getRealNameFromScreenName('players', screenName);
 }
 
+function getSearchTweetsSince(searchParams, timestamp) {
+	getPreviousSearches(searchParams).then(function(prevSearches) {
+		
+	});
+}
+
 
 // init
 createTable();

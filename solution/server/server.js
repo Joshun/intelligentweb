@@ -143,6 +143,13 @@ io.of('/').on('connection', function(socket) {
     helper.info("Socket Closed");
     // if (stream) stream.stop();
   });
+
+  socket.on("sync", function(query) {
+    helper.info("Sync request received");
+    var lastTimestamp = query.lastTimestamp;
+    var searchParams = query.searchParams;
+    
+  });
 });
 
 // retrieves the relevant file to render, or returns a 404 error if none exists
