@@ -143,7 +143,7 @@ function get_frequency(query, prev, curr) {
   return new Promise(function(resolve,reject) {
   var prev_date = get_date_format(prev);
   var curr_date = get_date_format(curr);
-  var query_string = query + " since:" + prev_date + " until:" + curr_date;
+  var query_string = query + " since:" + prev_date + " until:" + curr_date + " " + " -filter:retweets AND -filter:replies";
 
   var pair = {};
     get_tweets(query_string).then(function(tweets) {

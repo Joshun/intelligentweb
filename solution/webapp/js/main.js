@@ -220,6 +220,7 @@ function initialise() {
 
 
   socket.on('reply_freqs', function(freqs) {
+    $('#player_modal').prop("disabled", false);
     data = new Array();
     sortByDate(freqs, 'date');
     freqs.forEach(function(length){
