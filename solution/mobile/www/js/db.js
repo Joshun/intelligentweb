@@ -37,9 +37,9 @@ function Database() {
 
     var tweetList = [1,2,3];
     var prevSearch = { isOrOperator: 0, playerQuery: "player", teamQuery: "team"};
-    var that = this;
 
     var that = this;
+
     this.storeResult(prevSearch, [4,5,6,7]).then(function(result) {
         console.log("done!!!");
 
@@ -54,14 +54,38 @@ function Database() {
 
 Database.prototype.getLastTimestamp = function(searchParams) {
     var that = this;
-    this.getResult(searchParams).then(function(results) {
-        var mostRecent = results[0];
-        var mostRecentTimestamp = mostRecent.tweetTimestamp;
-        var reqObj = {
-            lastTweetTimestamp: mostRecentTimestamp,
-            searchParams: searchParams
-        };
+
+    return new Promise(function(resolve, reject) {
+        var sqlQuery = "SELECT * FROM tweets ORDER BY tweetTimestamp DESC LIMIT 1";
+        that.db.transaction(function(tx) {
+            tx.executeSql(sqlQuery, [], function(tx, result) {
+                // There is nothing in db, resolve 0 (i.e. first-time query)
+                if (result.rows.length == 0) {
+                    resolve(0);
+                }
+                // Resolve timestamp of most recent tweet
+                else {
+                    resolve(result.rows.item(0).tweetTimestamp);
+                }
+            }, function(tx, error) {
+                reject(error);
+            });
+        });
     });
+
+
+    // this.getResult(searchParams).then(function(results) {
+    //     var mostRecent = results[0];
+
+    //     var mostRecentTimestamp = mostRecent.tweetTimestamp;
+    //     var reqObj = {
+    //         mb_timestamp: mostRecentTimestamp, // timestamp of most recent tweet in local storage
+            
+    //         team_query: searchParams.teamQuery,
+    //         player_query: searchParams.playerQuery,
+    //         or_operator: searchParams.isOrOperator
+    //     };
+    // });
 };
 
 // Given searchParams, retrieve previous tweet results
@@ -204,7 +228,9 @@ Database.prototype.storeSearchTweets = function(previousSearchId, tweetList) {
 
         // Make a list of values
         for (var i=0; i<tweetList.length; i++) {
-            valuesList.push(["userName"+i, "tweetId"+i, "tweetTimestamp"+i, 0]);
+            var timestamp = new Date(tweetList[i].created_at).getTime() / 1000.0;
+
+            valuesList.push([tweetList[i].user.screen_name, tweetList[i].id_str, status.text, timestamp]);
         }
 
         // Make list of pairs of query string and values, ready for batch operation

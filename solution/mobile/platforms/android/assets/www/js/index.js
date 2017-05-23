@@ -1,4 +1,6 @@
 
+var db;
+
 var app = {
     // Application Constructor
     initialize: function() {
@@ -81,15 +83,34 @@ var socket = io(serverAddress);
 
 
 function sendGetTweetsRequest() {
-    var requestObj =  {
-        team_query: $("#team_query").val(),
-        player_query: $("#player_query").val(),
-        database_only: false,
-        or_operator: $("#or_operator").is(":checked")
-    };
+    // var requestObj =  {
+    //     team_query: $("#team_query").val(),
+    //     player_query: $("#player_query").val(),
+    //     database_only: false,
+    //     or_operator: $("#or_operator").is(":checked"),
+    // };
+    // console.log("sendGetTweetsRequest");
+    // console.log(" Sending requestObj: ", requestObj);
+    // socket.emit('query', requestObj);
     console.log("sendGetTweetsRequest");
-    console.log(" Sending requestObj: ", requestObj);
-    socket.emit('query', requestObj);
+
+    console.log(" 1. finding out the most recent timestamp we have...");
+    db.getLastTimestamp().then(function(lastTimestamp) {
+        console.log("  lastTimestamp=", lastTimestamp);
+        var requestObj =  {
+            team_query: $("#team_query").val(),
+            player_query: $("#player_query").val(),
+            database_only: false,
+            or_operator: $("#or_operator").is(":checked"),
+            moile_timestamp: lastTimestamp
+        };
+
+        console.log(" 2. sending request: ", requestObj);
+        socket.emit('query', requestObj);
+
+    }).catch(function(error) {
+        console.error("sendGetTweetsRequest: error occurred: ", error);
+    });
 }
 
 function resultToRow(tweet) {
