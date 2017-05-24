@@ -274,7 +274,10 @@ Database.prototype.storeSearchTweets = function(previousSearchId, tweetList) {
         for (var i=0; i<tweetList.length; i++) {
             var timestamp = new Date(tweetList[i].created_at).getTime() / 1000.0;
 
-            valuesList.push([tweetList[i].user.screen_name, tweetList[i].id_str, status.text, timestamp, previousSearchId]);
+            // valuesList.push([tweetList[i].user.screen_name, tweetList[i].id_str, status.text, timestamp, previousSearchId]);
+            
+            // TODO: remove [STORED] debug
+            valuesList.push([tweetList[i].user.screen_name, tweetList[i].id_str, "[STORED] " + tweetList[i].text, timestamp, previousSearchId]);
         }
 
         // Make list of pairs of query string and values, ready for batch operation
@@ -293,9 +296,13 @@ Database.prototype.storeSearchTweets = function(previousSearchId, tweetList) {
 };
 
 function savedTweetToWeb(tweet) {
+    // Convert stored epoch timestamp to JS date object
+    // Stored timestamp is in second-epoch, but Date takes millisecond-epoch
+    var convertedTimestamp = new Date(tweet.tweetTimestamp * 1000);
+
 	return {
 		text: tweet.tweetText,
-		created_at: tweet.tweetTimestamp,
+		created_at: convertedTimestamp.toString(),
 		user: { screen_name: tweet.userName},
 		id_str: tweet.tweetId
 	};
