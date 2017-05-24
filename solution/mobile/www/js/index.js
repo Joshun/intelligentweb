@@ -161,7 +161,6 @@ function sendGetTweetsRequest() {
     };
     
     db.getResult(dbReq).then(function(storedTweets) {
-        console.log(storedTweets);
         var latestId = (storedTweets.length == 0) ? 0 : storedTweets[0].tweetId;
         console.log("  latestId=", latestId);
 
