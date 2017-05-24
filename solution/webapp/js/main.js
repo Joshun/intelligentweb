@@ -2,6 +2,10 @@
  * main.js
  */
 
+var stats_state = { 'player_stats': null };
+var stats_keys = [38, 38, 40, 40, 37,
+                  39, 37, 39, 66, 65];
+
 // passes results into table
 function resultToRow(tweet) {
   var row;
@@ -30,70 +34,6 @@ function sortByDate(array, key) {
         if (x > y) return  1;
     });
 }
-
-var stats_state = { 'player_stats': null, 'team_stats': null };
-
-// function displayNoStats() {
-// 	var statsContainer = $("#stats_container");
-// 	statsContainer.empty();
-// 	var noStatsText = $("<h1>");
-// 	noStatsText.html("No stats found");
-// 	statsContainer.append(noStatsText);
-// }
-
-// function makeDescription(container, stats) {
-// 	if ("description" in stats) {
-// 		console.log(stats.description);
-
-// 		var generatedId = "gen-id-" + Math.round(Math.random()*1e9).toString();
-
-// 		var descriptionBtn = $("<a>");
-// 		descriptionBtn.attr("data-toggle", "collapse");
-// 		descriptionBtn.prop("href", "#"+generatedId);
-// 		descriptionBtn.addClass("btn");
-// 		descriptionBtn.addClass("btn-default");
-// 		descriptionBtn.html("show description");
-// 		container.append(descriptionBtn);
-
-// 		var descriptionPg = $("<p>");
-// 		descriptionPg.attr("id", generatedId);
-// 		descriptionPg.addClass("collapse");
-// 		descriptionPg.html(
-// 			(stats.description != null && stats.description.length > 0) ? stats.description : "not available"
-// 			);
-// 		container.append(descriptionPg);
-// 	}
-// }
-
-// function updateStatsPanel() {
-// 	var statsContainer = $("#stats_container");
-
-// 	// Both player_stats and team_stats empty
-// 	if (statsState.player_stats == null && statsState.team_stats == null) {
-// 			displayNoStats();
-// 	}
-// 	else {
-// 		// Clear the stats container
-// 		statsContainer.empty();
-
-// 		// player_stats available
-// 		if (statsState.player_stats != null) {
-// 			console.log("Displaying player stats...");
-// 			var playerStatsHeading = $("<h1>");
-// 			playerStatsHeading.html("Player");
-// 			statsContainer.append(playerStatsHeading);
-// 			makeDescription(statsContainer, statsState.player_stats);
-// 		}
-// 		// team_stats available
-// 		if (statsState.team_stats != null) {
-// 			console.log("Displaying team stats...");
-// 			var teamStatsHeading = $("<h1>");
-// 			teamStatsHeading.html("Team");
-// 			statsContainer.append(teamStatsHeading);
-// 			makeDescription(statsContainer, statsState.team_stats);
-// 		}
-// 	}
-// }
 
 function initialise() {
 	// displayNoStats();
@@ -226,32 +166,27 @@ function initialise() {
     var data_desc = "No Description Found";
 
     if (!stats.data.player_stats.name == "") {
-      data_name = stats.data.player_stats.name;
-      data_desc = stats.data.player_stats.team;
+      data_name     = stats.data.player_stats.name;
+      data_desc     = stats.data.player_stats.team;
+      data_position = stats.data.player_stats.position;
+      data_age      = stats.data.player_stats.age;
     }
 
-    $('#head_div h4.modal-title').html(data_name);
-    $('#body_div').html("<p>" + data_desc + "</p>");
-  });
+    var age = new Date().getFullYear() - new Date(data_age).getFullYear();
 
-  $('#team_modal').on('click', stats_state, function(stats) {
-    // $('#head_div h4.modal-title').html(stats.data.team_stats.name);
-    $('#head_div h4.modal-title').html(stats.description);
+    $('#head_div h4.modal-title').html(data_name);
+    $('#team_row').html(data_desc);
+    $('#position_row').html(data_position.toString().replace(",", ", ").replace(/\w\S*/g, function(str){ return str.charAt(0).toUpperCase() + str.substr(1).toLowerCase(); })); // adds spaces after commas, and capitalises every word
+    $('#age_row').html(new Date().getTime() - new Date(data_age).setFullYear(new Date().getFullYear()) < 0 ? age - 1 : age); // if current date is before birthday, reduce calculated age by one
+    $('#dob_row').html(new Date(data_age).toLocaleDateString());
   });
 
   socket.on('player_wk', function(stats) {
     console.log("Player Stats Received:", stats);
 
-    if (stats == null) {
-      $('#player_modal').prop("disabled", true);
-      $('#player_modal').html("UNKNOWN");
-      $("#player_image").css("background-image", "");
-    }
-    else {
-      $('#player_modal').prop("disabled", false);
-      $('#player_modal').html(stats.name);
-      $("#player_image").css("background-image", "url(" + stats.image + ")");
-    }
+    $('#player_modal').prop("disabled", false);
+    $('#player_modal').html(stats.name);
+    $("#player_image").css("background-image", "url(" + stats.image + ")");
 
     stats_state.player_stats = stats;
   });

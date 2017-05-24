@@ -118,10 +118,16 @@ function tokenise_player(query) {
       reject(null);
     }
 
-    if (query[0][0] == "@") {
-      helper.info("Handler Detected!", query[0]);
+    // filters query terms by twitter handles
+    var terms = query.filter(function(term) {
+      return term[0] == "@";
+    });
+
+    // uses first available handle, if any are found
+    if (terms.length > 0) {
+      helper.info("Handler Detected!", terms[0]);
       
-      search_player_by_handles(query[0])
+      search_player_by_handles(terms[0])
 
       .catch(function(error) {
         helper.error("Search Retrieval Failed:", error);
@@ -153,6 +159,7 @@ function tokenise_player(query) {
         }
       });
     }
+    // uses first available term, if any are found
     else {
       helper.info("Keyword Detected!", query[0]);
 
@@ -199,18 +206,6 @@ function tokenise_player(query) {
       });
     }
   });
-
-  // var wk;
-
-  // wk = search_player(terms);
-  
-  // wk.catch(function(error) {
-
-  // });
-
-  // wk.then(function(reply) {
-
-  // });
 }
 
 function emit_stats(socket, query) {
