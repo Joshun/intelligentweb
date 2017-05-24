@@ -83,21 +83,24 @@ function initialise() {
   });
 
   $("#form_tab").click(function() {
-    console.log('clicked')
-    $('#author_form_tab').removeClass('Active');
+      console.log('Changed to Player Form')
 
-    $("#form_tab").addClass('Active');
-    $('#author_form_container').hide();
-    $('#form_container').show();
+      $('#author_form_tab').removeClass("Active");
+      $("#form_tab").addClass("Active");
 
-  });
+      $('#author_form_container').fadeOut();
+      $('#form_container').fadeIn();
+
+    });
 
   $("#author_form_tab").click(function() {
-    $('#form_tab').removeClass('Active');
+    console.log('Changed to Author Form')
 
-    $("#author_form_tab").addClass('Active');
-    $('#form_container').hide();
-    $('#author_form_container').show();
+    $('#form_tab').removeClass("Active");
+    $("#author_form_tab").addClass("Active");
+
+    $('#form_container').fadeOut();
+    $('#author_form_container').fadeIn();
   });
 
   $('#player_query').tokenfield({ delimiter: "," });
