@@ -3,6 +3,7 @@
 // not yet tested: retrieving results and tweets
 
 function Database() {
+    // Initialise database
     this.db = window.sqlitePlugin.openDatabase({name: "football.db", location: "default"});
 
     // Create tables if they don't exist
@@ -243,6 +244,8 @@ Database.prototype.storeSearchTweets = function(previousSearchId, tweetList) {
     });
 };
 
+
+// Converts a mobile local database tweet to the format expected by the app frontend
 function savedTweetToWeb(tweet) {
     // Convert stored epoch timestamp to JS date object
     // Stored timestamp is in second-epoch, but Date takes millisecond-epoch
