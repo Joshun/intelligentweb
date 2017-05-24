@@ -1,7 +1,3 @@
-/**
- * server.js
- */
-
 var os = require('os');
 var process = require('process');
 
@@ -21,7 +17,9 @@ var helper  = require('./helper.js');
 
 var port    = process.env.PORT || 3000;
 
-
+/**
+ * Modifies paths based on OS for compatibility.
+ */
 function checkPaths() {
   var cwd = process.cwd();
   // If windows, split on backslash else on forward slash
@@ -29,9 +27,13 @@ function checkPaths() {
   return paths[paths.length-1] == "server" && paths[paths.length-2] == "solution";
 }
 
-// Check that the current working directory is correct
-// If this check is not carried out and the working dir is wrong, unhelpful errors will emerge
-// and it will not be immediately obvious these are caused by being in the wrong dir.
+/**
+ * Checks whether the current directory is correct for launching the server.
+ *
+ * Should the deployer attempt to launch this server from an incorrect
+ * directory, the sysyem may encounter errors. As a result, this function
+ * prevents the deployer from starting this server improperly.
+ */
 if (! checkPaths()) {
   helper.error("Working directory must be solution/server");
   helper.error("Please run server.js from inside its own folder");

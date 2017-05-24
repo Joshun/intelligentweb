@@ -18,12 +18,25 @@ var stream; // global reference to stream handler
 
 process.stdin.resume();
 
+// terminates program with additional tasks if aborted (e.g. Ctrl+C) or terminated
 process.on('SIGINT', function() {
   helper.info("Program Terminated");
   stop_stream();
   process.exit();
 });
 
+
+/**
+ * Invokes the Twitter REST API differently, depending on the task
+ *
+ * Should the system be retrieving chart information, no recursion is used
+ * since this would invoke a maximum of 21 calls to the REST API; which is not
+ * sustainable. Should the query contain an "until:" property, then no
+ * recursion is performed.
+ *
+ * @param    query    the search terms to be used
+ * @returns           a promise to retrieve the tweets for the specified query
+ */
 function get_tweets(query) {
   if (query.match("until")) {
     return T.get('search/tweets', { q: query, count: tweet_limit });
@@ -33,6 +46,20 @@ function get_tweets(query) {
   }
 }
 
+/**
+ * Invokes the Twitter REST API to retrieve the tweets for a specific query.
+ *
+ * Since only 100 tweets may be obtained per query, this function recursively
+ * sends requests to Twitter for a maximum of three times. It is assumed that,
+ * if the number of results returned for a particular query is the same as this
+ * limit, then it is possible that more tweets may be retrieved on subsequent
+ * queries.
+ *
+ * @param    query     the search terms to be used
+ * @param    index     the number of times a search has been (exclusively) performed
+ * @param    max_id    the max_id query; consisting of the "max_id:" prefix and the Twitter ID string of the last tweet retrieved minus one, or nothing
+ * @returns            a promise to retrieve the tweets for the specified query
+ */
 function get_tweets_helper(query, index, max_id) {
   var tweets;
   var nested;
@@ -403,6 +430,17 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist, mobile_times
   });
 };
 
+/**
+ * Invokes the Twitter Stream API to retrieve tweets for a particular query
+ *
+ * This function has to alter the query supplied to the REST API, as the range
+ * of filters available to the Stream API are limited. Furthermore, the syntax
+ * used to define a query is different, requiring alterations to the query
+ * format itself.
+ *
+ * @param    socket              the web socket to emit results
+ * @param    query               the search terms to be sent
+ */
 function stream_reply(socket, query) {
   // creates connection to twitter stream, and listens for tweets
   var tweet_p = query.player_query.split(", ");
@@ -410,9 +448,11 @@ function stream_reply(socket, query) {
 
   var tweet   = [];
 
+  // if operator is OR, then terms are concatenated as normal
   if (query.or_operator) {
     tweet = tweet_p.concat(tweet_t);
   }
+  // if operator is AND, then pairs of query terms are generated
   else {
     for (var i = 0 ; i < tweet_p.length ; i++) {
       for (var j = 0 ; j < tweet_t.length ; j++) {
@@ -439,12 +479,16 @@ function stream_reply(socket, query) {
   });
 }
 
-// callback function, stored here to preserve scope
-function tweet_error(socket, error) {
-    helper.error("Invalid Query");
-    throw error;
-};
-
+/**
+ * Determines if a particular tweet is a retweet.
+ *
+ * Since the Stream API cannot filter out retweets as part of the query
+ * process, it is necessary to filter the results server-side by looking at the
+ * fields supplied by Twitter.
+ *
+ * @param    socket              the web socket to emit results
+ * @param    query               the search terms to be sent
+ */
 function is_reply(tweet) {
   if (tweet.retweeted_status)
   // || tweet.in_reply_to_status_id
@@ -471,6 +515,5 @@ module.exports = {
   get_id_larger:            get_id_larger,
 
   tweet_reply:              tweet_reply,
-  tweet_error:              tweet_error,
   tweet_author:             tweet_author
 };
