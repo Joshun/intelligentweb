@@ -149,7 +149,20 @@ function sendGetTweetsRequest() {
     // });
 
     console.log(" 1. finding out the most recent timestamp we have...");
-    db.getLatestTweetId().then(function(latestId) {
+    // db.getLatestTweetId().then(function(latestId) {
+
+
+    // db.getLatestTweetId().then(function(latestId) {
+
+    var dbReq =  {
+        teamQuery: $("#team_query").val(),
+        playerQuery: $("#player_query").val(),
+        isOrOperator: $("#or_operator").is(":checked"),
+    };
+    
+    db.getResult(dbReq).then(function(storedTweets) {
+        console.log(storedTweets);
+        var latestId = (storedTweets.length == 0) ? 0 : storedTweets[0].tweetId;
         console.log("  latestId=", latestId);
 
     // Construct object which will be emitted to make request

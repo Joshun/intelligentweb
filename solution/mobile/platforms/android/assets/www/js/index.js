@@ -29,7 +29,6 @@ var app = {
 
         // BEGIN bind socket actions
         socket.on('reply_tweets', function(tweets) {
-            console.log(tweets.statuses[0]);
             console.log(" 3. request received  (length=", tweets.statuses.length, ") getting local tweets...");
             var searchParams = {
                 teamQuery: $("#team_query").val(),
@@ -73,7 +72,7 @@ var app = {
                     table.append(resultToRow(combinedTweets[i]));
                 }
                 table.DataTable({
-                    "aaSorting": [],
+                    "aaSorting": [], // disable sort on load
                     "bFilter": false, // disable quick search / filter
                     "bLengthChange": false, // disable length change
                     "pageLength": 5 // display 5 results per page
@@ -150,7 +149,20 @@ function sendGetTweetsRequest() {
     // });
 
     console.log(" 1. finding out the most recent timestamp we have...");
-    db.getLatestTweetId().then(function(latestId) {
+    // db.getLatestTweetId().then(function(latestId) {
+
+
+    // db.getLatestTweetId().then(function(latestId) {
+
+    var dbReq =  {
+        teamQuery: $("#team_query").val(),
+        playerQuery: $("#player_query").val(),
+        isOrOperator: $("#or_operator").is(":checked"),
+    };
+    
+    db.getResult(dbReq).then(function(storedTweets) {
+        console.log(storedTweets);
+        var latestId = (storedTweets.length == 0) ? 0 : storedTweets[0].tweetId;
         console.log("  latestId=", latestId);
 
     // Construct object which will be emitted to make request
