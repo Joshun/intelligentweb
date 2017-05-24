@@ -209,8 +209,8 @@ function tokenise_player(query) {
 }
 
 function emit_stats(socket, query) {
+  helper.info(query);
   var tweet_p = query.player_query.split(", ");
-  var tweet_t = query.team_query.split(", ");
 
   tokenise_player(tweet_p)
 

@@ -130,7 +130,8 @@ io.of('/').on('connection', function(socket) {
     client.stop_tweets();
     client.stop_stream();
 
-    wkdata.emit_stats(socket, author_query);
+    // altered author query structure to match expected wikidata input
+    wkdata.emit_stats(socket, { "player_query": author_query.author_query });
 
     client.tweet_author(socket, author_query);
   });
