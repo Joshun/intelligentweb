@@ -44,7 +44,7 @@ function Database() {
 
 }
 
-Database.prototype.getLastTimestamp = function(searchParams) {
+Database.prototype.getLatestTweetId = function(searchParams) {
     var that = this;
 
     return new Promise(function(resolve, reject) {
@@ -57,7 +57,8 @@ Database.prototype.getLastTimestamp = function(searchParams) {
                 }
                 // Resolve timestamp of most recent tweet
                 else {
-                    resolve(result.rows.item(0).tweetTimestamp);
+                    // resolve(result.rows.item(0).tweetTimestamp);
+                    resolve(result.rows.item(0).tweetId);
                 }
             }, function(tx, error) {
                 reject(error);
@@ -121,7 +122,8 @@ Database.prototype.getSearch = function(searchParams) {
                 function(tx, rs) {
                     console.log("QUERY success: ", tx);
                     if (rs.rows.length > 0) {
-                        resolve(rs.rows.item(0));
+                        console.log("prev search id:", rs.rows.item(0).id);
+                        resolve(rs.rows.item(0).id);
                     }
                     else {
                         resolve(null);
@@ -201,8 +203,8 @@ Database.prototype.storeSearch = function(searchParams) {
                     console.log("transaction");
                     tx.executeSql(sqlQuery, [searchParams.isOrOperator, searchParams.playerQuery, searchParams.teamQuery],
                         function(tx, rs) {
-                            console.log("insert previous search OK");
-                            resolve(rs);
+                            console.log("insert previous search OK, id=", rs.insertId);
+                            resolve(rs.insertId);
                         },
                         function(tx, error) {
                             console.error("error inserting search record", error);
@@ -221,7 +223,7 @@ Database.prototype.storeSearch = function(searchParams) {
                     tx.executeSql(sqlQuery, [searchParams.playerQuery, searchParams.teamQuery, searchParams.isOrOperator],
                     function(tx, rs) {
                         console.log("update search record OK");
-                        resolve(rs);
+                        resolve(rs.insertId);
                     },
                     function(tx, error) {
                         console.error("error updating prev search timestamp", error);
@@ -262,7 +264,7 @@ Database.prototype.storeSearch = function(searchParams) {
 Database.prototype.storeSearchTweets = function(previousSearchId, tweetList) {
     var that = this;
     return new Promise(function(resolve, reject) {
-        console.log("storeTweets ...");
+        console.log("storeTweets ... ( previousSearchId=", previousSearchId, ")");
 
         var sqlQuery = "INSERT INTO tweets \
             (userName, tweetId, tweetText, tweetTimestamp, previousSearchId) \

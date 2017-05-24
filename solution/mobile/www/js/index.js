@@ -36,6 +36,8 @@ var app = {
                 isOrOperator: $("#or_operator").is(":checked")
             };
 
+            console.log("  searchParams:", searchParams);
+
             db.getResult(searchParams).then(function(storedTweets) {
                 console.log(" 4. stored tweets retrieved, combining and displaying...");
                 console.log("   lengths: storedTweets=", storedTweets.length, " receivedTweets=", tweets.statuses.length);
@@ -140,15 +142,15 @@ function sendGetTweetsRequest() {
     // });
 
     console.log(" 1. finding out the most recent timestamp we have...");
-    db.getLastTimestamp().then(function(lastTimestamp) {
-        console.log("  lastTimestamp=", lastTimestamp);
+    db.getLatestTweetId().then(function(latestId) {
+        console.log("  latestId=", latestId);
 
     // Construct object which will be emitted to make request
     var requestObj =  {
         team_query: $("#team_query").val(),
         player_query: $("#player_query").val(),
         or_operator: $("#or_operator").is(":checked"),
-        mobile_timestamp: lastTimestamp
+        mobile_timestamp: latestId
     };
 
         console.log(" 2. sending request: ", requestObj);
