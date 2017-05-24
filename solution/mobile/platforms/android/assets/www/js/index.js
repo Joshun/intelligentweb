@@ -72,6 +72,7 @@ var app = {
                     table.append(resultToRow(combinedTweets[i]));
                 }
                 table.DataTable({
+                    "aaSorting": [],
                     "bFilter": false, // disable quick search / filter
                     "bLengthChange": false, // disable length change
                     "pageLength": 5 // display 5 results per page
