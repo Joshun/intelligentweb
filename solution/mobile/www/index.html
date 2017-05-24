@@ -7,23 +7,20 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-    <title>Twitter Web Interface</title>
+    <title>Football Tweets</title>
 
     <!-- libraries css -->
     <link href="dist/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="dist/bootstrap-tokenfield-0.12.0-dist/css/bootstrap-tokenfield.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="dist/jquery/jquery-1.5.0.mobile.min.css">
     <link rel="stylesheet" href="dist/datatables/datatables.min.css"></link>
 
     <!-- css for the app -->
     <link href="css/style.css" rel="stylesheet">
 
-    <!-- libraries -->
+    <!-- JavaScript libraries -->
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="dist/jquery/jquery-1.11.1.min.js" id="cordova-jquery"></script>
     <script type="text/javascript" src="dist/datatables/jquery.dataTables.min.js"></script>
-    <!--<script type="text/javascript" src="dist/datatables/datatables.min.js"></script>-->
-    <!--<script type="text/javascript" src="dist/datatables/dataTables.bootstrap.min.js"></script>-->
     <script src="dist/socket.io-2.0.1/socket.io.js"></script>
     <script src="dist/promisejs-7.0.4/promise-7.0.4.min.js"></script>
     <script src="dist/chart.js-2.1.4/Chart.min.js"></script>
@@ -44,6 +41,7 @@
         <form id="query_form" action="">
 
           <div class="row">
+            <!-- search heading -->
             <div class="col-xs-12">
               <h2>Search</h2>
             </div>
@@ -84,31 +82,6 @@
       </div>
     </div>
     <!-- end search section -->
-
-    <!-- begin stats section -->
-    <!--<div class="row">
-      <div class="col-xs-12">
-        <div class="row">
-          <div class="col-xs-12">
-            <h2>Stats</h2>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-xs-12">
-            <div class="btn-group btn-group-justified" role="group" aria-label="...">
-              <div class="btn-group" role="group" aria-label="...">
-                <button class="btn btn-info" id="team-stats-btn">Team</button>
-              </div>
-              <div class="btn-group" role="group" aria-label="...">
-                <button class="btn btn-info" id="player-stats-btn">Player</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>-->
-    <!-- end stats section -->
   </div>
 
   <div id="results-content" class="hidden">
@@ -143,21 +116,11 @@
       </div>
     </div>
 
-    <!-- the actual results -->
+    <!-- container for the actual results -->
+    <!-- this is populated by code in index.js, which creates a table inside it -->
     <div class="row">
       <div class="col-xs-12" id="post_div">
         <div id="form_table_container" class="table-responsive hidden">
-          <!--<table id="form_table" class="table table-striped hidden">-->
-            <!--<thead>-->
-              <!--<tr>-->
-                <!--<th width="10%">Author</th>-->
-                <!--<th width="50%">Text</th>-->
-                <!--<th width="15%">Time</th>-->
-                <!--<th width="15%">Date</th>-->
-                <!--<th width="10%">Link</th>-->
-              <!--</tr>-->
-            <!--</thead>-->
-          <!--</table>-->
         </div>
       </div>
     </div>
@@ -174,28 +137,7 @@
     </div>
     
   </div>
-    <!-- end results section -->
+  <!-- end results section -->
 
-  <!--<div id="stats-content" class="hidden">
-    <h2 id="team-stats-header">Team stats</h2>
-    <h2 id="player-stats-header">Player Stats</h2>
-    <div class="row">
-      <div col="col-xs-12">
-        <div id="chart">
-            <canvas id="myChart" class="modal-body"></canvas>
-        </div>
-      </div>
-    </div>-->
-
-    <!--<div class="row">
-      <div class="col-xs-12">
-        <div class="btn-group-justified" role="group">
-          <div class="btn-group" role="group">
-            <button class="back-to-main-content btn btn-default btn-primary">Back</button>
-          </div>
-        </div>
-      </div>
-    </div>-->
-  <!--</div>-->
 </body>
 </html>

@@ -31,6 +31,8 @@ var app = {
         // END bind form actions
 
         // BEGIN bind socket actions
+
+        // Handle the receving of tweets from the server, ensuring that they are displayed in the table
         socket.on('reply_tweets', function(tweets) {
             console.log(" 3. request received  (length=", tweets.statuses.length, ") getting local tweets...");
             var searchParams = {
@@ -43,6 +45,8 @@ var app = {
                 console.log(" 4. stored tweets retrieved, combining and displaying...");
                 console.log("   lengths: storedTweets=", storedTweets.length, " receivedTweets=", tweets.statuses.length);
 
+                // If the tweets from the server have not been retrieved properly, set tweets to empty list
+                // This ensures concatenation is safe
                 if (tweets.statuses === undefined || tweets.statuses == null) {
                     tweets = { statuses: [] };
                 }
@@ -128,6 +132,7 @@ function sendGetTweetsRequest() {
 
     console.log(" 1. finding out the most recent timestamp we have...");
 
+    // Construct search parameters to query the mobile local database
     var dbReq =  {
         teamQuery: $("#team_query").val(),
         playerQuery: $("#player_query").val(),
@@ -141,7 +146,7 @@ function sendGetTweetsRequest() {
         var latestId = (storedTweets.length == 0) ? 0 : storedTweets[0].id_str;
         console.log("  latestId=", latestId);
 
-    // Construct object which will be emitted to make request
+    // Construct object which will be emitted to server to request tweets
     var requestObj =  {
         team_query: $("#team_query").val(),
         player_query: $("#player_query").val(),
@@ -149,14 +154,15 @@ function sendGetTweetsRequest() {
         mobile_timestamp: latestId
     };
 
-        console.log(" 2. sending request: ", requestObj);
-        socket.emit('query', requestObj);
+    console.log(" 2. sending request: ", requestObj);
+    socket.emit('query', requestObj);
 
     }).catch(function(error) {
         console.error("sendGetTweetsRequest: error occurred: ", error);
     }); 
 }
 
+// Converts a tweet, in the format sent by the server, to a table row
 function resultToRow(tweet) {
 
   var row = "<tr>";

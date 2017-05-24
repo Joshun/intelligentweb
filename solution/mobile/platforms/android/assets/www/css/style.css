@@ -1,4 +1,7 @@
 
+/* determines the text displayed on the AND/OR button */
+/* this is handled by bootstrap */
+
 #or_operator         + label:after, #or_operator         + label:after {
     content: "AND";
 }
@@ -7,84 +10,30 @@
     content: "OR";
 }
 
+
 #or_operator + label {
-    /*width: 64px;*/
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
 }
 
-
-.inner-addon { 
-    position: relative;
-}
-
-.inner-addon .glyphicon {
-  position: absolute;
-  padding: 10px;
-
-  pointer-events: none;
-  z-index: 9;
-}
-
-.left-addon .glyphicon  {
-    left:  0px;
-}
-.right-addon .glyphicon {
-    right: 0px;
-}
-
-div.left-addon > div.tokenfield {
-    padding-left: 30px;
-}
+/* --- */
 
 
-.button-inline-label {
-    font-size: 200%;
-}
+/* tweet database states: */
 
-.voffset {
-    padding-top: 20px;
-}
-
-/* db states */
-
-/*.table-striped > tbody > .twitter:nth-of-type(odd) {
-    background: -webkit-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #F9F9F9 12px, #F9F9F9 100%);
-    background:    -moz-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #F9F9F9 12px, #F9F9F9 100%);
-    background:      -o-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #F9F9F9 12px, #F9F9F9 100%);
-    background:         repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #F9F9F9 12px, #F9F9F9 100%);
-}
-
-.table-striped > tbody > .twitter:nth-of-type(even) {
-    background: -webkit-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #FFFFFF 12px, #FFFFFF 100%);
-    background:    -moz-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #FFFFFF 12px, #FFFFFF 100%);
-    background:      -o-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #FFFFFF 12px, #FFFFFF 100%);
-    background:         repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #FFFFFF 12px, #FFFFFF 100%);
-}
-
-.table-striped > tbody > .storage:nth-of-type(odd) {
-    background: -webkit-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #F9F9F9 12px, #F9F9F9 100%);
-    background:    -moz-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #F9F9F9 12px, #F9F9F9 100%);
-    background:      -o-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #F9F9F9 12px, #F9F9F9 100%);
-    background:         repeating-linear-gradient(225deg, #F29221, #F29221 12px, #F9F9F9 12px, #F9F9F9 100%);
-}
-
-.table-striped > tbody > .storage:nth-of-type(even) {
-    background: -webkit-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #FFFFFF 12px, #FFFFFF 100%);
-    background:    -moz-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #FFFFFF 12px, #FFFFFF 100%);
-    background:      -o-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #FFFFFF 12px, #FFFFFF 100%);
-    background:         repeating-linear-gradient(225deg, #F29221, #F29221 12px, #FFFFFF 12px, #FFFFFF 100%);
-}*/
-
-
+/*  colour to represent tweets stored on the server's database */
 .storage {
     background-color: orange;
 }
 
+/*  colour to represent "fresh" tweets (straight from twitter) */
 .twitter {
     background-color: blue;
 }
 
+/* colour to represent tweets stored in the mobile's local database */
 .mobile {
     background-color: green;
 }
+
+/* --- */
