@@ -230,6 +230,14 @@ function get_frequency_weekly(query) {
   })
 };
 
+/**
+ * Provides the frequency data for a query between two specified dates
+ *
+ * @param    query    the search terms to be sent
+ * @param    prev     the start date
+ * @param    curr     the end date
+ * @returns           a promise to retrieve the searches between the specified dates
+ */
 function get_frequency(query, prev, curr) {
   return new Promise(function(resolve,reject) {
   var prev_date = get_date_format(prev);
@@ -249,12 +257,24 @@ function get_frequency(query, prev, curr) {
   });
 }
 
+/**
+ * Converts the date format into one which is compatible with Twitter queries
+ *
+ * @param    date    a date object
+ * @returns          the date object in YYYY-MM-DD format
+ */
 function get_date_format(date) {
-  return              date.getFullYear().toString()      + "-"
-    + get_date_padded((date.getMonth()+1).toString(), 2) + "-"
-    + get_date_padded(date.getDate().toString(), 2);
+  return               date.getFullYear().toString()       + "-"
+    + get_date_padded((date.getMonth() + 1).toString(), 2) + "-"
+    + get_date_padded( date.getDate().toString(), 2);
 }
 
+/**
+ * Pads a date element to the specified length
+ *
+ * @param    date    a date element
+ * @returns          a padded date element
+ */
 function get_date_padded(date, size) {
   var out = date.trim();
   while (out.length < size) {
@@ -320,6 +340,11 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist, mobile_times
     // creates socket.io emission to webpage with tweets
     tweets.then(function(reply) {
       helper.info("Tweets Retrieved from Twitter:", reply.data.statuses.length);
+
+      // converts Twitter time into ISO-8601 time
+      for(var i = 0; i < reply.data.statuses.length; i++) {
+        reply.data.statuses[i].created_at = new Date(reply.data.statuses[i].created_at).toISOString();
+      }
 
       // if (mobile_timestamp != null) {
       //   prev_tweetlist = prev_tweetlist.filter(function(status) {
