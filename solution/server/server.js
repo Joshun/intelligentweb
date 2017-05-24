@@ -129,7 +129,10 @@ io.of('/').on('connection', function(socket) {
   socket.on('author_query', function(author_query) {
     client.stop_tweets();
     client.stop_stream();
-    client.tweet_author(socket,author_query);
+
+    wkdata.emit_stats(socket, author_query);
+
+    client.tweet_author(socket, author_query);
   });
 
   // terminates socket.io session if an error is encountered
