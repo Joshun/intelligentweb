@@ -29,13 +29,13 @@ function search_player_by_keyword(terms) {
      WHERE { \
        ?human wdt:P106 wd:Q937857; \
               rdfs:label "' + terms + '"@en; \
-              wdt:P18    ?image; \
               wdt:P569   ?age; \
               p:P413     ?spec; \
               p:P54      ?list. \
        ?list  ps:P54     ?team. \
        ?team  wdt:P31    wd:Q476028. \
        ?spec  ps:P413    ?pos. \
+       OPTIONAL{?human wdt:P18 ?image} \
        OPTIONAL{?list pq:P582 ?date} \
        FILTER(?date > NOW() || !BOUND(?date)) \
        SERVICE wikibase:label { bd:serviceParam wikibase:language "en" } \
@@ -84,13 +84,13 @@ function search_player_by_handles(terms) {
        WHERE { \
          ?human wdt:P106   wd:Q937857; \
                 wdt:P2002 "' + reply.data.screen_name + '"; \
-                wdt:P18    ?image; \
                 wdt:P569   ?age; \
                 p:P413     ?spec; \
                 p:P54      ?list. \
          ?list  ps:P54     ?team. \
          ?team  wdt:P31    wd:Q476028. \
          ?spec  ps:P413    ?pos. \
+         OPTIONAL{?human wdt:P18 ?image} \
          OPTIONAL{?list pq:P582 ?date} \
          FILTER(?date > NOW() || !BOUND(?date)) \
          SERVICE wikibase:label { bd:serviceParam wikibase:language "en" } \
@@ -118,10 +118,16 @@ function tokenise_player(query) {
       reject(null);
     }
 
-    if (query[0][0] == "@") {
-      helper.info("Handler Detected!", query[0]);
+    // filters query terms by twitter handles
+    var terms = query.filter(function(term) {
+      return term[0] == "@";
+    });
+
+    // uses first available handle, if any are found
+    if (terms.length > 0) {
+      helper.info("Handler Detected!", terms[0]);
       
-      search_player_by_handles(query[0])
+      search_player_by_handles(terms[0])
 
       .catch(function(error) {
         helper.error("Search Retrieval Failed:", error);
@@ -137,20 +143,23 @@ function tokenise_player(query) {
           var positions = [];
 
           for (var i = 0; i < reply.length; i++) {
-            positions.push(reply[i].posLabel.value);
+            if (positions.indexOf(reply[i].posLabel.value) === -1)
+              positions.push(reply[i].posLabel.value);
           }
 
           var stats = {
             name:     reply[0].humanLabel.value,
             team:     reply[0].teamLabel.value,
             age:      reply[0].age.value,
-            position: positions
+            position: positions,
+            image:    reply[0].image ? reply[0].image.value : null
           };
 
           resolve(stats);
         }
       });
     }
+    // uses first available term, if any are found
     else {
       helper.info("Keyword Detected!", query[0]);
 
@@ -180,14 +189,16 @@ function tokenise_player(query) {
           var positions = [];
 
           for (var i = 0; i < reply.length; i++) {
-            positions.push(reply[i].posLabel.value);
+            if (positions.indexOf(reply[i].posLabel.value) === -1)
+              positions.push(reply[i].posLabel.value);
           }
 
           var stats = {
             name:     reply[0].humanLabel.value,
             team:     reply[0].teamLabel.value,
             age:      reply[0].age.value,
-            position: positions
+            position: positions,
+            image:    reply[0].image ? reply[0].image.value : null
           };
           
           resolve(stats);
@@ -195,18 +206,6 @@ function tokenise_player(query) {
       });
     }
   });
-
-  // var wk;
-
-  // wk = search_player(terms);
-  
-  // wk.catch(function(error) {
-
-  // });
-
-  // wk.then(function(reply) {
-
-  // });
 }
 
 function emit_stats(socket, query) {

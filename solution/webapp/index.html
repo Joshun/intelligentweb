@@ -129,6 +129,7 @@
     <div id="stat_container">
       <div id="stat_div">
         <button id="player_modal" type="button" class="btn btn-info" data-toggle="modal" data-target="#over_container" disabled>UNKNOWN</button>
+        <div id="player_image"></div>
       </div>
       <!-- <canvas id="myChart" width="400" height="400"></canvas> -->
     </div>
@@ -142,11 +143,27 @@
           <h4 class="modal-title">Modal Header</h4>
         </div>
 
-        <div id="body_div" class="modal-body">
-          <p>Some text will go here.</p>
-          <p>Some text will go here.</p>
-          <p>Some text will go here.</p>
-        </div>
+
+        <table id="data_table" class="table table-striped">
+          <tbody>
+            <tr>
+              <th width="30%">Current Club</th>
+              <td width="70%" id="team_row"></td>
+            </tr>
+            <tr>
+              <th width="30%">Position(s)</th>
+              <td width="70%" id="position_row"></td>
+            </tr>
+            <tr>
+              <th width="30%">Age</th>
+              <td width="70%" id="age_row"></td>
+            </tr>
+            <tr>
+              <th width="30%">Birthday</th>
+              <td width="70%" id="dob_row"></td>
+            </tr>
+          </tbody>
+        </table>
 
         <div id="chart">
           <canvas id="myChart" class="modal-body"></canvas>
