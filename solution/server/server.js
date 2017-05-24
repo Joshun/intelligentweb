@@ -89,13 +89,15 @@ io.of('/').on('connection', function(socket) {
         var prev_timestamp = null;
         var prev_tweetlist = [];
 
+        // converts database results into simplified compatible format
         for (var i = 0; i < prev_tweets.length; i++) {
           var web_tweet = db.savedTweetToWeb(prev_tweets[i]);
 
+          // removes database results for mobile query if already stored locally
           if (query.mobile_timestamp == null
           || web_tweet.id_str == client.get_id_larger(web_tweet.id_str, query.mobile_timestamp)) {
             prev_tweetlist.push(web_tweet);
-            prev_timestamp = prev_tweets[i].tweetTimestamp;
+            prev_timestamp = prev_tweets[i].tweetTimestamp; // by end of loop, contains latest timestamp
           }
         }
 
