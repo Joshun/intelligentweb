@@ -286,6 +286,13 @@ function get_date_padded(date, size) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * Invokes the Twitter REST API to retrieve timeline of a user
+ *
+ * @param    socket    the web socket to emit results
+ * @param    query     the Twitter screen name of the user
+ * @returns            the timeline of the user
+ */
 function tweet_author(socket, query) {
   // create socket.io emission to webpage with tweets by author
   author_tweets = get_timeline(query.author_query);
@@ -299,92 +306,101 @@ function tweet_author(socket, query) {
   })
 };
 
-// callback function, stored here to preserve scope
+/**
+ * Invokes the Twitter REST API to retrieve tweets for a particular query
+ *
+ * This function constitutes the bulk of task 1.1, in which the the search
+ * terms are formatted into a meaningful query, before being sent back to the
+ * client. In addition, the new results are logged and stored for retrieval
+ * on future searches of the same query.
+ *
+ * @param    socket              the web socket to emit results
+ * @param    query               the search terms to be sent
+ * @param    prev_timestamp      the Twitter ID string of the most recent relevant tweet in the server database, or null if none
+ * @param    prev_tweetlist      the list of previous tweets, or empty list if none
+ * @param    mobile_timestamp    the Twitter ID string of the most recent relevant tweet in the mobile database, or null if web request or none
+ */
 function tweet_reply(socket, query, prev_timestamp, prev_tweetlist, mobile_timestamp) {
-    helper.info("Tweets Update Received, Processing...");
+  helper.info("Tweets Update Received, Processing...");
 
-    // creates connection to twitter search, and retrieves tweets
-    if (prev_timestamp == null) {
-      if (mobile_timestamp == null) {
-        helper.info("Complete Tweets String (Server):", db.generate_query(query) + " -filter:retweets");
-        tweets = get_tweets(db.generate_query(query) + " -filter:retweets");
-      }
-      else {
-        helper.info("Complete Tweets String (Mobile):", db.generate_query(query) + " since_id:" + mobile_timestamp + " -filter:retweets");
-        tweets = get_tweets(db.generate_query(query) + " since_id:" + mobile_timestamp + " -filter:retweets");
-      }
+  // should no previous timestamp be found, then adjust the search properties
+  if (prev_timestamp == null) {
+    // if no mobile_timstamp is detected, assume to be web connection, and retrieve unbounded tweets
+    if (mobile_timestamp == null) {
+      helper.info("Complete Tweets String (Server):", db.generate_query(query) + " -filter:retweets");
+      tweets = get_tweets(db.generate_query(query) + " -filter:retweets");
     }
+    // if mobile_timestamp is detected, assume mobile is up-to-date with server, and retrieve new tweets
     else {
-      helper.info("prev_timestamp: ", prev_timestamp);
+      helper.info("Complete Tweets String (Mobile):", db.generate_query(query) + " since_id:" + mobile_timestamp + " -filter:retweets");
+      tweets = get_tweets(db.generate_query(query) + " since_id:" + mobile_timestamp + " -filter:retweets");
+    }
+  }
+  // should at least one previous timestamp be found, then retrieve new tweets
+  else {
+    helper.info("prev_timestamp: ", prev_timestamp);
 
-      // convert timestamp into compatible database format
-      var formatted_prev_timestamp = get_date_format(new Date(prev_timestamp));
+    // convert timestamp into compatible database format
+    var formatted_prev_timestamp = get_date_format(new Date(prev_timestamp));
 
-      helper.info("Complete Tweets String (Server):", db.generate_query(query) + " since_id:" + prev_tweetlist[0].id_str + " -filter:retweets");
-      tweets = get_tweets(db.generate_query(query) + " since_id:" + prev_tweetlist[0].id_str + " -filter:retweets");
+    helper.info("Complete Tweets String (Server):", db.generate_query(query) + " since_id:" + prev_tweetlist[0].id_str + " -filter:retweets");
+    tweets = get_tweets(db.generate_query(query) + " since_id:" + prev_tweetlist[0].id_str + " -filter:retweets");
+  }
+
+  helper.info("Tweets Update Complete");
+
+  // create socket.io emission to webpage with frequencies
+  tweetfreqs = get_frequency_weekly(db.generate_query(query));
+  tweetfreqs.then(function(data) {
+    helper.info(tweetfreqs)
+    socket.emit('reply_freqs', data);
+  })
+
+  .catch(function(error) {
+    helper.error("Cannot get tweet frequencies", error)
+  })
+
+  // creates socket.io emission to webpage with tweets
+  tweets.then(function(reply) {
+    helper.info("Tweets Retrieved from Twitter:", reply.data.statuses.length);
+
+    // converts Twitter time into ISO-8601 time
+    for(var i = 0; i < reply.data.statuses.length; i++) {
+      reply.data.statuses[i].created_at = new Date(reply.data.statuses[i].created_at).toISOString();
     }
 
-    helper.info("Tweets Update Complete");
+    // emit tweets from Twitter and server database
+    socket.emit('reply_tweets', { statuses: reply.data.statuses.concat(prev_tweetlist) });
 
-    // create socket.io emission to webpage with frequencies
-    tweetfreqs = get_frequency_weekly(db.generate_query(query));
-    tweetfreqs.then(function(data) {
-      helper.info(tweetfreqs)
-      socket.emit('reply_freqs', data);
-    })
+    stream_reply(socket, query);
 
-    .catch(function(error) {
-      helper.error("Cannot get tweet frequencies", error)
-    })
+    helper.info("Logging...");
+    return db.logSearch(query, reply);
+  })
 
-    // creates socket.io emission to webpage with tweets
-    tweets.then(function(reply) {
-      helper.info("Tweets Retrieved from Twitter:", reply.data.statuses.length);
-
-      // converts Twitter time into ISO-8601 time
-      for(var i = 0; i < reply.data.statuses.length; i++) {
-        reply.data.statuses[i].created_at = new Date(reply.data.statuses[i].created_at).toISOString();
-      }
-
-      // if (mobile_timestamp != null) {
-      //   prev_tweetlist = prev_tweetlist.filter(function(status) {
-      //     status.id_str === get_id_larger(status.id_str, mobile_timestamp);
-      //   })
-      // }
-
-      socket.emit('reply_tweets', { statuses: reply.data.statuses.concat(prev_tweetlist) });
-
-      // TODO emit reply to mobile with replies and susbet of previous tweets
-
-      stream_reply(socket, query);
-
-      helper.info("Logging...");
-      return db.logSearch(query, reply);
-    })
-
-    // returns an error if the search terms cannot be stored within the database
-    .catch(function(error) {
-      helper.error("Unable to Store Search:", error);
-    })
+  // returns an error if the search terms cannot be stored within the database
+  .catch(function(error) {
+    helper.error("Unable to Store Search:", error);
+  })
 
 
-    .then(function(reply) {
-      return db.storeTweetData(reply[1].data, reply[0]);
-    })
+  .then(function(reply) {
+    return db.storeTweetData(reply[1].data, reply[0]);
+  })
 
-    // returns an error if the tweets cannot be stored within the database
-    .catch(function(error) {
-    helper.error("Unable to Store Tweets:", error);
-    })
+  // returns an error if the tweets cannot be stored within the database
+  .catch(function(error) {
+  helper.error("Unable to Store Tweets:", error);
+  })
 
-    .then(function(results) {
-      helper.info("Stored!");
-    });
+  .then(function(results) {
+    helper.info("Stored!");
+  });
 
-    // returns an error if the search terms invalid
-    tweets.catch(function(error) {
-        helper.error("Search Terms Invalid:", error);
-    });
+  // returns an error if the search terms invalid
+  tweets.catch(function(error) {
+      helper.error("Search Terms Invalid:", error);
+  });
 };
 
 function stream_reply(socket, query) {
