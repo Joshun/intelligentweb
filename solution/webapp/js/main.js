@@ -6,18 +6,36 @@ var stats_state = { 'player_stats': null };
 var stats_keys = [38, 38, 40, 40, 37,
                   39, 37, 39, 66, 65];
 
+/**
+ * Converts date/time field to a readable date string
+ *
+ * @param    datestring    a date string from the database
+ * @returns          a datestring in readable format
+ */
 function dateStringToDate(datestring) {
     var date = new Date(datestring);
     // return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
     return date.toDateString();
 }
 
+/**
+ * Converts date/time field to a readable time string
+ *
+ * @param    datestring    a date string from the database
+ * @returns          a timestring in readable format
+ */
 function dateStringToTime(datestring) {
     var date = new Date(datestring);
     // return (date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
     return date.toTimeString().substring(0, 8);
 }
-// passes results into table
+
+/**
+ * Appends tweet information to rows of a table
+ *
+ * @param    tweet    a tweet access from twitter
+ * @returns          row of a table with information from the tweets
+ */
 function resultToRow(tweet) {
   var row;
 
@@ -37,7 +55,13 @@ function resultToRow(tweet) {
 	return row;
 }
 
-// function to sort an array of objects with date attributes
+/**
+ * Appends tweet information to rows of a table
+ *
+ * @param    array    an array of frequencies with relevant dates
+ * @param    key    the key value of the object to sort by
+ * @returns          an array sorted by date
+ */
 function sortByDate(array, key) {
     return array.sort(function(a, b) {
         var x = a[key]; var y = b[key];
@@ -46,6 +70,9 @@ function sortByDate(array, key) {
     });
 }
 
+/**
+ * Runs on page load creating elements and holds relevant functionality
+ */
 function initialise() {
 	// displayNoStats();
 
@@ -67,6 +94,7 @@ function initialise() {
       }
   };
 
+  // instantiates new chart which is later updated with frequency data
   var myChart = new Chart(ctx, {
       type: 'line',
       data: {
@@ -82,6 +110,7 @@ function initialise() {
       options: options
   });
 
+  // Changes to player form tab if on author form
   $("#form_tab").click(function() {
       console.log('Changed to Player Form')
 
@@ -93,6 +122,7 @@ function initialise() {
 
     });
 
+  // Changes to author form tab if on player form
   $("#author_form_tab").click(function() {
     console.log('Changed to Author Form')
 
@@ -130,13 +160,14 @@ function initialise() {
   	return false; // stops page from refreshing
   });
 
+  // emits query data from author form to the server
   $('#author_query_form').submit(function() {
     $("#form_table tbody tr").remove();
 
     socket.emit('close', 'Form Data!');
 
     socket.emit('author_query', {
-      author_query:     $('#author_query').val()
+      author_query:     $('#author_query').val() // input for author handle
     });
 
     return false;
@@ -188,6 +219,7 @@ function initialise() {
 
 });
 
+// when tweets by author are recieved, they are appended to the table
 socket.on('author_tweets', function(timeline) {
   $('#player_modal').prop("disabled", true);
     console.log(timeline);
