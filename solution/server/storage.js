@@ -187,15 +187,28 @@ function getPreviousTweets(prevSearchId) {
 	});
 }
 
-// Converts the user's search terms into the appropriate format for the Twitter API
+/**
+ * Converts the user's search terms into the appropriate format for Twitter to use.
+ *
+ * Since the tokenfield entity supplies a comma-delimited string, the query
+ * must be processed to make it compatible with the REST API. Specifically, the
+ * addition of quotes around each term, and the replacement of ", " with " OR "
+ * to denote union of exact phrases.
+ *
+ * @param    query    the search terms to be used
+ * @returns           the formatted query
+ */
 function generate_query(query) {
+	// converts each comma-delimited string into list of strings
 	var tweet_p = query.player_query.split(",");
 	var tweet_t = query.team_query.split(",");
 
+	// trims whitespace around each term, and adds quotes to either side
 	tweet_p = tweet_p.map(function(str) {
 		return "\"" + str.trim() + "\"";
 	});
 
+	// trims whitespace around each term, and adds quotes to either side
 	tweet_t = tweet_t.map(function(str) {
 		return "\"" + str.trim() + "\"";
 	});
@@ -203,10 +216,10 @@ function generate_query(query) {
 	var tweet_query;
 
     if (query.or_operator) {
-      tweet_query = tweet_p.toString().replace(",", " OR ") + ' OR ' + tweet_t.toString().replace(",", " OR ") ;
+      tweet_query = tweet_p.toString().replace(",", " OR ") + ' OR ' + tweet_t.toString().replace(",", " OR "); // adds " OR " between player and team terms to intersect
   	}
     else {
-      tweet_query = tweet_p.toString().replace(",", " OR ") + ' '    + tweet_t.toString().replace(",", " OR ");
+      tweet_query = tweet_p.toString().replace(",", " OR ") + ' '    + tweet_t.toString().replace(",", " OR "); // adds " " between player and team terms to union
     }
 
     helper.debug("Processed:", tweet_query, query.or_operator);

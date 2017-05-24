@@ -2,6 +2,9 @@ var flags = {
 	verbose: false
 };
 
+/**
+ * Checks server arguments for flags, if any.
+ */
 process.argv.forEach(function(arg) {
   if(arg.match(/^-*/) != '') {
   	switch(arg.substring(1)) {
@@ -14,8 +17,12 @@ process.argv.forEach(function(arg) {
   }
 });
 
+/**
+ * Displays DEBUG text; intended for use to hide full information during
+ * normal operation of the server.
+ */
 function debug() {
-  if(!flags.verbose) return;
+  if(!flags.verbose) return; // only runs if -v or --verbose are active flags.
 
   if(arguments) {
     process.stdout.write('[DEBUG] ');
@@ -26,6 +33,10 @@ function debug() {
   }
 }
 
+/**
+ * Displays INFO text; intended to display useful information during normal
+ * operation of the server.
+ */
 function info() {
   if(arguments) {
     process.stdout.write('[INFO]  ');
@@ -36,6 +47,10 @@ function info() {
   }
 }
 
+/**
+ * Displays WARN text; intended to display warnings about certain non-fatal
+ * issues during normal operation of the server.
+ */
 function warn() {
   if(arguments) {
     process.stdout.write('[WARN]  ');
@@ -46,6 +61,10 @@ function warn() {
   }
 }
 
+/**
+ * Displays ERROR text; intended to display warnings about fatal or unintended
+ * issues during normal operation of the server.
+ */
 function error() {
   if(arguments) {
     process.stderr.write('[ERROR] ');
@@ -55,8 +74,6 @@ function error() {
     console.error();
   }
 }
-
-// console.log("\>\> TIME STAMP: " + (new Date()) + " : " +  (new Date().getTime() / 1000 | 0));
 
 module.exports = {
 	flags: flags,
