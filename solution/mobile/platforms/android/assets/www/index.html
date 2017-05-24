@@ -23,7 +23,7 @@
     <script type="text/javascript" src="dist/jquery/jquery-1.11.1.min.js" id="cordova-jquery"></script>
     <script type="text/javascript" src="dist/datatables/jquery.dataTables.min.js"></script>
     <!--<script type="text/javascript" src="dist/datatables/datatables.min.js"></script>-->
-    <script type="text/javascript" src="dist/datatables/dataTables.bootstrap.min.js"></script>
+    <!--<script type="text/javascript" src="dist/datatables/dataTables.bootstrap.min.js"></script>-->
     <script src="dist/socket.io-2.0.1/socket.io.js"></script>
     <script src="dist/promisejs-7.0.4/promise-7.0.4.min.js"></script>
     <script src="dist/chart.js-2.1.4/Chart.min.js"></script>
@@ -145,19 +145,18 @@
     <!-- the actual results -->
     <div class="row">
       <div class="col-xs-12" id="post_div">
-        <div class="table-responsive">
-          <table id="form_table" class="table table-striped hidden">
-            <thead>
-              <tr>
-                <th width="10%">Author</th>
-                <th width="50%">Text</th>
+        <div id="form_table_container" class="table-responsive">
+          <!--<table id="form_table" class="table table-striped hidden">-->
+            <!--<thead>-->
+              <!--<tr>-->
+                <!--<th width="10%">Author</th>-->
+                <!--<th width="50%">Text</th>-->
                 <!--<th width="15%">Time</th>-->
-                <th width="15%">Date</th>
+                <!--<th width="15%">Date</th>-->
                 <!--<th width="10%">Link</th>-->
-              </tr>
-            <tbody>
-            </tbody>
-          </table>
+              <!--</tr>-->
+            <!--</thead>-->
+          <!--</table>-->
         </div>
       </div>
     </div>

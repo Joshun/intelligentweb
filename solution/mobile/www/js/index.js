@@ -46,21 +46,42 @@ var app = {
 
                 // write results into table
 
-                table = $('#form_table');
+                // var table = $('#form_table').DataTable();
+
+                var tableContainer = $("#form_table_container");
+                tableContainer.empty();
+
+                var table = $("<table>");
+                table.addClass("table table-striped");
+                tableContainer.append(table);
+
+                var thead = $("<thead>");
+                thead.html("<tr><th width=\"10%\">Author</th><th width=\"50%\">Text</th><th width=\"15%\">Date</th></tr>");
+                table.append(thead);
+
                 for (var i = 0; i < combinedTweets.length; i++) {
+
                     table.append(resultToRow(combinedTweets[i]));
                 }
+                table.DataTable({
+                    "bFilter": false, // disable quick search / filter
+                    "bLengthChange": false, // disable length change
+                    "pageLength": 5 // display 5 results per page
+                });
 
                 console.log("DONE");
 
                 // Hide results loading header
                 $("#results-loading-header").addClass("hidden");
                 
-                // Unhide results table
-                $("#form_table").removeClass("hidden");
+                // // Unhide results table
+                // $("#form_table").removeClass("hidden");
 
                 // Unhide results bottom back button
                 $("#results-bottom-back-btn").removeClass("hidden");
+
+                // var table = $("#form_table").DataTable();
+                // table.draw();
 
                 console.log("Storing tweets...");
                 db.storeResult(searchParams, tweets.statuses).then(function(result) {
@@ -75,13 +96,6 @@ var app = {
 
         });
         // END bind socket actions
-
-        // BEGIN set up DataTable library for pagination
-        $("#form_table").DataTable({
-            "bFilter": false, // disable quick search / filter
-            "bLengthChange": false // disable length change
-        });
-        // END set up DataTable library for pagination
     }
    
 };
@@ -90,8 +104,8 @@ app.initialize();
 
 // address of server (emulator host)
 // as per https://developer.android.com/studio/run/emulator-networking.html
-// var serverIP = "10.0.2.2";
-var serverIP = "143.167.119.16";
+var serverIP = "10.0.2.2";
+// var serverIP = "143.167.119.16";
 var serverPort = 3000;
 var serverAddress = "http://" + serverIP + ":" + serverPort;
 
@@ -162,6 +176,14 @@ function resultToRow(tweet) {
     	// +   "<td width=\"10%\"> <a href=" + "https://twitter.com/statuses/" + tweet.id_str + ">link</a></td>"
     	+ "</tr>";
 	return row;
+}
+
+function resultToRowList(tweet) {
+    return [
+        tweet["user"].screen_name,
+        tweet["text"],
+        tweet["created_at"].substring(0,10)
+    ];
 }
 
 function showResultsContent() {
