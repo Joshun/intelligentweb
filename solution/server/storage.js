@@ -10,17 +10,18 @@ var db  = require('mysql').createPool({
 	database:        config.storage.database,
 	connectionLimit: 100,
 	debug:           false,
-	multipleStatements: true
+	multipleStatements: true // Required to allow the SQL schema to be loaded from text file
 });
 
 helper.info('Database Connection Established');
 
 // Creates tables from the sql schema specified in config.storage.schema
 function createTable() {
+	// Read the SQL schema from text file, the path of which is specified in config.storage.schema
 	fs.readFile(config.storage.schema, 'utf8', function(err, data){
 		helper.debug("SQL: " + data);
 		db.getConnection(function(err, connection) {
-			if (err) throw err; // At this stage, MySQL errors are critical
+			if (err) throw err; // At this stage, MySQL errors are critical, so throw them
 			connection.query(data, function(error, results, fields) {
 				connection.release();
 				
@@ -40,12 +41,14 @@ function logSearch(query, reply) {
 	return new Promise(function(resolve, reject){
 		helper.debug("BEGIN LOG QUERY");
 
+		// Map client-side query variables to those used by database
 		var playerQuery = query.player_query;
 		var teamQuery = query.team_query;
 		var isOrOperator = query.or_operator;
 
 		db.getConnection(function(err, connection) {
 			if (err) reject(err);
+			// Check if any searches exist with the same parameters (playerQuery, teamQuery, isOrOperator)
 			connection.query(
 				"SELECT * FROM previousSearches \
 					WHERE playerQuery = ? \
@@ -57,6 +60,7 @@ function logSearch(query, reply) {
 					if (error) reject(error);
 					else {
 						if (results.length > 0) {
+							// Previous search result with the same parameters exists, so simply update its timestamp
 							connection.query(
 								"UPDATE previousSearches SET queryTimestamp = NOW() WHERE playerQuery = ? AND teamQuery = ? AND isOrOperator = ?",
 							[playerQuery, teamQuery, isOrOperator],
@@ -66,11 +70,13 @@ function logSearch(query, reply) {
 								if (error) reject(error);
 								else {
 									helper.debug("Log Complete!");
+									// Resolving id, which is used when inserting tweets, so that they are linked to previous searches
 									resolve([results[0].id, reply]);
 								}
 							});
 						}
 						else {
+							// Search has not been carried out before, so insert it as entry to previous searches
 							connection.query(
 								"INSERT INTO previousSearches (playerQuery, teamQuery, isOrOperator, queryTimestamp) VALUES (?, ?, ?, NOW())",
 							[playerQuery, teamQuery, isOrOperator],
@@ -80,6 +86,7 @@ function logSearch(query, reply) {
 								if (error) reject(error);
 								else {
 									helper.debug("Log Complete!");
+									// Resolving id, which is used when inserting tweets, so that they are linked to previous searches
 									resolve([data.insertId, reply]);
 								}
 							});
@@ -108,11 +115,14 @@ function storeTweetData(data, logPrimaryKey) {
 				var timestamp = new Date(status.created_at).getTime() / 1000.0;
 
 				// Skip tweets that have invalid properties (i.e. null name, text, id or timestamp)
+				// This prevents errors or crashes
 				if (! (status.user.screen_name && status.id_str && status.text && timestamp)) {
 					helper.debug("Skipping tweet with invalid property (", i, ")");
 					continue;
 				}
 
+				// Make a list of promises, one for each insert operation
+				// This is the most straightforward way to bulk insert using the MySQL library
 				promiseList.push(new Promise(function(resolve, reject) {
 					connection.query(
 						"INSERT INTO tweets(userName, tweetId, tweetText, tweetTimestamp, previousSearchId) VALUES (?, ?, ?, FROM_UNIXTIME(?), ?)",
@@ -125,7 +135,9 @@ function storeTweetData(data, logPrimaryKey) {
 					});
 				}));
 			}
+			// Carry out all the insertion operations
 			Promise.all(promiseList)
+			// Catch errors during bulk insert
 			.catch(function(error) {
 				connection.release();
 
@@ -133,6 +145,7 @@ function storeTweetData(data, logPrimaryKey) {
 				helper.debug(error);
 				reject(error);
 			})
+			// If they succeed, release database connection and resolve the inserted data
 			.then(function(data) {
 				connection.release();
 
@@ -154,7 +167,7 @@ function getPreviousSearches(query) {
 		db.getConnection(function(err, connection) {
 			if (err) reject(err);
 			connection.query(
-				// Query gets all previousSearches that match the parameters of the previous query and are recent enough
+				// Query gets all previousSearches that match the parameters of the previous query
 				"SELECT * FROM previousSearches WHERE playerQuery=? AND teamQuery=? AND isOrOperator=? ORDER BY queryTimestamp DESC",
 				[playerQuery, teamQuery, isOrOperator],
 				function(error, results, fields) {
@@ -173,6 +186,8 @@ function getPreviousTweets(prevSearchId) {
 		db.getConnection(function(err, connection) {
 			if (err) reject(err);
 
+			// Get stored tweets, ordered by tweetId decending
+			// Since tweet ids are incremental, we want higher tweet ids to appear first, since these are the most recent
 			connection.query(
 				"SELECT * from tweets WHERE previousSearchId = ? ORDER BY tweetId DESC",
 				[prevSearchId],
@@ -237,6 +252,7 @@ function savedTweetToWeb(tweet) {
 	};
 }
 
+// Given a table (i.e. players or teams), get the real name that corresponds to a screen name or twitter handle
 function getRealNameFromScreenName(nameTable, screenName) {
 	return new Promise(function (resolve, reject) {
 		if (screenName == undefined || screenName == null) {
@@ -246,19 +262,23 @@ function getRealNameFromScreenName(nameTable, screenName) {
 			if (err) reject(err);
 			helper.debug("SELECT * FROM $TABLE WHERE screenName = ?".replace("$TABLE", nameTable));
 			helper.debug(screenName);
+			// Substitutes $TABLE with the table corresponding to the type of name
 			connection.query("SELECT * FROM $TABLE WHERE screenName = ?".replace("$TABLE", nameTable), screenName, function(error, results, fields) {
 				helper.debug('query done');
 				if (error) reject(error);
 				else {
 					connection.release();
 
+					// This should not happen, if it does an error has occurred
 					if (results == null) {
 						reject("getRealNameFromScreenName failed!");
 					}
+					// If a corresponding real name exists for the screen name, resolve it (there should only be one)
 					else if (results.length > 0) {
 						helper.info("getRealNameFromScreenName worked!");
 						resolve(results[0].realName);
 					}
+					// Otherwise, resolve null to indicate the corresponding real name has not been found
 					else {
 						helper.info("getRealNameFromScreenName nulled!");
 						resolve(null);
@@ -269,10 +289,12 @@ function getRealNameFromScreenName(nameTable, screenName) {
 	});
 }
 
+// Given a screen name of a team, retrieve the team's real name
 function getTeamFromScreenName(screenName) {
 	return getRealNameFromScreenName('teams', screenName);
 }
 
+// Given the screen name of a player, retrieve the player's real name
 function getPlayerFromScreenName(screenName) {
 	return getRealNameFromScreenName('players', screenName);
 }
@@ -295,10 +317,3 @@ module.exports = {
 	getPlayerFromScreenName: getPlayerFromScreenName
 };
 
-// Drafting of how the handles and hashtag tables might be used
-// SELECT player_handles.data, player_hashtag.data, player_keyword.data
-// 	FROM player_entries
-// 		INNER JOIN player_handles ON (player_entries.player_id = player_handles.player_id)
-// 		INNER JOIN player_hashtag ON (player_entries.player_id = player_hashtag.player_id)
-// 		INNER JOIN player_keyword ON (player_entries.player_id = player_keyword.player_id)
-// 	WHERE player_entries.firstname = "WAYNE" AND player_entries.surname = "ROONEY";
