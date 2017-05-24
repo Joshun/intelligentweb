@@ -216,14 +216,15 @@ Database.prototype.storeSearch = function(searchParams) {
             // Previous search exists, update timestamp
             else {
                 console.log(" previous search exists, updating to current timestamp");
-                var prevSearchId = prevSearch.id;
+                // var prevSearchId = prevSearch.id;
                 var sqlQuery = "UPDATE previousSearches SET searchTimestamp = date('now') \
                     WHERE playerQuery = ? AND teamQuery = ? AND isOrOperator = ?";
                 that.db.transaction(function(tx) {
                     tx.executeSql(sqlQuery, [searchParams.playerQuery, searchParams.teamQuery, searchParams.isOrOperator],
                     function(tx, rs) {
                         console.log("update search record OK");
-                        resolve(rs.insertId);
+                        // resolve(rs.insertId);
+                        resolve(prevSearch);
                     },
                     function(tx, error) {
                         console.error("error updating prev search timestamp", error);

@@ -44,7 +44,13 @@ var app = {
 
                 // concat stored tweets with received tweets
                 // tweets.statuses = tweets.statuses.concat(tweets.statuses);
-                var combinedTweets = storedTweets.concat(tweets.statuses);
+
+                if (tweets.statuses === undefined || tweets.statuses == null) {
+                    tweets = { statuses: [] };
+                }
+
+                // var combinedTweets = storedTweets.concat(tweets.statuses);
+                var combinedTweets = tweets.statuses.concat(storedTweets);
 
                 // write results into table
 
