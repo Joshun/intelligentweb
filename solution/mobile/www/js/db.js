@@ -11,6 +11,7 @@ function Database() {
         id INTEGER PRIMARY KEY AUTOINCREMENT, \
         userName TEXT, \
         tweetId TEXT, \
+        tweetText TEXT, \
         tweetTimestamp TEXT, \
         previousSearchId INTEGER );",
 
@@ -146,7 +147,8 @@ Database.prototype.getSearchTweets = function(previousSearchId) {
 
                     var tweets = [];
                     for (var i=0; i<rs.rows.length; i++) {
-                        tweets.push(rs.rows.item(i));
+                        // tweets.push(rs.rows.item(i));
+                        tweets.push(savedTweetToWeb(rs.rows.item(i)));
                     }
                     resolve(tweets);
                 },
@@ -263,8 +265,8 @@ Database.prototype.storeSearchTweets = function(previousSearchId, tweetList) {
         console.log("storeTweets ...");
 
         var sqlQuery = "INSERT INTO tweets \
-            (userName, tweetId, tweetTimestamp, previousSearchId) \
-            VALUES (?, ?, ?, ?)";
+            (userName, tweetId, tweetText, tweetTimestamp, previousSearchId) \
+            VALUES (?, ?, ?, ?, ?)";
         var valuesList = [];
         var batchList = [];
 
@@ -272,7 +274,7 @@ Database.prototype.storeSearchTweets = function(previousSearchId, tweetList) {
         for (var i=0; i<tweetList.length; i++) {
             var timestamp = new Date(tweetList[i].created_at).getTime() / 1000.0;
 
-            valuesList.push([tweetList[i].user.screen_name, tweetList[i].id_str, status.text, timestamp]);
+            valuesList.push([tweetList[i].user.screen_name, tweetList[i].id_str, status.text, timestamp, previousSearchId]);
         }
 
         // Make list of pairs of query string and values, ready for batch operation
@@ -289,3 +291,12 @@ Database.prototype.storeSearchTweets = function(previousSearchId, tweetList) {
         });
     });
 };
+
+function savedTweetToWeb(tweet) {
+	return {
+		text: tweet.tweetText,
+		created_at: tweet.tweetTimestamp,
+		user: { screen_name: tweet.userName},
+		id_str: tweet.tweetId
+	};
+}

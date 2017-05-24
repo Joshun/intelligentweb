@@ -74,8 +74,8 @@ var app = {
                 // Hide results loading header
                 $("#results-loading-header").addClass("hidden");
                 
-                // // Unhide results table
-                // $("#form_table").removeClass("hidden");
+                // // Unhide results table container
+                $("#form_table_container").removeClass("hidden");
 
                 // Unhide results bottom back button
                 $("#results-bottom-back-btn").removeClass("hidden");
@@ -213,8 +213,8 @@ function showMainContent() {
     // Unhide results loading header
     $("#results-loading-header").removeClass("hidden");
 
-    // Hide results table (show only when loaded)
-    $("#form_table").addClass("hidden");
+    // Hide results table container (show only when loaded)
+    $("#form_table_container").addClass("hidden");
 
     // Hide results bottom back button
     $("#results-bottom-back-btn").addClass("hidden");
