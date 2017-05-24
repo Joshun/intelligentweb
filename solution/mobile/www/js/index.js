@@ -179,7 +179,8 @@ function resultToRow(tweet) {
 
   row +=  "<td ><a href=" + "https://twitter.com/" + tweet["user"].screen_name + ">@" + tweet["user"].screen_name + "</a></td>"
     	+   "<td>" + tweet["text"] + "</td>"
-    	+   "<td>" + tweet["created_at"].substring(0,10) + "<br>" + tweet["created_at"].substring(11,19) + "</td>"
+    	// +   "<td>" + tweet["created_at"].substring(0,10) + "<br>" + tweet["created_at"].substring(11,19) + "</td>"
+        + "<td>" + moment(tweet["created_at"]).format("HH:mm DD.MM.YY") + "</td>"
     	// +   "<td width=\"15%\">" + tweet["created_at"].substring(0,10) + "</td>"
     	// +   "<td width=\"10%\"> <a href=" + "https://twitter.com/statuses/" + tweet.id_str + ">link</a></td>"
     	+ "</tr>";
