@@ -114,7 +114,7 @@ app.initialize();
 // address of server (emulator host)
 // as per https://developer.android.com/studio/run/emulator-networking.html
 var serverIP = "10.0.2.2";
-// var serverIP = "143.167.119.16";
+// var serverIP = "143.167.117.179";
 var serverPort = 3000;
 var serverAddress = "http://" + serverIP + ":" + serverPort;
 
@@ -135,7 +135,8 @@ function sendGetTweetsRequest() {
     };
     
     db.getResult(dbReq).then(function(storedTweets) {
-        var latestId = (storedTweets.length == 0) ? 0 : storedTweets[0].tweetId;
+        console.log(storedTweets);
+        var latestId = (storedTweets.length == 0) ? 0 : storedTweets[0].id_str;
         console.log("  latestId=", latestId);
 
     // Construct object which will be emitted to make request

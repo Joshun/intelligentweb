@@ -114,7 +114,7 @@ app.initialize();
 // address of server (emulator host)
 // as per https://developer.android.com/studio/run/emulator-networking.html
 var serverIP = "10.0.2.2";
-// var serverIP = "143.167.119.16";
+// var serverIP = "143.167.117.179";
 var serverPort = 3000;
 var serverAddress = "http://" + serverIP + ":" + serverPort;
 
@@ -123,36 +123,10 @@ var socket = io(serverAddress);
 
 
 function sendGetTweetsRequest() {
-    // var requestObj =  {
-    //     team_query: $("#team_query").val(),
-    //     player_query: $("#player_query").val(),
-    //     database_only: false,
-    //     or_operator: $("#or_operator").is(":checked"),
-    // };
-    // console.log("sendGetTweetsRequest");
-    // console.log(" Sending requestObj: ", requestObj);
-    // socket.emit('query', requestObj);
+
     console.log("sendGetTweetsRequest");
 
-    // console.log(" 1. getting previous search tweets...");
-
-    // db.getResult(requestObj).then(function(prevTweets) {
-    //      console.log(" 2. finding out the most recent timestamp we have...");
-    //     db.getLastTimestamp().then(function(lastTimestamp) {
-    //         console.log("  lastTimestamp=", lastTimestamp);
-    //         console.log(" 3. sending request: ", requestObj);
-    //         socket.emit('query', requestObj);
-
-    //     }).catch(function(error) {
-    //         console.error("sendGetTweetsRequest: error occurred: ", error);
-    //     });
-    // });
-
     console.log(" 1. finding out the most recent timestamp we have...");
-    // db.getLatestTweetId().then(function(latestId) {
-
-
-    // db.getLatestTweetId().then(function(latestId) {
 
     var dbReq =  {
         teamQuery: $("#team_query").val(),
@@ -162,7 +136,7 @@ function sendGetTweetsRequest() {
     
     db.getResult(dbReq).then(function(storedTweets) {
         console.log(storedTweets);
-        var latestId = (storedTweets.length == 0) ? 0 : storedTweets[0].tweetId;
+        var latestId = (storedTweets.length == 0) ? 0 : storedTweets[0].id_str;
         console.log("  latestId=", latestId);
 
     // Construct object which will be emitted to make request
@@ -182,14 +156,6 @@ function sendGetTweetsRequest() {
 }
 
 function resultToRow(tweet) {
-//   var row;
-
-//   if (tweet.db_state) {
-//     row = "<tr class=\"storage\">";
-//   }
-//   else {
-//     row = "<tr class=\"twitter\">";
-//   }
 
   var row = "<tr>";
 
@@ -198,7 +164,6 @@ function resultToRow(tweet) {
   }
 
   else if (tweet.db_state) {
-      console.log("db state!!!");
     row += "<td class=\"storage\"></td>";
   }
 
@@ -207,11 +172,8 @@ function resultToRow(tweet) {
   }
 
   row +=  "<td ><a href=" + "https://twitter.com/" + tweet["user"].screen_name + ">@" + tweet["user"].screen_name + "</a></td>"
-    	+   "<td>" + tweet["text"] + "</td>"
-    	// +   "<td>" + tweet["created_at"].substring(0,10) + "<br>" + tweet["created_at"].substring(11,19) + "</td>"
+    	+  "<td>" + tweet["text"] + "</td>"
         + "<td>" + moment(tweet["created_at"]).format("HH:mm DD.MM.YY") + "</td>"
-    	// +   "<td width=\"15%\">" + tweet["created_at"].substring(0,10) + "</td>"
-    	// +   "<td width=\"10%\"> <a href=" + "https://twitter.com/statuses/" + tweet.id_str + ">link</a></td>"
     	+ "</tr>";
 	return row;
 }
