@@ -68,6 +68,17 @@ function get_tweets_helper(query, index, max_id) {
   });
 }
 
+/**
+ * Subtracts one from the Twitter ID string.
+ *
+ * Since Twitter considers the "max_id" filter as inclusive, using this value
+ * when retrieving multiple batches of results would cause duplicate entries
+ * to occur. As such, this value is reduced by one to exclude the last result
+ * of one query from being the first result of the next.
+ *
+ * @param    value    the Twitter ID string
+ * @returns           the Twitter ID string, subtracted by one
+ */
 function get_id_format(value) {
   var rest = value.substring(0, value.length - 1);
   var last = value.substring(value.length - 1);
@@ -78,26 +89,43 @@ function get_id_format(value) {
     return get_id_padded(rest + (parseInt(last, 10) - 1).toString(), "0"); // reduces last digit by 1, and trims result
 }
 
+/**
+ * Determines if one Twitter ID string is larger than another.
+ *
+ * @param    num1    the first Twitter ID string
+ * @param    num2    the second Twitter ID string
+ * @returns          the larger Twitter ID string, or null if equal
+ */
 function get_id_larger(num1, num2) {
   var value1 = num1;
   var value2 = num2;
 
+  // if value1 is longer, then the number is trivially larger
   if (value1.length > value2.length) {
     return value1;
   }
 
+  // if value2 is longer, then the number is trivially larger
   if (value2.length > value1.length) {
     return value2;
   }
 
+  // performs character comparison based on ascii value
   for(var i = 0; i < value1.length; i++) {
     if (value1[i] > value2[i]) return value1;
     if (value1[i] < value2[i]) return value2;
   }
 
-  return null;
+  return null; // if both values are equal, return null
 }
 
+/**
+ * Trims the Twitter ID string of leading characters.
+ *
+ * @param      value    the Twitter ID string
+ * @param      pad      the character to trim
+ * @returns             the trimmed Twitter ID string
+ */
 function get_id_padded(value, pad) {
   var i = 0;
 
@@ -108,26 +136,69 @@ function get_id_padded(value, pad) {
   return value.substring(i); // trims leading zeros
 }
 
+/**
+ * Invokes the Twitter Stream API for live results.
+ *
+ * @param    query    the search terms to be sent
+ * @returns           a connection to the streaming utility
+ */
 function get_stream(query) {
   return T.stream('statuses/filter', { track: query });
 }
 
+/**
+ * Severs any tweet related connections to the Twitter REST API to prevent
+ * connection saturation.
+ */
 function stop_tweets() {
     // if (tweets) tweets.stop();
 }
 
+/**
+ * Severs any tweet related connections to the Twitter Stream API to prevent
+ * connection saturation.
+ */
 function stop_stream() {
     if (stream) stream.stop();
 }
 
+/**
+ * Invokes the Twitter REST API to retrieve the timeline of a user.
+ *
+ * @param    query    the Twitter screen name of the user
+ * @returns           a promise to retrieve the timeline of the user
+ */
 function get_timeline(query){
   return T.get('statuses/user_timeline', { screen_name: query, count: tweet_limit });
 }
 
+/**
+ * Invokes the Twitter REST API to retrieve details about a user
+ *
+ * This function is used to retrieve the screen name of a Twitter user, as
+ * defined by Twitter (i.e. the case-accurate result). Since Wikidata provides
+ * most Twitter handles in the same case-accurate form, this approach was taken
+ * to circumvent the need to apply a filtered regular expression within the
+ * Wikidata query. As such, the response time of Wikidata is much faster.
+ *
+ * @param    query    the Twitter screen name of the user
+ * @returns           a promise to retrieve details about the user
+ */
 function get_users(query) {
   return T.get('users/show', { screen_name: query })
 }
 
+/**
+ * Provides the frequency data for a query over the last week.
+ *
+ * This function is used to retrieve a sample of tweets from Twitter for each
+ * day in the week. Since Twitter does not provide an API for retrieving the
+ * frequency of tweets natively, this approach offered a simple solution to
+ * obtaining such results, at the expense of using multiple Twitter queries.
+ *
+ * @param    query    the search terms to be sent
+ * @returns           a promise to retrieve the searches of the past week
+ */
 function get_frequency_weekly(query) {
   return new Promise(function(resolve,reject) {
 
@@ -159,6 +230,14 @@ function get_frequency_weekly(query) {
   })
 };
 
+/**
+ * Provides the frequency data for a query between two specified dates
+ *
+ * @param    query    the search terms to be sent
+ * @param    prev     the start date
+ * @param    curr     the end date
+ * @returns           a promise to retrieve the searches between the specified dates
+ */
 function get_frequency(query, prev, curr) {
   return new Promise(function(resolve,reject) {
   var prev_date = get_date_format(prev);
@@ -178,12 +257,24 @@ function get_frequency(query, prev, curr) {
   });
 }
 
+/**
+ * Converts the date format into one which is compatible with Twitter queries
+ *
+ * @param    date    a date object
+ * @returns          the date object in YYYY-MM-DD format
+ */
 function get_date_format(date) {
-  return              date.getFullYear().toString()      + "-"
-    + get_date_padded((date.getMonth()+1).toString(), 2) + "-"
-    + get_date_padded(date.getDate().toString(), 2);
+  return               date.getFullYear().toString()       + "-"
+    + get_date_padded((date.getMonth() + 1).toString(), 2) + "-"
+    + get_date_padded( date.getDate().toString(), 2);
 }
 
+/**
+ * Pads a date element to the specified length
+ *
+ * @param    date    a date element
+ * @returns          a padded date element
+ */
 function get_date_padded(date, size) {
   var out = date.trim();
   while (out.length < size) {
@@ -249,6 +340,11 @@ function tweet_reply(socket, query, prev_timestamp, prev_tweetlist, mobile_times
     // creates socket.io emission to webpage with tweets
     tweets.then(function(reply) {
       helper.info("Tweets Retrieved from Twitter:", reply.data.statuses.length);
+
+      // converts Twitter time into ISO-8601 time
+      for(var i = 0; i < reply.data.statuses.length; i++) {
+        reply.data.statuses[i].created_at = new Date(reply.data.statuses[i].created_at).toISOString();
+      }
 
       // if (mobile_timestamp != null) {
       //   prev_tweetlist = prev_tweetlist.filter(function(status) {

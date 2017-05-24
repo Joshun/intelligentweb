@@ -329,15 +329,17 @@ td {
 .tokenfield {
     padding-left:  30px;
 }
-
+/* left-hand side of input box for glyphicon to display */
 div.left-addon > div.tokenfield {
     padding-left: 30px;
 }
 
+/* adds space to right-hand side of input box for glyphicon to display */
 div.right-addon > div.tokenfield {
     padding-right: 30px;
 }
 
+/* adds blue corner tab to tweet rows of odd index if they're from twitter */
 .table-striped > tbody > .twitter:nth-of-type(odd) {
     background: -webkit-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #F9F9F9 12px, #F9F9F9 100%);
     background:    -moz-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #F9F9F9 12px, #F9F9F9 100%);
@@ -345,6 +347,7 @@ div.right-addon > div.tokenfield {
     background:         repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #F9F9F9 12px, #F9F9F9 100%);
 }
 
+/* adds blue corner tab to tweet rows of even index if they're from twitter */
 .table-striped > tbody > .twitter:nth-of-type(even) {
     background: -webkit-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #FFFFFF 12px, #FFFFFF 100%);
     background:    -moz-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #FFFFFF 12px, #FFFFFF 100%);
@@ -352,6 +355,7 @@ div.right-addon > div.tokenfield {
     background:         repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #FFFFFF 12px, #FFFFFF 100%);
 }
 
+/* adds green corner tab to tweet rows of odd index if they're from the server database */
 .table-striped > tbody > .storage:nth-of-type(odd) {
     background: -webkit-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #F9F9F9 12px, #F9F9F9 100%);
     background:    -moz-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #F9F9F9 12px, #F9F9F9 100%);
@@ -359,6 +363,7 @@ div.right-addon > div.tokenfield {
     background:         repeating-linear-gradient(225deg, #F29221, #F29221 12px, #F9F9F9 12px, #F9F9F9 100%);
 }
 
+/* adds green corner tab to tweet rows of even index if they're from the server database */
 .table-striped > tbody > .storage:nth-of-type(even) {
     background: -webkit-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #FFFFFF 12px, #FFFFFF 100%);
     background:    -moz-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #FFFFFF 12px, #FFFFFF 100%);
