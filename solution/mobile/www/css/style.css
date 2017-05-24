@@ -45,3 +45,46 @@ div.left-addon > div.tokenfield {
 .voffset {
     padding-top: 20px;
 }
+
+/* db states */
+
+/*.table-striped > tbody > .twitter:nth-of-type(odd) {
+    background: -webkit-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #F9F9F9 12px, #F9F9F9 100%);
+    background:    -moz-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #F9F9F9 12px, #F9F9F9 100%);
+    background:      -o-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #F9F9F9 12px, #F9F9F9 100%);
+    background:         repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #F9F9F9 12px, #F9F9F9 100%);
+}
+
+.table-striped > tbody > .twitter:nth-of-type(even) {
+    background: -webkit-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #FFFFFF 12px, #FFFFFF 100%);
+    background:    -moz-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #FFFFFF 12px, #FFFFFF 100%);
+    background:      -o-repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #FFFFFF 12px, #FFFFFF 100%);
+    background:         repeating-linear-gradient(225deg, #1DA1F2, #1DA1F2 12px, #FFFFFF 12px, #FFFFFF 100%);
+}
+
+.table-striped > tbody > .storage:nth-of-type(odd) {
+    background: -webkit-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #F9F9F9 12px, #F9F9F9 100%);
+    background:    -moz-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #F9F9F9 12px, #F9F9F9 100%);
+    background:      -o-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #F9F9F9 12px, #F9F9F9 100%);
+    background:         repeating-linear-gradient(225deg, #F29221, #F29221 12px, #F9F9F9 12px, #F9F9F9 100%);
+}
+
+.table-striped > tbody > .storage:nth-of-type(even) {
+    background: -webkit-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #FFFFFF 12px, #FFFFFF 100%);
+    background:    -moz-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #FFFFFF 12px, #FFFFFF 100%);
+    background:      -o-repeating-linear-gradient(225deg, #F29221, #F29221 12px, #FFFFFF 12px, #FFFFFF 100%);
+    background:         repeating-linear-gradient(225deg, #F29221, #F29221 12px, #FFFFFF 12px, #FFFFFF 100%);
+}*/
+
+
+.storage {
+    background-color: orange;
+}
+
+.twitter {
+    background-color: blue;
+}
+
+.mobile {
+    background-color: green;
+}

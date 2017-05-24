@@ -114,7 +114,7 @@ Database.prototype.getSearch = function(searchParams) {
     var that = this;
     return new Promise(function(resolve, reject) {
         // var sqlQuery = "SELECT * FROM previousSearches WHERE isOrOperator=? AND playerQuery=? AND teamQuery=?";
-        var sqlQuery = "SELECT * FROM previousSearches WHERE isOrOperator=? AND playerQuery=? AND teamQuery=? ORDER BY date(searchTimestamp)";
+        var sqlQuery = "SELECT * FROM previousSearches WHERE isOrOperator=? AND playerQuery=? AND teamQuery=? LIMIT 1";
 
         that.db.transaction(function(tx) {
             tx.executeSql(sqlQuery,
@@ -141,7 +141,7 @@ Database.prototype.getSearch = function(searchParams) {
 Database.prototype.getSearchTweets = function(previousSearchId) {
     var that = this;
     return new Promise(function(resolve, reject) {
-        var sqlQuery = "SELECT * from tweets WHERE previousSearchId=?";
+        var sqlQuery = "SELECT * from tweets WHERE previousSearchId=? ORDER BY date(tweetTimestamp) DESC";
         that.db.transaction(function(tx) {
             tx.executeSql(sqlQuery, [previousSearchId],
                 function(tx, rs) {
@@ -307,6 +307,7 @@ function savedTweetToWeb(tweet) {
 		text: tweet.tweetText,
 		created_at: convertedTimestamp.toString(),
 		user: { screen_name: tweet.userName},
-		id_str: tweet.tweetId
+		id_str: tweet.tweetId,
+        db_state_mobile: true
 	};
 }
