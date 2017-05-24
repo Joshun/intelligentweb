@@ -6,6 +6,17 @@ var stats_state = { 'player_stats': null };
 var stats_keys = [38, 38, 40, 40, 37,
                   39, 37, 39, 66, 65];
 
+function dateStringToDate(datestring) {
+    var date = new Date(datestring);
+    // return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+    return date.toDateString();
+}
+
+function dateStringToTime(datestring) {
+    var date = new Date(datestring);
+    // return (date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
+    return date.toTimeString().substring(0, 8);
+}
 // passes results into table
 function resultToRow(tweet) {
   var row;
@@ -19,8 +30,8 @@ function resultToRow(tweet) {
 
   row +=  "<td width=\"10%\"><a href=" + "https://twitter.com/" + tweet["user"].screen_name + ">@" + tweet["user"].screen_name + "</a></td>"
     	+   "<td width=\"50%\">" + tweet["text"] + "</td>"
-    	+   "<td width=\"15%\">" + tweet["created_at"].substring(11, 19) + "</td>"
-    	+   "<td width=\"15%\">" + tweet["created_at"].substring( 0, 10) + "</td>"
+      +   "<td width=\"15%\">" + dateStringToTime(tweet["created_at"]) + "</td>"
+    	+   "<td width=\"15%\">" + dateStringToDate(tweet["created_at"]) + "</td>"
     	+   "<td width=\"10%\"> <a href=" + "https://twitter.com/statuses/" + tweet.id_str + ">link</a></td>"
     	+ "</tr>";
 	return row;
