@@ -280,7 +280,7 @@ Database.prototype.storeSearchTweets = function(previousSearchId, tweetList) {
             // valuesList.push([tweetList[i].user.screen_name, tweetList[i].id_str, status.text, timestamp, previousSearchId]);
             
             // TODO: remove [STORED] debug
-            valuesList.push([tweetList[i].user.screen_name, tweetList[i].id_str, "[STORED] " + tweetList[i].text, timestamp, previousSearchId]);
+            valuesList.push([tweetList[i].user.screen_name, tweetList[i].id_str, tweetList[i].text, timestamp, previousSearchId]);
         }
 
         // Make list of pairs of query string and values, ready for batch operation
