@@ -307,6 +307,7 @@ function savedTweetToWeb(tweet) {
 		text: tweet.tweetText,
 		created_at: convertedTimestamp.toString(),
 		user: { screen_name: tweet.userName},
-		id_str: tweet.tweetId
+		id_str: tweet.tweetId,
+        db_state_mobile: true
 	};
 }

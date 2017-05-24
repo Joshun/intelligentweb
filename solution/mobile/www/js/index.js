@@ -64,7 +64,7 @@ var app = {
                 tableContainer.append(table);
 
                 var thead = $("<thead>");
-                thead.html("<tr><th width=\"10%\">Author</th><th width=\"50%\">Text</th><th width=\"15%\">Date</th></tr>");
+                thead.html("<tr><th width=\"5%\"></th><th width=\"10%\">Author</th><th width=\"50%\">Text</th><th width=\"15%\">Date</th></tr>");
                 table.append(thead);
 
                 for (var i = 0; i < combinedTweets.length; i++) {
@@ -169,13 +169,28 @@ function sendGetTweetsRequest() {
 }
 
 function resultToRow(tweet) {
-  var row;
+//   var row;
 
-  if (tweet.db_state) {
-    row = "<tr class=\"storage\">";
+//   if (tweet.db_state) {
+//     row = "<tr class=\"storage\">";
+//   }
+//   else {
+//     row = "<tr class=\"twitter\">";
+//   }
+
+  var row = "<tr>";
+
+  if (tweet.db_state_mobile) {
+    row += "<td class=\"mobile\"></td>";
   }
+
+  else if (tweet.db_state) {
+      console.log("db state!!!");
+    row += "<td class=\"storage\"></td>";
+  }
+
   else {
-    row = "<tr class=\"twitter\">";
+    row += "<td class=\"twitter\"></td>";
   }
 
   row +=  "<td ><a href=" + "https://twitter.com/" + tweet["user"].screen_name + ">@" + tweet["user"].screen_name + "</a></td>"
