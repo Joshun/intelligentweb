@@ -79,7 +79,7 @@ function initialise() {
     $('#author_form_container').hide();
     $('#form_container').show();
 
-  })
+  });
 
   $("#author_form_tab").click(function() {
     $('#form_tab').removeClass('Active');
@@ -87,9 +87,7 @@ function initialise() {
     $("#author_form_tab").addClass('Active');
     $('#form_container').hide();
     $('#author_form_container').show();
-
-
-  })
+  });
 
   $('#player_query').tokenfield({ delimiter: "," });
   $('#team_query').tokenfield({ delimiter: "," });
